@@ -365,31 +365,8 @@ $(function(){
         //Filtro ordenar por
 
     $('#ordenar_por_filter').on('change',function(){
-
-        var id = this.value;
-
-        if(id == "")
-        {
-            id = 'fecha';
-        }
-
-        var redir = $('#url_filter').val();
-
-        var url = base_url+'ajax_controller/set_filter_orden';
-        $.ajax({
-            type: 'POST',
-            url:url,
-            data:{'filter':id},
-            success: function (data) {
-                if(data != 'error')
-                {
-                    window.location.href = redir;
-                }
-            },
-            error: function () {
-                alert('Ocurrio un error por favor intente nuevamente');
-            }
-        })
+        var redir = $(this).val();
+        window.location.href = redir;
     });
 
     ///VALIDAR PUBLICAR ANUNCIOS
@@ -618,6 +595,29 @@ function sololetras_numeros(e)
     key = e.keyCode || e.which;
     tecla = String.fromCharCode(key).toLowerCase();
     letras = "áéíóúabcdefghijklmnñopqrstuvwxyz0123456789";
+    especiales = "8-37-39-46";
+
+    tecla_especial = false;
+
+    for(var i in especiales)
+    {
+        if(key == especiales[i])
+        {
+            tecla_especial = true;
+            break;
+        }
+    }
+
+    if(letras.indexOf(tecla)==-1 && !tecla_especial){
+        return false;
+    }
+}
+
+function sololetras_numeros_email(e)
+{
+    key = e.keyCode || e.which;
+    tecla = String.fromCharCode(key).toLowerCase();
+    letras = "áéíóúabcdefghijklmnñopqrstuvwxyz0123456789@_-.";
     especiales = "8-37-39-46";
 
     tecla_especial = false;

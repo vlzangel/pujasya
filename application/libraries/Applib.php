@@ -407,7 +407,7 @@ class AppLib {
 
     //Funcion para obtener N anuncios premium al azar
 
-    static function get_premium($condition,$cantidad,$order_by)
+    static function get_premium($condition,$cantidad,$order_by = NULL)
     {
         //Obtener todos los anuncios premium segun la condicion
         
@@ -419,60 +419,38 @@ class AppLib {
 
         $anuncios_cantidad = count($premium_total);
 
-        if($anuncios_cantidad > 0)
-        {
-            //Obtener la cantidad de usuarios para saber cuantos anuncios mostrar
-
-            foreach ($premium_total as $key => $value) {
-
-               if(!in_array($premium_total[$key]['user_id'], $user))
-               {
-                    array_push($user, $premium_total[$key]['user_id']);
-               }
-            }
-
-            if(count($user) < $cantidad)
-            {
-                
-
-                $cantidad = ($cantidad > $anuncios_cantidad)?$anuncios_cantidad:$cantidad;
-
-                do {
-                
-                    $valor = array_rand($premium_total);
-
-                    $arreglo = $premium_total[$valor];
-
-                    array_push($premium, $arreglo);
-
-                    unset($premium_total[$valor]);
-                    
-
-                } while (count($premium) < $cantidad);
-            }
-            else
-            {
-                $user = array();
-
-                do {
-                
-                    $valor = array_rand($premium_total);
-
-                    $arreglo = $premium_total[$valor];
-
-                    if(!in_array($arreglo['user_id'], $user))
-                    {
+        if($anuncios_cantidad > 0){
+            if( $order_by == NULL ){
+                //Obtener la cantidad de usuarios para saber cuantos anuncios mostrar
+                foreach ($premium_total as $key => $value) {
+                   if(!in_array($premium_total[$key]['user_id'], $user)){
+                        array_push($user, $premium_total[$key]['user_id']);
+                   }
+                }
+                if(count($user) < $cantidad){
+                    $cantidad = ($cantidad > $anuncios_cantidad)?$anuncios_cantidad:$cantidad;
+                    do {
+                        $valor = array_rand($premium_total);
+                        $arreglo = $premium_total[$valor];
                         array_push($premium, $arreglo);
-                        array_push($user, $arreglo['user_id']);
                         unset($premium_total[$valor]);
-                    }
-
-                } while (count($premium) < $cantidad);
+                    } while (count($premium) < $cantidad);
+                } else {
+                    $user = array();
+                    do {
+                        $valor = array_rand($premium_total);
+                        $arreglo = $premium_total[$valor];
+                        if(!in_array($arreglo['user_id'], $user)){
+                            array_push($premium, $arreglo);
+                            array_push($user, $arreglo['user_id']);
+                            unset($premium_total[$valor]);
+                        }
+                    } while (count($premium) < $cantidad);
+                }
+            }else{
+                $premium = $premium_total;
             }
         }
-
-        
-
         return $premium;
     }
 

@@ -44,6 +44,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
     <link href="<?= base_url()?>public/assets/vendors/flexslider/flexslider.css" rel="stylesheet">
     <link href="<?= base_url()?>public/assets/css/base.css?v1" rel="stylesheet">
     <link href="<?= base_url()?>public/assets/css/style.css?v6" rel="stylesheet">
+    <link href="<?= base_url()?>public/assets/css/generales.css?v=<?= time()?>" rel="stylesheet">
 
     <?php if($contenido == 'anuncios/detalle'):?>
     <?php $imagen = (isset($imagenes[0]['name']) AND $imagenes[0]['name'] != NULL)?$imagenes[0]['name']:'no-image.jpg'?>

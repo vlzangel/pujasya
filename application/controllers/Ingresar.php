@@ -106,7 +106,7 @@ class Ingresar extends CI_Controller {
         if($this->input->post())
         {
             $this->form_validation->set_rules('email', 'Correo electrónico', 'required|valid_email');
-            $this->form_validation->set_rules('nickname', 'Nombre de usuario', 'required|trim');
+            $this->form_validation->set_rules('nickname', 'Nombre de usuario', 'required|trim|min_length[5]');
             $this->form_validation->set_rules('password', 'Contraseña', 'required|min_length[4]');
             $this->form_validation->set_rules('re-password', 'Confirmar contraseña', 'required|matches[password]');
             
@@ -247,7 +247,7 @@ class Ingresar extends CI_Controller {
 
         $this->load->config('facebook');
 
-        $this->load->library("facebook/facebook",array("appId"=> "1711760442214653","secret" => "5437b2fc57a046fdea4b0ada56584993"));
+        $this->load->library("facebook/facebook",array("appId"=> "157606567995368","secret" => "8b6a61ff88200174092588a598a231cd"));
 
         $user = $this->facebook->getUser();
 
@@ -256,11 +256,12 @@ class Ingresar extends CI_Controller {
         if($user) {
             try 
             {
-                $me = $this->facebook->api("/me");
+                $me = $this->facebook->api("/me?fields=id,name,email");
 
                 $fb_id = $me['id'];
 
                 $name = $me['name'];
+                $email = $me['email'];
 
                 $check = $this->_dofacebook($fb_id);
 
@@ -282,6 +283,7 @@ class Ingresar extends CI_Controller {
                     $data_in = array(
                         'name'              => $fname.' '.$lname,
                         'fb_id'             => $fb_id,
+                        'email'             => $email,
                         'provincia_id'      => 7,
                         'status'            => 1,
                         'date'              => applib::fecha(),
@@ -328,7 +330,7 @@ class Ingresar extends CI_Controller {
         {
             die("<script>top.location='".$this->facebook->getLoginUrl(array(
                 'scope'=>'email',
-                "redirect_url"=> 'https://apps.facebook.com/Vallevende.com/'
+                "redirect_url"=> 'https://www.pujasya.com/'
             ))."'</script>");
         }
     }
@@ -398,6 +400,7 @@ class Ingresar extends CI_Controller {
 
             $this->load->library('captcha/recaptchalib');
 
+            $this->recaptchalib->Recaptchalib("6Le5hHUUAAAAADyBA1kVcoaO8EkIt5C2uoJjkIEe");
             $response = $this->recaptchalib->verifyResponse($_SERVER["REMOTE_ADDR"],$_POST["g-recaptcha-response"]);
 
             if($response == null || $response->success == false)

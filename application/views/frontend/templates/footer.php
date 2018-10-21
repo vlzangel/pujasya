@@ -92,7 +92,7 @@
 
     <script>var metodo = "<?= $this->uri->segment(2)?>";</script>
 
-    <script src="<?=base_url()?>public/assets/js/functions.js"></script>
+    <script src="<?=base_url()?>public/assets/js/functions.js?v=<?=time()?>"></script>
 
 </body>
 <script>
