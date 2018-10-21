@@ -46,7 +46,7 @@
 
                                     <div class="form-group">
                                         <label class="sr-only">Tu E-mail</label>
-                                        <input type="email" class="form-control input-lg" id="email" name="email" maxlength="150" placeholder="Tu E-mail" value="<?= set_value('email')?>" onblur="validarEmailExist(this.value)">
+                                        <input type="email" class="form-control input-lg" id="email" name="email" maxlength="150" placeholder="Tu E-mail" value="<?= set_value('email')?>" onkeypress="return sololetras_numeros_email(event)" onblur="validarEmailExist(this.value)">
                                         
                                     </div>
 
@@ -57,7 +57,7 @@
 
                                     <div class="form-group">
                                         <label class="sr-only">Nombre de usuario</label>
-                                        <input type="text" class="form-control input-lg" id="nickname" name="nickname" maxlength="15" placeholder="Usuario Ejemplo: usuario6644" value="<?= set_value('nickname')?>"  onkeypress="return sololetras_numeros(event)" onblur="validarNicknameExist(this.value)">
+                                        <input type="text" class="form-control input-lg" id="nickname" name="nickname" minlength="5" maxlength="15" placeholder="Usuario Ejemplo: usuario6644" value="<?= set_value('nickname')?>"  onkeypress="return sololetras_numeros(event)" onblur="validarNicknameExist(this.value)">
                                     </div>
 
                                     <div class="alert alert-danger alertas" style="display:none;" id="no_nickname">Debes colocar un nombre de usuario</div>
