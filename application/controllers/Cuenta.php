@@ -5,10 +5,125 @@ class Cuenta extends CI_Controller {
 	public function __construct(){
         parent::__construct();
         applib::logued_in_user(FALSE);
+        $this->load->model('Fichas_Model');
+        $this->load->model('Cupones_Model');
+        $this->load->model('Anuncios_model');
     }
 
-    function index()
-    {
+    function procesarCompraFicha(){
+        $paquete = $this->Fichas_Model->getAnuncio( $this->input->post('paquete_id') )[0];
+        $info["paquete_id"] = $this->input->post('paquete_id');
+        $info["paquete_name"] = $paquete->nombre;
+        $info["paquete_precio"] = $paquete->precio;
+        $info["paquete_fichas"] = $paquete->cantidad;
+        $info["metodo_pago"] = $this->input->post('paquete_metodo_pago');
+        $info["cupon"] = $this->input->post('cupon');
+        $data = [
+            "user" => $this->input->post('user_id'),
+            "data" => json_encode($info)
+        ];
+        $this->Fichas_Model->saveCompra($data, $paquete->cantidad);
+        echo json_encode(["error" => ""]);
+    }
+
+    function procesarCompraProducto(){
+
+        $producto_id = $this->input->post('producto_id');
+
+        $info["producto_precio"] = $this->input->post('producto_precio');
+        $info["producto_puja"] = $this->input->post('producto_puja');
+        $info["producto_envio"] = $this->input->post('producto_envio');
+        $info["pago"] = $this->input->post('pago');
+        $info["metodo_pago"] = $this->input->post('paquete_metodo_pago');
+
+        $data = [
+            "user_id" => $this->input->post('user_id'),
+            "producto_id" => $producto_id,
+            "operacion" => "compra",
+            "data" => json_encode($info)
+        ];
+
+        $this->Fichas_Model->saveCompraProducto($data);
+
+        $this->Anuncios_model->updateStatus($producto_id, "comprada");
+
+        echo json_encode(["error" => ""]);
+    }
+
+    public function apply_coupon($cupon_name, $total){
+        $cupon = $this->Cupones_Model->get_cupon_name($cupon_name);
+        if( $cupon !== false && $cupon !== null ){
+            if( strtotime($cupon->finaliza) < time() ){
+                $r = [
+                    "error" => "El cupón ha expirado",
+                    "cupo" => $cupon
+                ];
+            }else{
+                $descuento = ($cupon->porcentaje*$total)/100;
+                $r = [
+                    "error" => "",
+                    "descuento" => [
+                        $cupon->id, 
+                        $cupon->nombre, 
+                        $cupon->porcentaje, 
+                        $descuento 
+                    ]
+                ];
+            }
+        }else{
+            $r = [
+                "error" => "Cupón invalido"
+            ];
+        }
+
+        echo json_encode($r);
+    }
+
+    public function comprarfichas(){
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
+        $data['paquetes'] = $this->Fichas_Model->get_list("Activo");
+        $data['meta'] = array(
+            array(
+                'name' => 'description', 
+                'content' => 'Planes Empresas PREMIUM, Cordoba Vende, Autos y Otros, Hogar y Muebles, Deportes y Fitness, Consolas y Videojuegos, Motos y Otros, Inmuebles, Camionetas, Clasificados Gratis, Villa General Belgrano, Interior Cordoba'
+            )
+        );
+        $data['title'] = 'Comprar Fichas';
+        $data['contenido'] = 'cuenta/comprar_fichas';
+        $this->load->view('frontend/templates/plantilla',$data);
+    }
+
+    function comprarproducto($id){   
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
+
+        $data['p'] = $this->Anuncios_model->getAnuncio($id)[0];
+
+        $data['meta'] = array(
+            array(
+                'name' => 'description', 
+                'content' => 'Planes Empresas PREMIUM, Cordoba Vende, Autos y Otros, Hogar y Muebles, Deportes y Fitness, Consolas y Videojuegos, Motos y Otros, Inmuebles, Camionetas, Clasificados Gratis, Villa General Belgrano, Interior Cordoba'
+            )
+        );
+        $data['title'] = 'Comprar Producto';
+        $data['contenido'] = 'cuenta/comprar_producto';
+        $this->load->view('frontend/templates/plantilla',$data);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function index(){
     	redirect(base_url('cuenta/publicar'));
     }
 
@@ -242,6 +357,7 @@ class Cuenta extends CI_Controller {
     function mis_anuncios()
     {
 
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $condition = array('a.status !=' => 2,'a.user_id' => $this->session->userdata('user_id'));
 
         $data['anuncios'] = $this->anuncios_model->get_all($condition);
@@ -264,6 +380,8 @@ class Cuenta extends CI_Controller {
             applib::flash('danger','Debes completar tu perfil para poder editar tus anuncios!','perfil');
             exit;
         }
+
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
 
         $condition = array('id_anuncio' => $id,'user_id' => $this->session->userdata('user_id'),'status !=' => 2);
 
@@ -584,6 +702,7 @@ class Cuenta extends CI_Controller {
 
     public function favoritos()
     {
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
 
         $this->load->model('favoritos_model');
@@ -623,35 +742,9 @@ class Cuenta extends CI_Controller {
         }
     }
 
-     function comprarfichas()
-    {   $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
-        $data['meta'] = array(
-            array(
-                'name' => 'description', 
-                'content' => 'Planes Empresas PREMIUM, Cordoba Vende, Autos y Otros, Hogar y Muebles, Deportes y Fitness, Consolas y Videojuegos, Motos y Otros, Inmuebles, Camionetas, Clasificados Gratis, Villa General Belgrano, Interior Cordoba'
-            )
-        );
-        $data['title'] = 'Comprar Fichas';
-        $data['contenido'] = 'cuenta/comprar_fichas';
-        $this->load->view('frontend/templates/plantilla',$data);
-    }
-
-
-    function comprarproducto()
-    {   $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
-        $data['meta'] = array(
-            array(
-                'name' => 'description', 
-                'content' => 'Planes Empresas PREMIUM, Cordoba Vende, Autos y Otros, Hogar y Muebles, Deportes y Fitness, Consolas y Videojuegos, Motos y Otros, Inmuebles, Camionetas, Clasificados Gratis, Villa General Belgrano, Interior Cordoba'
-            )
-        );
-        $data['title'] = 'Comprar Producto';
-        $data['contenido'] = 'cuenta/comprar_producto';
-        $this->load->view('frontend/templates/plantilla',$data);
-    }
-
    public function mispujas()
     {
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
 
         $this->load->model('favoritos_model');
@@ -665,6 +758,7 @@ class Cuenta extends CI_Controller {
 
     public function misautopujas()
     {
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
 
         $this->load->model('favoritos_model');
@@ -678,6 +772,7 @@ class Cuenta extends CI_Controller {
 
     public function miscompras()
     {
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
 
         $this->load->model('favoritos_model');

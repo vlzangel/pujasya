@@ -48,16 +48,27 @@ class AppLib {
 
     public static $conver_anuncios_table = 'vv_conver_anuncios';
     
-	function __construct()
-
-	{
+	function __construct(){
 		self::$code =& get_instance();
-
 		self::$code->load->database();
-
 		self::$db = &get_instance()->db;
-
 	}
+
+    // NUEVAS FUNCIONES
+
+    public static function horas($inicio, $cierre){
+        $inicio = date("H:i", strtotime( date("Y-m-d ".$inicio) )  );
+        $cierre = date("H:i", strtotime( date("Y-m-d ".$cierre) )  );
+        return $inicio." - ".$cierre;
+    }
+
+
+
+
+
+
+    // FUNCIONES VIEJAS
+
 
 	//VERIFY LOGIN ADMIN
 

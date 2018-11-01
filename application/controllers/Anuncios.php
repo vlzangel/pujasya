@@ -1,12 +1,289 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Anuncios extends CI_Controller {
+class Anuncios extends SuperController {
 	
-	public function __construct(){
+    public function __construct(){
         parent::__construct();
+        $this->load->helper(array('ayuda_helper'));
+        $this->load->model('Anuncios_Model');
     }
 
-    public function index($cate,$sub = NULL,$pag = NULL)
+    public function list(){
+        $anuncios = $this->Anuncios_Model->get_list();
+
+        $data["data"] = [];
+        foreach ($anuncios as $key => $anuncio) {
+            $data["data"][] = [
+                $anuncio->id_anuncio,
+                $anuncio->titulo,
+                ($anuncio->precio_compra+0)."€",
+                $anuncio->finalizacion,
+                '
+                <a href="javascript: editar('.$anuncio->id_anuncio.');" title="Editar" style="margin-right: 10px;">
+                    <i class="fa fa-pencil text-danger" style="background: #01c0c8; padding: 12px; margin-top: -10px;color: white !important; border-radius: 5px;"></i>
+                </a>
+                <a href="javascript:;" onclick="eliminar(jQuery(this));" title="Eliminar" data-id="'.$anuncio->id_anuncio.'" data-url="Anucios" style="margin-right: 10px;">
+                    <i class="fa fa-trash text-danger" style="background: #01c0c8; padding: 12px; margin-top: -10px;color: white !important; border-radius: 5px;"></i>
+                </a>
+                '
+            ];
+        }
+
+        echo json_encode($data);
+    }
+
+    public function new(){
+        $this->load->view('backend/templates/modal', [
+            "titulo" => "Nuevo Anuncio",
+            "accion" => "Crear",
+            "data" => [],
+            "plantilla" => "anuncios/show"
+        ]);
+    }
+
+    public function edit($id){
+        $data["info"] = $this->Anuncios_Model->getAnuncio($id)[0];
+
+        $this->load->view('backend/templates/modal', [
+            "titulo" => "Editar Anuncio",
+            "accion" => "Actualizar",
+            "data" => $data,
+            "plantilla" => "anuncios/show"
+        ]);
+    }
+
+    public function save(){
+
+        $name_base = time();
+        $imagenes = $this->save_imgs( $this->input->post('imgs'), $id_anuncio, $name_base);
+
+        $datos = [
+            'titulo' => $this->input->post('titulo'),
+            'descripcion' => $this->input->post('descripcion'),
+            'precio_compra' => $this->input->post('precio_compra'),
+            'precio_reventa' => $this->input->post('precio_reventa'),
+            'precio_maximo' => $this->input->post('precio_maximo'),
+            'finalizacion ' => $this->input->post('finalizacion'),
+            'tiempo_puja' => $this->input->post('tiempo_puja'),
+            'inicio' => $this->input->post('inicio'),
+            'cierre' => $this->input->post('cierre'),
+            'existencia' => $this->input->post('existencia'),
+            'se_compra' => $this->input->post('se_compra'),
+            'precio_envio' => $this->input->post('precio_envio'),
+            'cantidad_fichas' => $this->input->post('cantidad_fichas'),
+            'img_principal' => $imagenes[$this->input->post("img_principal")],
+            'imgs' => json_encode($imagenes),
+            'status' => 1
+        ];
+
+        $this->Anuncios_Model->saveAnuncio($datos);
+
+        print_r( json_encode( $this->input->post() ) );
+
+    }
+
+    public function update($id_anuncio){
+
+        $anuncio = $this->Anuncios_Model->getAnuncio($id_anuncio)[0];
+
+        if( $anuncio->imgs != "" ){
+            $imgs_actuales = json_decode( $anuncio->imgs );
+        }else{
+            $imgs_actuales = [];
+        }
+
+        $name_base = time();
+        $imagenes = $this->save_imgs( $this->input->post('imgs'), $id_anuncio, $name_base);
+        foreach ($imgs_actuales as $key => $value) {
+            if( !in_array($value, $imagenes) ){
+                if( file_exists( dirname(dirname(__DIR__))."/files/productos/".$id_anuncio."/".$value ) ){
+                    unlink( dirname(dirname(__DIR__))."/files/productos/".$id_anuncio."/".$value );
+                }
+            }
+        }
+
+        $datos = [
+            'titulo' => $this->input->post('titulo'),
+            'descripcion' => $this->input->post('descripcion'),
+            'precio_compra' => $this->input->post('precio_compra'),
+            'precio_reventa' => $this->input->post('precio_reventa'),
+            'precio_maximo' => $this->input->post('precio_maximo'),
+            'finalizacion ' => $this->input->post('finalizacion'),
+            'tiempo_puja' => $this->input->post('tiempo_puja'),
+            'inicio' => $this->input->post('inicio'),
+            'cierre' => $this->input->post('cierre'),
+            'existencia' => $this->input->post('existencia'),
+            'se_compra' => $this->input->post('se_compra'),
+            'precio_envio' => $this->input->post('precio_envio'),
+            'cantidad_fichas' => $this->input->post('cantidad_fichas'),
+            'img_principal' => $imagenes[$this->input->post("img_principal")],
+            'imgs' => json_encode($imagenes),
+        ];
+
+        $this->Anuncios_Model->updateAnuncio($id_anuncio, $datos);
+
+        print_r( json_encode( [$imagenes, $this->input->post("img_principal")] ) );
+
+    }
+
+    private function save_imgs($imgs, $id_anuncio, $name_base){
+        $imagenes = [];
+        if( is_array($imgs) && !empty($imgs) ){
+            foreach ($imgs as $key => $img) {
+                if( strpos($img, ".jpg") === false && strpos($img, ".png") === false ){
+                    $imagenes[ $key ] = subir_img_base64($img, "productos/".$id_anuncio, $name_base."_{$key}.png", [500, 300]);
+                }else{
+                    $imagenes[ $key ] = $img;
+                }
+            }
+        }
+        return $imagenes;
+    }
+
+
+    public function activo_inactivo($id_anuncio, $status){
+        $datos = [
+            'status' => $status
+        ];
+        $this->Anuncios_Model->updateAnuncio($id_anuncio, $datos);
+        print_r( json_encode( $datos ) );
+    }
+
+    public function delete($id){
+        $this->Anuncios_Model->delete($id);
+        print_r( json_encode( $this->input->post() ) );
+    }
+
+
+
+    //Vista de anuncio individual
+
+    public function anuncio($id_anuncio = NULL) {
+        $data["anuncio"] = (array) $this->Anuncios_Model->getAnuncio($id_anuncio)[0];
+
+        if($data['anuncio'] == "") {
+            redirect(base_url());
+            exit;
+        }
+
+        $data['meta'] = array(
+            array(
+                'name'      => 'description',
+                'content'   => ''.$data['anuncio']['titulo'].' | Pujas'
+            )
+        );
+
+        $data['title'] = $data['anuncio']['titulo'];
+        $data['contenido'] = 'anuncios/detalle';
+        $this->load->view('frontend/templates/plantilla', $data);
+
+        /*//Determinar si esta en favoritos
+
+        $data['favorito'] = false;
+
+        $id = $data['anuncio']['id_anuncio'];
+
+        if($this->session->userdata('user_id') != "")
+        {
+            $data['favorito'] = applib::check_favorito($id);
+        }
+
+        //Obtener anuncios relacionados por la categoria
+
+        $condition = array('a.categoria_id' => $data['anuncio']['categoria_id'],'a.status' => 1,'a.subcategoria_id' => $data['anuncio']['subcategoria_id'],'u.status' => 1);
+
+        $relacionados = $this->anuncios_model->get_all_relacionados($condition);
+
+        $data['relacionados'] = array();
+
+        if(count($relacionados) > 0)
+        {
+            $cantidad = count($relacionados) > 6?6:count($relacionados);
+
+            do {
+
+                $valor = array_rand($relacionados);
+
+                $arreglo = $relacionados[$valor];
+
+                array_push($data['relacionados'], $arreglo);
+
+                unset($relacionados[$valor]);
+                        
+
+            } while (count($data['relacionados']) < $cantidad);
+        }
+
+        
+
+        //Obtener anuncios del usuario
+
+        $data['otros_usuario'] = array();
+
+        if($data['anuncio']['premium'] == 1)
+        {
+            $condition = array('a.status' => 1,'a.user_id' => $data['anuncio']['user_id'],'u.status' => 1);
+
+            $data['otros_usuario'] = $this->anuncios_model->get_all_relacionados($condition);
+
+        }
+
+        //$data['cantidad_anuncio'] = applib::count_table_rows(applib::$anuncios_table,array('status' => 1,'user_id' => $data['anuncio']['user_id']));
+
+        $data['imagenes'] = applib::get_all('*',applib::$img_table,array('anuncio_id' => $id));
+
+        //Chequear visitas
+
+        $ip_user = $this->input->ip_address();
+
+        //$check_visita = applib::get_table_field(applib::$visitas_table,array('ip' => $ip_user,'anuncio_id' => $id), 'id_visita');
+
+        //if($check_visita == false)
+        //{
+        applib::create(applib::$visitas_table,array('anuncio_id' => $id, 'ip' => $ip_user, 'date' => applib::fecha()));
+
+        applib::update(array('id_anuncio' => $id),applib::$anuncios_table,array('visitas' => $data['anuncio']['visitas'] + 1));
+
+      $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
+        //}
+
+        $this->load->library('user_agent');
+
+
+        //Verificar chat
+
+        $chat = false;
+
+        if($this->session->userdata('user_id') != "")
+        {
+
+        }*/
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*    public function index($cate,$sub = NULL,$pag = NULL)
     {
     	if($cate == "")
     	{
@@ -446,114 +723,6 @@ class Anuncios extends CI_Controller {
         $this->load->view('frontend/templates/plantilla',$data);
     }
 
-    //Vista de anuncio individual
-
-    public function anuncio($seo = NULL)
-    {
-        $condition = array('u.status' => 1,'a.status' => 1,'a.seo' => $seo);
-
-        $data['anuncio'] = $this->anuncios_model->get_by($condition);
-
-        if($data['anuncio'] == "")
-        {
-            redirect(base_url());
-            exit;
-        }
-
-        //Determinar si esta en favoritos
-
-        $data['favorito'] = false;
-
-        $id = $data['anuncio']['id_anuncio'];
-
-        if($this->session->userdata('user_id') != "")
-        {
-            $data['favorito'] = applib::check_favorito($id);
-        }
-
-        //Obtener anuncios relacionados por la categoria
-
-        $condition = array('a.categoria_id' => $data['anuncio']['categoria_id'],'a.status' => 1,'a.subcategoria_id' => $data['anuncio']['subcategoria_id'],'u.status' => 1);
-
-        $relacionados = $this->anuncios_model->get_all_relacionados($condition);
-
-        $data['relacionados'] = array();
-
-        if(count($relacionados) > 0)
-        {
-            $cantidad = count($relacionados) > 6?6:count($relacionados);
-
-            do {
-
-                $valor = array_rand($relacionados);
-
-                $arreglo = $relacionados[$valor];
-
-                array_push($data['relacionados'], $arreglo);
-
-                unset($relacionados[$valor]);
-                        
-
-            } while (count($data['relacionados']) < $cantidad);
-        }
-
-        
-
-        //Obtener anuncios del usuario
-
-        $data['otros_usuario'] = array();
-
-        if($data['anuncio']['premium'] == 1)
-        {
-            $condition = array('a.status' => 1,'a.user_id' => $data['anuncio']['user_id'],'u.status' => 1);
-
-            $data['otros_usuario'] = $this->anuncios_model->get_all_relacionados($condition);
-
-        }
-
-        //$data['cantidad_anuncio'] = applib::count_table_rows(applib::$anuncios_table,array('status' => 1,'user_id' => $data['anuncio']['user_id']));
-
-        $data['imagenes'] = applib::get_all('*',applib::$img_table,array('anuncio_id' => $id));
-
-        //Chequear visitas
-
-        $ip_user = $this->input->ip_address();
-
-        //$check_visita = applib::get_table_field(applib::$visitas_table,array('ip' => $ip_user,'anuncio_id' => $id), 'id_visita');
-
-        //if($check_visita == false)
-        //{
-        applib::create(applib::$visitas_table,array('anuncio_id' => $id, 'ip' => $ip_user, 'date' => applib::fecha()));
-
-        applib::update(array('id_anuncio' => $id),applib::$anuncios_table,array('visitas' => $data['anuncio']['visitas'] + 1));
-
-      $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
-        //}
-
-        $this->load->library('user_agent');
-
-
-        //Verificar chat
-
-        $chat = false;
-
-        if($this->session->userdata('user_id') != "")
-        {
-
-        }
-
-        $data['meta'] = array(
-            array(
-                'name'      => 'description',
-                'content'   => ''.$data['anuncio']['titulo'].' | Pujas'
-            )
-        );
-
-        $data['title'] = $data['anuncio']['titulo'];
-        $data['contenido'] = 'anuncios/detalle';
-        $this->load->view('frontend/templates/plantilla',$data);
-    }
-
 
     ///Crear filtros
 
@@ -622,7 +791,7 @@ class Anuncios extends CI_Controller {
         $condition .= ($this->session->userdata('text_filtro') != "")?' AND (a.direccion LIKE "%'.$this->session->userdata('text_filtro').'%" OR titulo LIKE "%'.$this->session->userdata('text_filtro').'%" OR descripcion LIKE "%'.$this->session->userdata('text_filtro').'%")':'';
         
         return $condition;
-    }
+    }*/
 
     
 }

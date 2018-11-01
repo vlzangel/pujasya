@@ -7,59 +7,7 @@ class Index extends CI_Controller {
         applib::destroy_filters();
 
     }
-
- 
-    function index()
-    {        
-        $condition = array('u.premium' => 1,'a.status' => 1);
- 
-        $data['premium'] = applib::get_premium($condition,1000);
-
-        $cantidad = applib::get_all('*',applib::$anuncios_table,array('status !=' => 5));
-
-
-        //Extraer nuevos usuarios
-
-        $data['users'] = applib::get_all('*',applib::$users_table,array('status' => 1,'name !=' => null,'nickname !=' => null,'seo !=' => null,'mostrar_perfil' => 1),'id_user DESC','18,0');
-
-        $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
-
-        $data['meta'] = array(
-            array(
-                'name' => 'description', 
-                'content' => 'Cordoba Vende, Autos y Otros, Hogar y Muebles, Deportes y Fitness, Consolas y Videojuegos, Motos y Otros, Inmuebles, Camionetas, Clasificados Gratis, Villa General Belgrano, Interior Cordoba'
-            )
-        );
-        $data['title'] = 'Pujas';
-        $data['contenido'] = 'index/index';
-        $this->load->view('frontend/templates/plantilla',$data);
-    }
-
-    function bidlist() {        
-        $condition = array('u.premium' => 1,'a.status' => 1);
- 
-        $data['premium'] = applib::get_premium($condition,1000);
-
-        $cantidad = applib::get_all('*',applib::$anuncios_table,array('status !=' => 5));
-
-
-        //Extraer nuevos usuarios
-
-        $data['users'] = applib::get_all('*',applib::$users_table,array('status' => 1,'name !=' => null,'nickname !=' => null,'seo !=' => null,'mostrar_perfil' => 1),'id_user DESC','18,0');
-
-        $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
-
-        $data['meta'] = array(
-            array(
-                'name' => 'description', 
-                'content' => 'Cordoba Vende, Autos y Otros, Hogar y Muebles, Deportes y Fitness, Consolas y Videojuegos, Motos y Otros, Inmuebles, Camionetas, Clasificados Gratis, Villa General Belgrano, Interior Cordoba'
-            )
-        );
-        $data['title'] = 'Pujas';
-        $data['contenido'] = 'index/bidlist';
-        $this->load->view('frontend/templates/plantilla',$data);
-    }
-
+    
     function terminos_y_condiciones()
     {      $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
         $data['meta'] = array(

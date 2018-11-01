@@ -31,3 +31,13 @@
 	    background-color: #e18124 !important;
 	    border-color: #e18124 !important;
 	}
+
+	.btn-inact {
+	  	background-color: #E5E5E5 !important;
+	  	border: 1px solid #DBDBDB !important;
+	  	color: black !important;
+	}
+
+	.tab-form-fich h6 {
+	    font-size: 11px;
+	}

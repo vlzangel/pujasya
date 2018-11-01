@@ -52,7 +52,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $route['default_controller'] = 'search/grid';
 
-$route['bidlist'] = 'index/bidlist';
 $route['404_override'] = 'Custom_404';
 $route['translate_uri_dashes'] = FALSE;
 
@@ -61,7 +60,7 @@ $route['terminos_y_condiciones'] = 'index/terminos_y_condiciones';
 $route['preguntas_frecuentes'] = 'index/preguntas_frecuentes';
 $route['contacta'] = 'index/contacta';
 $route['comprarfichas'] = 'cuenta/comprarfichas';
-$route['comprarproducto'] = 'cuenta/comprarproducto';
+$route['comprarproducto/(:any)'] = 'cuenta/comprarproducto/$1';
 
 //Route para perfil empresa
 
@@ -84,5 +83,13 @@ $route['busqueda/(:any)/(:any)/(:num)'] = 'anuncios/busqueda/$1/$2/$3';
 //Route para registro
 
 $route['registro'] = 'ingresar/registro';
+
+/* Administrador */
+
+	$route['admin'] = 'Login_admin/login';
+	$route['admin/logear'] = 'Login_admin/logear';
+	$route['administrador'] = 'Administrador/home';
+
+
 
 

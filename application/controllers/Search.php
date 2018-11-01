@@ -4,31 +4,32 @@ class Search extends CI_Controller {
   
     public function __construct(){
         parent::__construct();
-        applib::destroy_filters();
+        $this->load->model('Search_model');
     }
 
     private function getOrderBy($ordenBy){
         $orden = [
             null,
-            "a.id_anuncio DESC",
-            "a.costo ASC",
-            "a.costo DESC"
+            ["id", "DESC"],
+            ["precio_puja", "ASC"],
+            ["precio_puja", "DESC"]
         ];
         return $orden[ $ordenBy ];
     }
 
     private function getProduts($status = null, $orderBy = null){
-        $status = ( $status != null ) ? $status : 1;
+        $status = ( $status != null ) ? $status : 'activa';
         $orderByStr = ( $orderBy != null ) ? $this->getOrderBy($orderBy) : null;
-        $condition = array('u.premium' => 1,'a.status' => $status);
+
+        $conditions = [
+            'status' => $status
+        ];
 
         $data['status'] = $status;
         $data['orderBy'] = $orderBy;
 
-        $data['premium'] = applib::get_premium($condition, 1000, $orderByStr);
+        $data['premium'] = $this->Search_model->get_productos($conditions, $orderByStr);
 
-        // $cantidad = applib::get_all('*', applib::$anuncios_table,array('status !=' => 5));
-        
         //Extraer nuevos usuarios
         $data['users'] = applib::get_all('*',applib::$users_table,array('status' => 1,'name !=' => null,'nickname !=' => null,'seo !=' => null,'mostrar_perfil' => 1),'id_user DESC','18,0');
         $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
@@ -46,6 +47,11 @@ class Search extends CI_Controller {
     function grid($status = null, $orderBy = null) {
         $data = $this->getProduts($status, $orderBy);
         $data['contenido'] = 'index/index';
+
+        /*echo "<pre>";
+            print_r( $data );
+        echo "</pre>";*/
+
         $this->load->view('frontend/templates/plantilla',$data);
     }
 

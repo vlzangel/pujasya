@@ -22,8 +22,8 @@
                     <div class="col-md-4 col-sm-4 col-xs-12 plr-2 ctr">
                         <div class="row">
                             <div class="col-md-3 splr text-center">
-                                <?php $imagen = $p['imagen'] == NULL?'no-image.jpg':$p['imagen'] ?>
-                                <a class="atitle" href="<?= base_url('anuncio/'.$p['seo'])?>" title="<?= $p['titulo']?>"><img class="imgmin" src="<?= base_url()?>public/uploads/anuncios/thumb/<?= $imagen?>" alt=""></a>
+                                <?php $imagen = ( $p['img_principal'] == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$p['id_anuncio'].'/'.$p['img_principal'] ?>
+                                <a class="atitle" href="<?= base_url('anuncio/'.$p['id_anuncio'])?>" title="<?= $p['titulo'] ?>"><img class="imgmin" src="<?= $imagen ?>" alt=""></a>
                             </div>
                             <div class="col-md-1 text-center">
                                 <span id="favoritos_span_<?= $p['id_anuncio']?>">
@@ -31,13 +31,13 @@
                                 </span>
                             </div>
                             <div class="col-md-8 pt-20">
-                                <a class="atitle" href="<?= base_url('anuncio/'.$p['seo'])?>" title="<?= $p['titulo']?>">
+                                <a class="atitle" href="<?= base_url('anuncio/'.$p['id_anuncio'])?>" title="<?= $p['titulo'] ?>">
                                     <?= applib::titulo(substr($p['titulo'], 0,23))?><?= (strlen($p['titulo']) > 23) ? '...' : '' ?>
                                 </a>
-                                <p class="mb-0">Tiempo de Subasta 15s</p> 
+                                <p class="mb-0">Tiempo de Subasta <?= $p['tiempo_puja'] ?>s</p> 
                                 <div class=" text-right cfichas">
                                     <span>
-                                        10 x <i class="fa fa-certificate"></i>
+                                        <?= $p['cantidad_fichas'] ?> x <i class="fa fa-certificate"></i>
                                     </span>
                                 </div>
                             </div>
@@ -49,11 +49,15 @@
                             <div class="row" style="">
                                 <div class="col-md-4 col-sm-4 col-xs-6 co1-co2">
                                     <h6 class="lbl1">Precio de Puja</h6>
-                                    <h2 class="lbl2">0.50€</h2>
+                                    <h2 class="lbl2"><?= number_format($p['precio_puja'], 2, '.', ',') ?>€</h2>
                                 </div>
                                 <div class="col-md-4 col-sm-4 tempmin col-xs-6 co1-co2">
                                     <h5 class="timer timerfin">00:00:00</h5>
-                                    <h5 class="usuariop">Richard2911</h5>
+                                    <?php
+                                        if( $p["ult_puja_user"] != "" ){
+                                            echo '<h5 class="usuariop">'.$p["ult_puja_user"].'</h5>';
+                                        }
+                                    ?>  
                                 </div>
                                 <div class="col-md-1 col-sm-1 col-xs-4 co4" >
                                     <button class="btn btnatt2" >
@@ -71,8 +75,50 @@
 
                     <div class="col-md-4 col-sm-4 col-xs-12 plr-2">
                         <div class="well well2 text-center">
-                            <div class="row">
-                                <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
+                            <div class="row"> <?php 
+                                if( $p["se_compra"] == 1 ){ ?>
+                                    <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
+                                        <h6 class="lbl1">Comprar Ahora</h6>
+                                        <h2 class="lbl2"><?= number_format($p['precio_compra']-$p["precio_puja"], 2, '.', ',') ?>€</h2>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-6 co1-co2">
+                                        <h5 class="lbl3">El precio disminuye a medida que pujas</h5>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12 co3"> <?php 
+                                        if( $this->session->userdata('user_id') != "" ): ?>
+                                            <button class="btn btnatt" data-toggle="modal" data-target="#info-compra">
+                                                <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                COMPRAR
+                                            </button> <?php 
+                                        else: ?>
+                                            <button class="btn btnatt" onclick="window.location='<?= base_url('ingresar')?>'">
+                                                <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                COMPRAR
+                                            </button> <?php 
+                                        endif ?>
+                                    </div> <?php 
+                                }else{ ?>
+                                    <div class="col-md-9 col-sm-5 col-xs-6 co1-co2">
+                                        <h5 class="lbl3">Compra no disponible</h5>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12 co3"> <?php 
+                                        $activa_compra = "btn-inact";
+                                        if( $this->session->userdata('user_id') != "" ): ?>
+                                            <button class="btn btnatt <?= $activa_compra ?>">
+                                                <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                COMPRAR
+                                            </button> <?php 
+                                        else: ?>
+                                            <button class="btn btnatt <?= $activa_compra ?>" onclick="window.location='<?= base_url('ingresar')?>'">
+                                                <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                COMPRAR
+                                            </button> <?php 
+                                        endif ?>
+                                    </div> <?php 
+                                } ?>
+
+
+                                <!-- <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
                                     <h6 class="lbl1">Comprar Ahora</h6>
                                     <h2 class="lbl2">150€</h2>
                                 </div>
@@ -84,7 +130,10 @@
                                         <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
                                         COMPRAR
                                     </button>
-                                </div>
+                                </div> -->
+
+
+
                                 <!-- <div class="col-md-1 col-sm-3 col-xs-4 co4">
                                 <button class="btn btnatt2">
                                 <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/balance.png?v0" alt=""></button>

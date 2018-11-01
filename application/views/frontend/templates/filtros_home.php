@@ -6,9 +6,9 @@
                 Anuncios de <?= $premium[0]['usuario'] ?> 
                 <?= $premium[0]['premium'] == 1?' | <i class="fa fa-bullseye" style="margin-right: 6px;"></i>PREMIUM': '';
             else: $status_show = ( isset($status) ) ? $status: 1; ?>
-                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == 1) ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/grid/1">pujas en vivo</a>
-                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == 0) ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/grid/0">próximas pujas</a>
-                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == 2) ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/grid/2">pujas cerradas</a>
+                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "activa") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/activa/<?= $orderBy+0 ?>">pujas en vivo</a>
+                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "ganada") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/ganada/<?= $orderBy+0 ?>">próximas pujas</a>
+                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "cerrada") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/cerrada/<?= $orderBy+0 ?>">pujas cerradas</a>
                 <a class="btn btn-primary ocultar2 btn-inactivos" href="#" >pujas favoritas</a>
                 <a class="btn btn-primary ocultar2 btn-inactivos" href="#" >pujas ganadas</a>
                 <!-- <a class="btn btn-primary ocultar2" href="/#" style="padding: 3px 5px !important; height: 28px; font-size: 12px;  margin-top: -2px; text-transform: inherit; letter-spacing: 0px; font-weight: 600; background: #d0d0d0 !important; color: black; border: 1px solid #a0a0a0;">shop</a> --><?php 

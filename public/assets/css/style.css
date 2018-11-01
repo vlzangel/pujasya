@@ -20,6 +20,7 @@
 /* ––––––––––––––––––––––––––––––––––––––––––––– */
 /* ––––––––––––––>>> Components  <<<–––––––––––– */
 /* ––––––––––––––––––––––––––––––––––––––––––––– */
+
 .lnr {
   font-weight: bold;
 }
@@ -2772,14 +2773,14 @@ background-color: #e4e4e4;
   background-color: #F8062CFF;
 }
 
-   .content-card .timerlistm .usuariop {
-      font-size: 10px;
-  }
+.content-card .timerlistm .usuariop {
+  font-size: 10px;
+}
 
-  .content-card .timerlistm .timer {
-    font-size: 12px;
+.content-card .timerlistm .timer {
+  font-size: 12px;
+}
 
-  }
 
 
 @media (max-width: 992px) {
@@ -2891,7 +2892,4 @@ background-color: #e4e4e4;
 
   }
 
-
-
 }
-

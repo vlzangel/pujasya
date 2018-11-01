@@ -1,38 +1,115 @@
- </section>
-    </section>
-  </section>
-  <script src="<?= base_url()?>public/admin/js/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="<?= base_url()?>public/admin/js/bootstrap.js"></script>
-  <!-- App -->
-  <script src="<?= base_url()?>public/admin/js/app.js"></script>
-  <script src="<?= base_url()?>public/admin/js/slimscroll/jquery.slimscroll.min.js"></script>
-  <script src="<?= base_url()?>public/admin/js/app.plugin.js"></script>
 
-  <!--DATATABLES-->
+            </div>
+            <!-- /.container-fluid -->
 
-  <script src="<?= base_url()?>public/admin/js/datatables/jquery.dataTables.min.js"></script>
+        </div>
+        <!-- /#page-wrapper -->
 
+    </div>
+    <!-- /#wrapper -->
+    
 
-  <?php if($contenido == 'articles/articles_add'):?>
-  <!-- file input -->
-  <script src="<?= base_url()?>public/admin/js/file-input/bootstrap-filestyle.min.js"></script>
-  <!-- wysiwyg -->
-  <script src="<?= base_url()?>public/admin/js/wysiwyg/jquery.hotkeys.js"></script>
-  <script src="<?= base_url()?>public/admin/js/wysiwyg/bootstrap-wysiwyg.js"></script>
-  <script src="<?= base_url()?>public/admin/js/wysiwyg/demo.js"></script>
-  <!-- markdown -->
-  <script src="<?= base_url()?>public/admin/js/markdown/epiceditor.min.js"></script>
-  <script src="<?= base_url()?>public/admin/js/markdown/demo.js"></script>
+    	<div class="modal fade" id="modalReportar">
+                    
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">×</button>
+						
+                        <div class="page-heder">
+                            <h3 class="text-center">Reportar Duda</h3>    
+                            <hr>
+                        </div>
 
-  <?php endif ?>
+                        <form method="post" id="niggling">
+                            <div class="form-body">
+                                <div class="row">
+                                    <input type="hidden" name="niggling_user" value="<?= $_SESSION['id_vendor'];?>">
 
-  <script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Asunto</label>
+                                            <input type="text" name="niggling_subject" class="form-control"  id="niggling_subject" data-validation="required" data-validation-error-msg="El campo es requerido">
+                                        </div>
+                                    </div>
 
-  <script>var base_url = "<?= base_url()?>";</script>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Mensaje</label>
+                                            <textarea name="niggling_message" class="form-control"  id="niggling_message" rows="5" data-validation="required" data-validation-error-msg="El campo es requerido"></textarea>
+                                        </div>
+                                    </div>
 
-  <script src="<?= base_url()?>public/admin/js/functions-admin.js"></script>
+                                    <div class="col-md-12">
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Cerrar</button>
+                                            <button type="submit" class="btn btn-danger waves-effect waves-light">Enviar Mensaje</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                        </form>
+                    </div>
+                </div>
 
+<!-- jQuery -->
+<script src="<?= base_url() ?>public/admin/plugins/bower_components/jquery/dist/jquery.min.js"></script>
 
-</body>
-</html>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+
+<script>
+    $.validate({
+      lang : 'es'
+    });
+
+    $(document).ready(function() {
+
+        
+        $('form#niggling').on('submit', function(ev){
+            
+            ev.preventDefault();
+            ev.stopPropagation();
+            
+           $.ajax({
+                method: "POST",
+                url: "<?= base_url();?>Nigglings/create",
+                data: new FormData(this),
+                processData : false,
+                contentType : false,
+                type: 'json'
+            })
+              .done(function(data) {
+                info = $.parseJSON(data);
+                
+                if (info.type == 'success') {
+                    $('form#niggling')[0].reset();
+                    $('button.close').click();
+                    
+                    swal({
+                        title: info.message,
+                        text: "Hemos recibido tu mensaje, pronto te responderemos!",
+                        icon: "success",
+                        button: "ok",
+                    });
+                }else{
+                    swal({
+                        title: info.message,
+                        text: "Por favor intenta nuevamente",
+                        icon: "error",
+                        button: "ok",
+                    });
+                }
+                setTimeout(redirect,1000);
+              });
+
+        });
+
+    });
+
+    function redirect ()
+    {
+        window.location.href = '<?= base_url('dudasVendedor')?>';
+    }
+
+</script>

@@ -5,22 +5,6 @@
 <html lang="es" dir="ltr" class="no-js">
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <head>
-<script charset="UTF-8" src="//cdn.sendpulse.com/28edd3380a1c17cf65b137fe96516659/js/push/153d101f4c00f643017fea52a255a35f_1.js" async></script>
-
-
-<script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '319478381817162');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
-/></noscript>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,9 +34,8 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
     <?php $imagen = (isset($imagenes[0]['name']) AND $imagenes[0]['name'] != NULL)?$imagenes[0]['name']:'no-image.jpg'?>
         <meta property="og:url"           content="<?= base_url('anuncio/'.$anuncio['seo'])?>" />
         <meta property="og:type"          content="website" />
-        <meta property="og:title"         content="Clasificados PujasYA: <?= $anuncio['titulo']?> (<?php if($anuncio['costo'] == 0){ echo "PUJAR"; }else { echo $anuncio['moneda'] == 1?ARS:USD; echo ' '.applib::format_costo($anuncio['costo']); }?>)" />
+        <meta property="og:title"         content="PujasYA: <?= $anuncio['titulo']?> (<?php if($anuncio['costo'] == 0){ echo "PUJAR"; }else { echo $anuncio['moneda'] == 1?ARS:USD; echo ' '.applib::format_costo($anuncio['costo']); }?>)" />
         <meta property="og:description"   content="<?= $anuncio['descripcion']?>" />
-
         <meta property="og:image"         content="<?= base_url()?>public/uploads/anuncios/<?= $imagen?>" />
     <?php endif ?>
 
@@ -60,14 +43,15 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
     <?php $imagen = (isset($imagenes[0]['name']) AND $imagenes[0]['name'] != NULL)?$imagenes[0]['name']:'no-image.jpg'?>
         <meta property="og:url"           content="<?= base_url()?>" />
         <meta property="og:type"          content="website" />
-        <meta property="og:title"         content="Clasificados Gratis | Autos, Propiedades y más" />
-        <meta property="og:description"   content="Vendé o Comprá gratis en pujasya.com | Fácil, rápido e intuitivo" />
-
-        <meta property="og:image"         content="<?= base_url()?>public/assets/images/clasificados_cordoba_gratis1.jpg" />
+        <meta property="og:title"         content="PujasYa.com | " />
+        <meta property="og:description"   content="La Plataforma Online Gratis, donde puedes Pujar de forma Rápida, Fácil y Segura." />
+        <meta property="og:image"         content="<?= base_url()?>public/assets/images/pujasya_subastas_online.jpg" />
     <?php endif ?>
 
-   
-
+    <script src="<?= base_url()?>public/assets/js/jquery-1.12.3.min.js"></script>
+    <script>
+      var HOME = "<?= base_url()?>";
+    </script>
 </head>
 
 <body id="body" class="wide-layout preloader-active">
@@ -129,7 +113,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
                                   <ul class="submenu">
                                   	 
                                     <li><a href="<?= base_url('perfil')?>">Mi Perfil</a></li>
-                                    <li><a href="<?= base_url('cuenta/favoritos')?>"">Mis Favoritos</a></li>
+                                    <li><a href="<?= base_url('cuenta/favoritos')?>">Mis Favoritos</a></li>
                                     <li><a href="<?= base_url('cuenta/mispujas')?>">Mis Pujas</a></li>
                                     <li><a href="<?= base_url('cuenta/misautopujas')?>">Mis Autopujas</a></li>
                                     <li><a href="<?= base_url('cuenta/miscompras')?>">Mis Compras</a></li>
@@ -138,7 +122,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
                                     <li><a href="<?= base_url('ingresar/salir')?>">Salir</a></li>
                                   </ul>
                                 </li>
-                                 <li style="color: white;">Tienes <span style="color:orange">0</span> Fichas</li>
+                                 <li style="color: white;">Tienes <span style="color:orange"><?= $user['fichas']?></span> Fichas</li>
                                 
                                  <!-- <li><a href="<?= base_url('registro')?>">Tienes <span style="color:orange">0</span> Fichas</a></li> -->
                                  <li>
@@ -204,9 +188,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
       </div>
       <div class="modal-body text-justify">
         <div class="row mlr-0">
-          <h3 class="modal-title bold1 mb-10">SAMSUNG GALAXY EDGE</h3>
-          
-       
+          <h3 class="modal-title bold1 mb-10" id="producto_titulo">SAMSUNG GALAXY EDGE</h3>
           <div class="col-md-3 col-sm-3 col-xs-12">
               <img class="img-responsive" src="<?= base_url()?>public/uploads/anuncios/thumb/1.jpg?v1" alt="">
           </div>
@@ -218,7 +200,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
                 <p class="p1 bold1">Precio de Compra:</p>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                  <p class="p1">1000€</p>
+                  <p class="p1"><span id="producto_precio"></span>€</p>
                 </div>
               </div>
 
@@ -227,7 +209,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
                 <p class="p1 bold1">Precio Descuento de Puja:</p>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                  <p class="p1">- 0.50€</p>
+                  <p class="p1">- <span id="producto_puja"></span>€</p>
                 </div>
               </div>
 
@@ -236,7 +218,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
                 <p class="p1 bold1">Envío y Manejo:</p>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                  <p class="p1">+ 0.20€</p>
+                  <p class="p1">+ <span id="producto_envio"></span>€</p>
                 </div>
               </div>
 
@@ -245,7 +227,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
                   <h5 class="bold1">Total a Pagar</h5>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                  <h5 class="bold1">999,7€</h5>
+                  <h5 class="bold1"><span id="producto_final"></span>€</h5>
                 </div>
               </div>
               
@@ -255,7 +237,7 @@ src="https://www.facebook.com/tr?id=319478381817162&ev=PageView&noscript=1"
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-inact" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" onclick="window.location='<?= base_url('comprarproducto')?>'">Comprar Ahora</button>
+        <button id="btn_comprar_modal" type="button" class="btn btn-primary" data-id="" onclick="comprarProducto( jQuery(this) )">Comprar Ahora</button>
       </div>
     </div>
   </div>

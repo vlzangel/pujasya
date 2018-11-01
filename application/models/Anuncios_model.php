@@ -8,8 +8,45 @@ class Anuncios_model extends CI_Model {
         parent::__construct();
     }
 
-    function get_all($condition)
-    {
+    function get_list(){
+        $this->db->select('*');
+        $this->db->from('anuncios');
+        $this->db->order_by('id_anuncio','DESC');
+        $query = $this->db->get();
+        return ($query) ? $query->result() : false;
+    }
+
+    function updateStatus($id_anuncio, $status){
+        $this->db->where('id_anuncio', $id_anuncio);
+        $this->db->update('anuncios', ["status" => $status]);
+    }
+
+    function getAnuncio($id_anuncio){
+        $this->db->select('*');
+        $this->db->from('anuncios');
+        $this->db->where('id_anuncio', $id_anuncio);
+        $query = $this->db->get();
+        return ($query) ? $query->result() : false;
+    }
+
+    function saveAnuncio($data){
+        $this->db->insert('anuncios', $data);
+    }
+
+    function updateAnuncio($id_anuncio, $data){
+        $this->db->where('id_anuncio', $id_anuncio);
+        $this->db->update('anuncios', $data);
+    }
+        
+    function delete($id){
+        $this->db->where('id_anuncio', $id);
+        $this->db->delete('anuncios');
+    }
+
+
+    /* Viejos */
+
+    function get_all($condition){
         $this->db->select('a.*,u.name as usuario, c.name as categoria,u.seo as seo_user,u.mostrar_perfil,u.premium,
         (SELECT name FROM vv_img_anuncios as img WHERE img.anuncio_id = a.id_anuncio AND img.order = 1) as imagen');
         $this->db->from($this->table.' as a');
@@ -68,93 +105,15 @@ class Anuncios_model extends CI_Model {
         return ($query)?$query->row_array():false;
     }
 
-    function save($data = array(),$imagenes = array())
-    {
-        //BEGIN TRANSACTION
-
-        $this->db->trans_start();
-
-        //$this->db->trans_begin();
-
-        //Insertar en tabla de anuncios
-
-        $this->db->insert($this->table, $data);
-
-        $id = $this->db->insert_id();
-
-        //insertar imagenes
-
-        $cantImg = count($imagenes);
-
-        if($cantImg > 0)
-        {
-            $feat = 1;
-
-            for ($i=0; $i < $cantImg; $i++) 
-            { 
-               $imagen = array('anuncio_id' => $id, 'name_thumb' => $imagenes[$i], 'name' => $imagenes[$i], 'order' => $feat);
-
-               $this->db->insert('vv_img_anuncios', $imagen);
-
-               $feat = 0;
-            }
-        }
-
-        //END OF TRANSACTION
-
-        $this->db->trans_complete();
-
-        //VALIDATE TRANSACTION
-
-        return $this->db->trans_status() === FALSE?false:$id; 
+    function save($data = array(),$imagenes = array()){
     }
 
-    function edit($data = array(),$imagenes = array(),$id)
-    {
-        //BEGIN TRANSACTION
-
-        $this->db->trans_start();
-
-        //$this->db->trans_begin();
-
-        //Editar en tabla de anuncios
-
-        $this->db->where('id_anuncio',$id);
-
-        $this->db->update($this->table, $data);
-
-        //insertar imagenes
-
-        $cantImg = count($imagenes);
-
-        if($cantImg > 0)
-        {
-            $order = applib::get_field(applib::$img_table,array('anuncio_id' => $id,'order' => 1),'id_imagen');
-
-            $feat = $order != ""?'0':1;
-
-            for ($i=0; $i < $cantImg; $i++) 
-            { 
-               $imagen = array('anuncio_id' => $id, 'name_thumb' => $imagenes[$i], 'name' => $imagenes[$i], 'order' => $feat);
-
-               $this->db->insert('vv_img_anuncios', $imagen);
-
-               $feat = 0;
-            }
-        }
-
-        //END OF TRANSACTION
-
-        $this->db->trans_complete();
-
-        //VALIDATE TRANSACTION
-
-        return $this->db->trans_status() === FALSE?false:true; 
+    function edit($data = array(),$imagenes = array(),$id){
+        
     }
 
 
-    function get_all_listado($condition,$paginas,$order_by = NULL)
-    {
+    function get_all_listado($condition, $paginas, $order_by = NULL){
         $this->db->select('a.*,u.name as usuario,u.nickname, c.name as categoria,
             u.seo as seo_user,u.mostrar_perfil,l.localidad as ciudad,u.imagen as img_perfil,u.premium,p.provincia,u.mostrar_email,u.email,u.telefono_fijo,
             u.telefono_movil,u.poblacion_id as ciudad_user,u.provincia_id as provincia_user,
@@ -173,8 +132,7 @@ class Anuncios_model extends CI_Model {
         return ($query)?$query->result_array():false;
     }
 
-    function get_count_listado($condition)
-    {
+    function get_count_listado($condition){
         $this->db->select('a.*,u.name as usuario,u.nickname, c.name as categoria,u.mostrar_perfil,l.localidad as ciudad,u.premium,u.poblacion_id as ciudad_user,u.provincia_id as provincia_user');
         $this->db->from($this->table.' as a');
         $this->db->join('vv_categorias as c','c.id_categoria = a.categoria_id','left');
@@ -187,8 +145,7 @@ class Anuncios_model extends CI_Model {
         return ($query)?$query->num_rows():0;
     }
 
-    function get_all_cuantos($condition)
-    {
+    function get_all_cuantos($condition){
         $this->db->select('a.*,u.name as usuario,u.nickname, c.name as categoria,u.mostrar_perfil,l.localidad as ciudad,u.premium,u.poblacion_id as ciudad_user,u.provincia_id as provincia_user');
         $this->db->from($this->table.' as a');
         $this->db->join('vv_categorias as c','c.id_categoria = a.categoria_id','left');
@@ -201,8 +158,7 @@ class Anuncios_model extends CI_Model {
         return ($query)?$query->result_array():0;
     }
 
-    function get_all_premium($condition,$order_by = NULL)
-    {
+    function get_all_premium($condition,$order_by = NULL){
         $this->db->select('a.*,u.name as usuario, u.nickname, c.name as categoria,u.seo as seo_user,u.mostrar_perfil,l.localidad as ciudad,u.imagen as img_perfil,u.premium,u.poblacion_id as ciudad_user,u.provincia_id as provincia_user,
         (SELECT name FROM vv_img_anuncios as img WHERE img.anuncio_id = a.id_anuncio AND img.order = 1) as imagen');
         $this->db->from($this->table.' as a');
@@ -217,8 +173,7 @@ class Anuncios_model extends CI_Model {
         return ($query)?$query->result_array():false;
     }
 
-    function get_suma_visitas($condition)
-    {
+    function get_suma_visitas($condition){
         $this->db->select('(SELECT SUM(a.visitas) FROM '.$this->table.' as a WHERE a.user_id = u.id_user AND a.status = 1)  as total');
         $this->db->from($this->table.' as a');
         $this->db->join('vv_users as u','u.id_user = a.user_id','left');
@@ -228,8 +183,7 @@ class Anuncios_model extends CI_Model {
         return ($query)?$query->row_array():false;
     }
 
-    function get_mas_visitados($condition,$paginas,$order_by = NULL)
-    {
+    function get_mas_visitados($condition,$paginas,$order_by = NULL){
         $this->db->select('a.*,
         (SELECT name FROM vv_img_anuncios as img WHERE img.anuncio_id = a.id_anuncio AND img.order = 1) as imagen');
         $this->db->from($this->table.' as a');

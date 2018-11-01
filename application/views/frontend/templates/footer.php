@@ -69,8 +69,6 @@
         <i class="fa fa-angle-up" aria-hidden="true"></i>
     </div>
 
-    <script src="<?= base_url()?>public/assets/js/jquery-1.12.3.min.js"></script>
-
     <script src="<?= base_url()?>public/assets/js/bootstrap.min.js"></script>
 
     <script src="<?= base_url()?>public/assets/vendors/modernizr/modernizr-2.6.2.min.js"></script>
