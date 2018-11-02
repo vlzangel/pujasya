@@ -188,9 +188,9 @@
       </div>
       <div class="modal-body text-justify">
         <div class="row mlr-0">
-          <h3 class="modal-title bold1 mb-10" id="producto_titulo">SAMSUNG GALAXY EDGE</h3>
+          <h3 class="modal-title bold1 mb-10" id="producto_titulo"></h3>
           <div class="col-md-3 col-sm-3 col-xs-12">
-              <img class="img-responsive" src="<?= base_url()?>public/uploads/anuncios/thumb/1.jpg?v1" alt="">
+              <img id="producto_img" class="img-responsive" />
           </div>
 
           <div class="col-md-9 col-sm-9 col-xs-12 ">

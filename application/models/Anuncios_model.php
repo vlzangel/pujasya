@@ -43,6 +43,21 @@ class Anuncios_model extends CI_Model {
         $this->db->delete('anuncios');
     }
 
+    function saveCompraProducto($data){
+        $this->db->insert('compras_productos', $data);
+
+        /*
+        $this->db->select('*');
+        $this->db->from('vv_users');
+        $this->db->where('id_user', $data["user"]);
+        $query = $this->db->get();
+        $user = $query->result()[0];
+
+        $this->db->where('id_user', $data["user"]);
+        $this->db->update('vv_users', ["fichas" => ($user->fichas+$fichas) ]);
+        */
+    }
+
 
     /* Viejos */
 

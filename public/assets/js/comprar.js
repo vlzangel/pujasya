@@ -10,6 +10,9 @@ jQuery(document).ready(function() {
     	jQuery("#info-compra #producto_envio").html( envio );
     	jQuery("#info-compra #producto_final").html( (precio-puja)+envio );
     	jQuery("#info-compra #btn_comprar_modal").attr( "data-id", jQuery(this).attr("data-id") );
+
+        jQuery("#info-compra #producto_img").attr( "src", HOME+"files/productos/"+jQuery(this).attr("data-img") );
+
     	jQuery('#info-compra').modal('show');
     });
 

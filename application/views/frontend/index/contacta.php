@@ -48,7 +48,7 @@
                                     </div>
                                      <div class="alert alert-danger alertas" style="display:none;" id="no_mensaje">¡Debes colocar tu mensaje!</div>
                                     <div>
-                                       <div class="g-recaptcha" data-sitekey="6Lf2Wm8UAAAAAE3eWz2T0DJfHACImgPRkR4aCj37"></div>
+                                       <div class="g-recaptcha" data-sitekey="6Le5hHUUAAAAAGvMisaCzbS_-e2N0jzZVgV_V9r3"></div>
                                     </div>
                                      <div class="alert alert-danger alertas" style="display:none;" id="no_recaptcha">¡Recaptcha Incorrecto!</div>
 

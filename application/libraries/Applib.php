@@ -467,25 +467,16 @@ class AppLib {
 
     //Chequear favorito
 
-    static function check_favorito($id_anuncio)
-    {
-        if(self::$code->session->userdata('user_id') != "")
-        {
+    static function check_favorito($id_anuncio){
+        if(self::$code->session->userdata('user_id') != ""){
             $condition = array('user_id' => self::$code->session->userdata('user_id'),'anuncio_id' => $id_anuncio);
-
-            $check = self::get_table_field(self::$favoritos_table,$condition,'id_favorito');
-
-            if($check != "")
-            {
+            $check = self::get_table_field(self::$favoritos_table, $condition, 'id_favorito');
+            if($check != ""){
                 return true;
-            }
-            else
-            {
+            }else{
                 return false;
             }
-        }
-        else
-        {
+        }else{
             return false;
         }
     }

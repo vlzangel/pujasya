@@ -26,8 +26,12 @@
                                 <a class="atitle" href="<?= base_url('anuncio/'.$p['id_anuncio'])?>" title="<?= $p['titulo'] ?>"><img class="imgmin" src="<?= $imagen ?>" alt=""></a>
                             </div>
                             <div class="col-md-1 text-center">
-                                <span id="favoritos_span_<?= $p['id_anuncio']?>">
-                                    <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a>
+                                <span id="favoritos_span_<?= $p['id_anuncio']?>"><?php
+                                    if( in_array($p['id_anuncio'], $favoritos) ){ ?>
+                                        <a href="http://localhost/pujasya/cuenta/favoritos" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a> <?php
+                                    }else{ ?>
+                                        <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a> <?php
+                                    } ?>
                                 </span>
                             </div>
                             <div class="col-md-8 pt-20">
@@ -86,7 +90,19 @@
                                     </div>
                                     <div class="col-md-3 col-sm-3 col-xs-12 co3"> <?php 
                                         if( $this->session->userdata('user_id') != "" ): ?>
-                                            <button class="btn btnatt" data-toggle="modal" data-target="#info-compra">
+                                            <button 
+                                                class="btn btnatt producto" 
+                                                <?php /*
+                                                data-toggle="modal" 
+                                                data-target="#info-compra"
+                                                */ ?>
+                                                data-id="<?= $p['id_anuncio']?>"
+                                                data-precio="<?= ($p['precio_compra']) ?>"
+                                                data-puja="<?= $p['precio_puja'] ?>"
+                                                data-envio="<?= $p['precio_envio'] ?>"
+                                                data-titulo="<?= $p['titulo'] ?>"
+                                                data-img="<?= $p['id_anuncio'].'/'.$p['img_principal'] ?>"
+                                            >
                                                 <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
                                                 COMPRAR
                                             </button> <?php 
@@ -116,28 +132,6 @@
                                         endif ?>
                                     </div> <?php 
                                 } ?>
-
-
-                                <!-- <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
-                                    <h6 class="lbl1">Comprar Ahora</h6>
-                                    <h2 class="lbl2">150€</h2>
-                                </div>
-                                <div class="col-md-5 col-sm-5 col-xs-6 co1-co2">
-                                    <h5 class="lbl3">El precio disminuye a medida que pujas</h5>
-                                </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 co3">
-                                    <button class="btn btnatt">
-                                        <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
-                                        COMPRAR
-                                    </button>
-                                </div> -->
-
-
-
-                                <!-- <div class="col-md-1 col-sm-3 col-xs-4 co4">
-                                <button class="btn btnatt2">
-                                <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/balance.png?v0" alt=""></button>
-                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -153,3 +147,4 @@
     ?>
     
 </div>
+<script type="text/javascript" src="<?= base_url('public/assets/js/comprar.js?v='.time()) ?>"></script>

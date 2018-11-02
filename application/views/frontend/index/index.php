@@ -1,4 +1,9 @@
 <?php $ver = false; ?>
+<?php 
+    echo "<pre>";
+        print_r($favoritos);
+    echo "</pre>";
+?>
 <div class="container splr" style="padding-left: 0;">
     <div class="col-md-12 mt-30 splr">
         <img class="img-responsive" src="<?= base_url()?>public/assets/images/banner2.jpg" alt="">
@@ -25,8 +30,12 @@
                     $imagen = ( $p['imagen'] == NULL ) ? 'no-image.jpg' : $p['imagen'] ?>
                     <ul class="deal-actions top-15 right-20">
                         <li class="like-deal">
-                            <span id="favoritos_span_<?= $p['id_anuncio']?>">
-                                <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a>
+                            <span id="favoritos_span_<?= $p['id_anuncio']?>"><?php
+                                if( in_array($p['id_anuncio'], $favoritos) ){ ?>
+                                    <a href="http://localhost/pujasya/cuenta/favoritos" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a> <?php
+                                }else{ ?>
+                                    <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a> <?php
+                                } ?>
                             </span>
                         </li>
                     </ul>
@@ -93,7 +102,7 @@
                         </div>
                         <div class="well">
                             <div class="row"> <?php 
-                                if( $p["se_compra"] == 1 ){ ?>
+                                if( $p["se_compra"] == 1 && $p["status"] == "activa" ){ ?>
                                     <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
                                         <h6 class="lbl1">Comprar Ahora</h6>
                                         <h2 class="lbl2"><?= number_format($p['precio_compra']-$p["precio_puja"], 2, '.', ',') ?>€</h2>
@@ -114,6 +123,7 @@
                                                 data-puja="<?= $p['precio_puja'] ?>"
                                                 data-envio="<?= $p['precio_envio'] ?>"
                                                 data-titulo="<?= $p['titulo'] ?>"
+                                                data-img="<?= $p['id_anuncio'].'/'.$p['img_principal'] ?>"
                                             >
                                                 <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
                                                 COMPRAR
@@ -154,4 +164,4 @@
 
     <?php $this->load->view('frontend/index/home_users', [ "users" => $users ] ); ?>
 </div>
-<script type="text/javascript" src="<?= base_url('public/assets/js/comprar.js') ?>"></script>
+<script type="text/javascript" src="<?= base_url('public/assets/js/comprar.js?v='.time()) ?>"></script>

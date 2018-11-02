@@ -5,6 +5,7 @@ class Search extends CI_Controller {
     public function __construct(){
         parent::__construct();
         $this->load->model('Search_model');
+        $this->load->model('Favoritos_model');
     }
 
     private function getOrderBy($ordenBy){
@@ -18,6 +19,13 @@ class Search extends CI_Controller {
     }
 
     private function getProduts($status = null, $orderBy = null){
+
+        $favoritos = $this->Favoritos_model->get_mis_favoritos( $this->session->userdata('user_id') );
+        $data["favoritos"] = [];
+        foreach ($favoritos as $favorito) {
+            $data["favoritos"][] = $favorito["anuncio_id"];
+        }
+
         $status = ( $status != null ) ? $status : 'activa';
         $orderByStr = ( $orderBy != null ) ? $this->getOrderBy($orderBy) : null;
 

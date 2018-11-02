@@ -6,6 +6,7 @@ class Anuncios extends SuperController {
         parent::__construct();
         $this->load->helper(array('ayuda_helper'));
         $this->load->model('Anuncios_Model');
+        $this->load->model('Favoritos_model');
     }
 
     public function list(){
@@ -154,16 +155,23 @@ class Anuncios extends SuperController {
         print_r( json_encode( $this->input->post() ) );
     }
 
-
-
     //Vista de anuncio individual
 
     public function anuncio($id_anuncio = NULL) {
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
+        
         $data["anuncio"] = (array) $this->Anuncios_Model->getAnuncio($id_anuncio)[0];
 
         if($data['anuncio'] == "") {
             redirect(base_url());
             exit;
+        }
+
+        $check = applib::check_favorito($id_anuncio);
+        if($check == true){
+            $data["favoritos"] = "YES";
+        } else {
+            $data["favoritos"] = "NO";
         }
 
         $data['meta'] = array(
@@ -177,87 +185,6 @@ class Anuncios extends SuperController {
         $data['contenido'] = 'anuncios/detalle';
         $this->load->view('frontend/templates/plantilla', $data);
 
-        /*//Determinar si esta en favoritos
-
-        $data['favorito'] = false;
-
-        $id = $data['anuncio']['id_anuncio'];
-
-        if($this->session->userdata('user_id') != "")
-        {
-            $data['favorito'] = applib::check_favorito($id);
-        }
-
-        //Obtener anuncios relacionados por la categoria
-
-        $condition = array('a.categoria_id' => $data['anuncio']['categoria_id'],'a.status' => 1,'a.subcategoria_id' => $data['anuncio']['subcategoria_id'],'u.status' => 1);
-
-        $relacionados = $this->anuncios_model->get_all_relacionados($condition);
-
-        $data['relacionados'] = array();
-
-        if(count($relacionados) > 0)
-        {
-            $cantidad = count($relacionados) > 6?6:count($relacionados);
-
-            do {
-
-                $valor = array_rand($relacionados);
-
-                $arreglo = $relacionados[$valor];
-
-                array_push($data['relacionados'], $arreglo);
-
-                unset($relacionados[$valor]);
-                        
-
-            } while (count($data['relacionados']) < $cantidad);
-        }
-
-        
-
-        //Obtener anuncios del usuario
-
-        $data['otros_usuario'] = array();
-
-        if($data['anuncio']['premium'] == 1)
-        {
-            $condition = array('a.status' => 1,'a.user_id' => $data['anuncio']['user_id'],'u.status' => 1);
-
-            $data['otros_usuario'] = $this->anuncios_model->get_all_relacionados($condition);
-
-        }
-
-        //$data['cantidad_anuncio'] = applib::count_table_rows(applib::$anuncios_table,array('status' => 1,'user_id' => $data['anuncio']['user_id']));
-
-        $data['imagenes'] = applib::get_all('*',applib::$img_table,array('anuncio_id' => $id));
-
-        //Chequear visitas
-
-        $ip_user = $this->input->ip_address();
-
-        //$check_visita = applib::get_table_field(applib::$visitas_table,array('ip' => $ip_user,'anuncio_id' => $id), 'id_visita');
-
-        //if($check_visita == false)
-        //{
-        applib::create(applib::$visitas_table,array('anuncio_id' => $id, 'ip' => $ip_user, 'date' => applib::fecha()));
-
-        applib::update(array('id_anuncio' => $id),applib::$anuncios_table,array('visitas' => $data['anuncio']['visitas'] + 1));
-
-      $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
-        //}
-
-        $this->load->library('user_agent');
-
-
-        //Verificar chat
-
-        $chat = false;
-
-        if($this->session->userdata('user_id') != "")
-        {
-
-        }*/
     }
     
 

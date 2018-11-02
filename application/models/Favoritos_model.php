@@ -8,17 +8,29 @@ class Favoritos_model extends CI_Model {
         parent::__construct();
     }
 
-    function get_all($condition)
-    {
-        $this->db->select('f.*,u.name as usuario,a.*,
-        (SELECT name FROM vv_img_anuncios as img WHERE img.anuncio_id = a.id_anuncio AND img.order = 1) as imagen');
-        $this->db->from($this->table.' as f');
-        $this->db->join('vv_anuncios as a','a.id_anuncio = f.anuncio_id','left');
-        $this->db->join('vv_users as u','u.id_user = f.user_id','left');
-        $this->db->where($condition);
-        $this->db->order_by('a.id_anuncio','desc');
+    function get_all($user_id){
+        $this->db->select('vv_favoritos.id_favorito, anuncios.*');
+        $this->db->from('vv_favoritos');
+        $this->db->join('anuncios', 'anuncios.id_anuncio = vv_favoritos.anuncio_id', 'inner');
+        $this->db->where("user_id", $user_id);
         $query = $this->db->get();
+        return ($query) ? $query->result_array() : false;
+    }
 
-        return ($query)?$query->result_array():false;
+    function get_mis_favoritos($user_id){
+        $this->db->select('*');
+        $this->db->from('vv_favoritos');
+        $this->db->where("user_id", $user_id);
+        $query = $this->db->get();
+        return ($query) ? $query->result_array() : false;
+    }
+
+    function get_es_favorito($user_id, $anuncio_id){
+        $this->db->select('*');
+        $this->db->from('vv_favoritos');
+        $this->db->where("user_id", $user_id);
+        $this->db->where("anuncio_id", $anuncio_id);
+        $query = $this->db->get();
+        return ($query) ? $query->result_array() : false;
     }
 }

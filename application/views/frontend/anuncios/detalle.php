@@ -34,8 +34,12 @@
                             <div class="alert alert-danger" id="error_favoritos" style="display:none;">Ha ocurrido un error!</div>
                             <div class="deal-deatails panel">
                                 <div class="text-right p-20" >
-                                    <span id="favoritos_span_<?= $anuncio['id_anuncio']?>">
-                                        <a href="javascript:;" onclick="favoritos_listado(<?= $anuncio['id_anuncio']?>)"><i class="fa fa-heart" style="font-size:30px;"></i></a>
+                                    <span id="favoritos_span_<?= $anuncio['id_anuncio']?>"><?php
+                                        if( $favoritos == "YES" ){ ?>
+                                            <a href="http://localhost/pujasya/cuenta/favoritos" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart" style="font-size:30px;"></i></a> <?php
+                                        }else{ ?>
+                                            <a href="javascript:;" onclick="favoritos_listado(<?= $anuncio['id_anuncio']?>)"><i class="fa fa-heart" style="font-size:30px;"></i></a> <?php
+                                        } ?>
                                     </span>
                                 </div>
                                 <div class="deal-slider">
@@ -113,22 +117,55 @@
                                             </div>
 
                                             <div class="well">
-                                                <div class="row">
-                                                    <div class="col-md-3 col-sm-3 col-xs-6 co1-co2" >
-                                                        <h6 class="lbl1">Comprar Ahora</h6>
-                                                        <h2 class="lbl2"><?= number_format($anuncio['precio_compra']-$anuncio["precio_puja"], 2, '.', ',') ?>€</h2>
-                                                    </div>
-                                                    <div class="col-md-7 col-sm-7 col-xs-6 co1-co2">
-                                                        <h5 class="lbl3">El precio disminuye a medida que pujas</h5>
-                                                    </div>
-                                                    <div class="col-md-2 col-sm-2 col-xs-12 co3">
-                                                        <button class="btn btnatt">
-                                                        <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">COMPRAR</button>
-                                                    </div>
-                                                    <!-- <div class="col-md-1 col-sm-3 col-xs-3 co4">
-                                                    <button class="btn btn-sm btn-block btnatt2">
-                                                    <img class="img-responsive icoatt3" src="<?= base_url()?>public/assets/images/icons/balance.png?v0" alt=""></button>
-                                                    </div> -->
+                                                <div class="row"> <?php 
+                                                    if( $anuncio["se_compra"] == 1 ){ ?>
+                                                        <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
+                                                            <h6 class="lbl1">Comprar Ahora</h6>
+                                                            <h2 class="lbl2"><?= number_format($anuncio['precio_compra']-$anuncio["precio_puja"], 2, '.', ',') ?>€</h2>
+                                                        </div>
+                                                        <div class="col-md-5 col-sm-5 col-xs-6 co1-co2">
+                                                            <h5 class="lbl3">El precio disminuye a medida que pujas</h5>
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-3 col-xs-12 co3"> <?php 
+                                                            if( $this->session->userdata('user_id') != "" ): ?>
+                                                                <button 
+                                                                    class="btn btnatt producto" 
+                                                                    data-id="<?= $anuncio['id_anuncio']?>"
+                                                                    data-precio="<?= ($anuncio['precio_compra']) ?>"
+                                                                    data-puja="<?= $anuncio['precio_puja'] ?>"
+                                                                    data-envio="<?= $anuncio['precio_envio'] ?>"
+                                                                    data-titulo="<?= $anuncio['titulo'] ?>"
+                                                                    data-img="<?= $anuncio['id_anuncio'].'/'.$anuncio['img_principal'] ?>"
+                                                                >
+                                                                    <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                                    COMPRAR
+                                                                </button> <?php 
+                                                            else: ?>
+                                                                <button class="btn btnatt" onclick="window.location='<?= base_url('ingresar')?>'">
+                                                                    <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                                    COMPRAR
+                                                                </button> <?php 
+                                                            endif ?>
+                                                        </div> <?php 
+                                                    }else{ ?>
+                                                        <div class="col-md-9 col-sm-5 col-xs-6 co1-co2">
+                                                            <h5 class="lbl3">Compra no disponible</h5>
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-3 col-xs-12 co3"> <?php 
+                                                            $activa_compra = "btn-inact";
+                                                            if( $this->session->userdata('user_id') != "" ): ?>
+                                                                <button class="btn btnatt <?= $activa_compra ?>">
+                                                                    <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                                    COMPRAR
+                                                                </button> <?php 
+                                                            else: ?>
+                                                                <button class="btn btnatt <?= $activa_compra ?>" onclick="window.location='<?= base_url('ingresar')?>'">
+                                                                    <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                                    COMPRAR
+                                                                </button> <?php 
+                                                            endif ?>
+                                                        </div> <?php 
+                                                    } ?>
                                                 </div>
                                             </div>
                                         </div> <!-- fin widget-body -->
@@ -310,3 +347,4 @@
     </div>
   </div>
 </div>
+<script type="text/javascript" src="<?= base_url('public/assets/js/comprar.js?v='.time()) ?>"></script>

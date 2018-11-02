@@ -200,7 +200,7 @@
 	        					<label id="img_item_'.$key.'" for="img_principal_'.$key.'" class="img_item">
 	        						<input name="imgs['.$key.']" value="'.$value.'" type="hidden">
 	        						<input id="img_principal_'.$key.'" name="img_principal" value="'.$key.'" type="radio" '.$checked.' />
-	        						<div style="background-image: url('.base_url().'files/productos/'.$info->id_info.'/'.$value.')"></div>
+	        						<div style="background-image: url('.base_url().'files/productos/'.$info->id_anuncio.'/'.$value.')"></div>
 	        						<i class="fa fa-times" onclick="removeImg( jQuery(this) )" data-index="'.$key.'"></i>
 	        					</label>
 	        				';
@@ -239,7 +239,7 @@
         jQuery("#btn_activar").on("click", function(e){
         	var status = jQuery(this).attr("data-status");
         	jQuery.post(
-        		"<?= base_url( 'Anuncios/activo_inactivo/'.$info->id_info."/" ) ?>"+status, 
+        		"<?= base_url( 'Anuncios/activo_inactivo/'.$info->id_anuncio."/" ) ?>"+status, 
         		{},
         		function(data){
         			var TITULO = ( status == "activa" ) ? "Desactivar" : "Activar";

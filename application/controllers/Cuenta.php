@@ -8,6 +8,7 @@ class Cuenta extends CI_Controller {
         $this->load->model('Fichas_Model');
         $this->load->model('Cupones_Model');
         $this->load->model('Anuncios_model');
+        $this->load->model('Cuenta_model');
     }
 
     function procesarCompraFicha(){
@@ -43,7 +44,7 @@ class Cuenta extends CI_Controller {
             "data" => json_encode($info)
         ];
 
-        $this->Fichas_Model->saveCompraProducto($data);
+        $this->Anuncios_model->saveCompraProducto($data);
 
         $this->Anuncios_model->updateStatus($producto_id, "comprada");
 
@@ -75,7 +76,6 @@ class Cuenta extends CI_Controller {
                 "error" => "Cupón invalido"
             ];
         }
-
         echo json_encode($r);
     }
 
@@ -95,9 +95,7 @@ class Cuenta extends CI_Controller {
 
     function comprarproducto($id){   
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-
         $data['p'] = $this->Anuncios_model->getAnuncio($id)[0];
-
         $data['meta'] = array(
             array(
                 'name' => 'description', 
@@ -108,6 +106,56 @@ class Cuenta extends CI_Controller {
         $data['contenido'] = 'cuenta/comprar_producto';
         $this->load->view('frontend/templates/plantilla',$data);
     }
+
+    public function miscompras(){
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
+        $data['anuncios'] = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') );
+        $data['title'] = 'Mis Compras';
+        $data['contenido'] = 'cuenta/miscompras';
+        $this->load->view('frontend/templates/plantilla',$data);
+    }
+
+    public function favoritos(){
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
+
+        $this->load->model('Favoritos_model');
+
+        $data['anuncios'] = $this->Favoritos_model->get_all( $this->session->userdata('user_id') );
+
+        $data['title'] = 'Mis Favoritos';
+        $data['contenido'] = 'cuenta/favoritos';
+        $this->load->view('frontend/templates/plantilla',$data);
+    }
+
+    public function borrar_anuncio_favoritos($anuncio_id){
+        if( $anuncio_id != "" ){
+            $check = applib::check_favorito($anuncio_id);
+            if($check == true){
+                applib::delete(applib::$favoritos_table,array('anuncio_id' => $anuncio_id,'user_id' => $this->session->userdata('user_id')));
+                applib::flash('success','Se ha borrado el anuncio exitosamente!', 'cuenta/favoritos/');
+                exit;
+            } else {
+                applib::flash('danger','Ha ocurrido un error en el proceso - '.$anuncio_id, 'cuenta/favoritos/');
+                exit;
+            }
+        }else{
+            redirect(base_url('cuenta'));
+            exit;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -700,48 +748,6 @@ class Cuenta extends CI_Controller {
         }
     }
 
-    public function favoritos()
-    {
-        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-        $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
-
-        $this->load->model('favoritos_model');
-
-        $data['anuncios'] = $this->favoritos_model->get_all($condition);
-
-        $data['title'] = 'Mis Favoritos';
-        $data['contenido'] = 'cuenta/favoritos';
-        $this->load->view('frontend/templates/plantilla',$data);
-    }
-
-    public function borrar_anuncio_favoritos()
-    {
-        if($this->input->post())
-        {
-            $id = $this->input->post('id',true);
-
-            $check = applib::check_favorito($id);
-
-            if($check == true)
-            {
-                applib::delete(applib::$favoritos_table,array('anuncio_id' => $id,'user_id' => $this->session->userdata('user_id')));
-
-                applib::flash('success','Se ha borrado el anuncio exitosamente!','cuenta/favoritos/');
-                exit;
-            }
-            else
-            {
-                applib::flash('danger','Ha ocurrido un error en el proceso','cuenta/favoritos/');
-                exit;
-            }
-        }
-        else
-        {
-            redirect(base_url('cuenta'));
-            exit;
-        }
-    }
-
    public function mispujas()
     {
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
@@ -767,20 +773,6 @@ class Cuenta extends CI_Controller {
 
         $data['title'] = 'Mis AutoPujas';
         $data['contenido'] = 'cuenta/misautopujas';
-        $this->load->view('frontend/templates/plantilla',$data);
-    }
-
-    public function miscompras()
-    {
-        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-        $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
-
-        $this->load->model('favoritos_model');
-
-        $data['anuncios'] = $this->favoritos_model->get_all($condition);
-
-        $data['title'] = 'Mis Compras';
-        $data['contenido'] = 'cuenta/miscompras';
         $this->load->view('frontend/templates/plantilla',$data);
     }
 
