@@ -1,9 +1,4 @@
 <?php $ver = false; ?>
-<?php 
-    echo "<pre>";
-        print_r($favoritos);
-    echo "</pre>";
-?>
 <div class="container splr" style="padding-left: 0;">
     <div class="col-md-12 mt-30 splr">
         <img class="img-responsive" src="<?= base_url()?>public/assets/images/banner2.jpg" alt="">

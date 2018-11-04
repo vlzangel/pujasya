@@ -252,12 +252,14 @@ class AppLib {
 
 	//FLASH DATA
 
-	static function flash($type,$message,$url)
+	static function flash($type,$message,$url=null)
     {
         self::$code->session->set_flashdata('msg', '<div class="alert alert-'.$type.'" style="margin-bottom: 10px;">
         <a class="close" data-dismiss="alert" href="#">&times;</a>
         '.$message.'</div>');
-        redirect(base_url() . $url, 301);
+        if( $url != null ){
+            redirect(base_url() . $url, 301);
+        }
     }
 
     //FLASH DATA

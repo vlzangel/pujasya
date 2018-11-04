@@ -19,8 +19,8 @@ class Mailer {
 		self::$db = &get_instance()->db;
 	}
 
-	static function send_email($params = array())
-    {
+	static function send_email($params = array()){
+
     	// $params = array(
     	// 	'from_email' => 'hola@vallevende.com',
     	// 	'from_name'	 =>  'ValleVende.com',
@@ -29,7 +29,16 @@ class Mailer {
     	// 	'message'	 => 'Este es un correo de prueba desde vallevende y prueba'
     	// );
 
+        $config['protocol'] = 'smtp';
+        $config["smtp_host"] = 'smtp.gmail.com';
+        $config["smtp_user"] = 'soporte.kmimos@gmail.com';
+        $config["smtp_pass"] = '@km!m05@';   
+        $config["smtp_port"] = '587';
+        $config['smtp_crypto'] = 'tls';
+
         self::$code->load->library('email');
+
+        self::$code->email->initialize($config);
 
         self::$code->email->from($params['from_email'], $params['from_name']);
 
@@ -39,12 +48,11 @@ class Mailer {
 
         self::$code->email->message($params['message']);
 
-       	if(!self::$code->email->send())
-       	{
-       		return false;
-       	}
-
-       	return true;
+        if(self::$code->email->send()){
+            return true;
+        }else{
+            return false;
+        }
        	
     }
 
@@ -262,6 +270,34 @@ class Mailer {
 
         return $return;
         
+    }
+
+    public static function contactar_email($data = array()){
+        $template = applib::get_table_field(self::$email_table, array('ID' => 7), '*');
+        $message = str_replace(
+            array(
+                '{NOMBRE}',
+                "{EMAIL}",
+                "{ASUNTO}",
+                "{MENSAJE}",
+                "{BASE_URL}",
+            ),
+            array(
+                $data['nombre'],
+                $data['email'],
+                $data['asunto'],
+                $data['mensaje'],
+                base_url()
+            ), 
+            $template['content']
+        );
+        $params['from_email'] = "vlzangel91@gmail.com";
+        $params['from_name'] = $template['from_name'];
+        $params['recipient'] = $data['email_enviar'];
+        $params['subject'] = SITE_TITLE.$template['subject'];
+        $params['message'] = $message; 
+        $return = self::send_email( $params );
+        return $return;
     }
 
 }

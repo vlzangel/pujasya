@@ -58,6 +58,14 @@ class Anuncios_model extends CI_Model {
         */
     }
 
+    function get_pedido($id_pedido){
+        $this->db->select('*');
+        $this->db->from('compras_fichas');
+        $this->db->where('id', $id_pedido);
+        $query = $this->db->get();
+        return ($query) ? $query->result()[0] : false;
+    }
+
 
     /* Viejos */
 

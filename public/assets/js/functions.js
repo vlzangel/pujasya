@@ -260,6 +260,53 @@ $(function(){
 
     });
 
+    // CONTACTAR
+
+    $('#vlz_contactar').on('click',function(){
+        $('#vlz_contactar_form').submit();
+    });
+
+    $('#vlz_contactar_form').on('submit',function(e){
+
+        var email = $('#email').val();
+
+        if(email == ""){
+            $('#no_email').show(100);
+            e.preventDefault();
+        }else{
+            $('#no_email').hide(100);
+        }
+
+        if(validarEmail(email) == false){
+            $('#no_email_format').show(100);
+            e.preventDefault();
+        }else{
+            $('#no_email_format').hide(100);
+        }
+
+        if($('#nombre').val() == ""){
+            $('#no_nombre').show(100);
+            e.preventDefault();
+        }else{
+            $('#no_nombre').hide(100);
+        }
+
+        if($('#asunto').val() == ""){
+            $('#no_asunto').show(100);
+            e.preventDefault();
+        }else{
+            $('#no_asunto').hide(100);
+        }
+
+        if($('#mensaje').val() == ""){
+            $('#no_mensaje').show(100);
+            e.preventDefault();
+        }else{
+            $('#no_mensaje').hide(100);
+        }
+
+    });
+
     //LOGIN
 
     $('#login_button').on('click',function(){

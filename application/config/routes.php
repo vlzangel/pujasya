@@ -60,6 +60,7 @@ $route['terminos_y_condiciones'] = 'index/terminos_y_condiciones';
 $route['preguntas_frecuentes'] = 'index/preguntas_frecuentes';
 $route['contacta'] = 'index/contacta';
 $route['comprarfichas'] = 'cuenta/comprarfichas';
+$route['comprarfichas/(:any)/(:any)'] = 'cuenta/comprarfichas/$1/$2';
 $route['comprarproducto/(:any)'] = 'cuenta/comprarproducto/$1';
 
 //Route para perfil empresa

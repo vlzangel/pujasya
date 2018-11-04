@@ -1,3 +1,8 @@
+<!-- <pre>
+    <?php
+        print_r($prepago);
+    ?>
+</pre> -->
 <div class="container">
     <div class="col-md-12 mt-30 creditos">
         <div class="panel p-20">
@@ -94,7 +99,7 @@
 
                     <div class="text-right mt-20">
                         <!-- <input type="hidden" required="" id="idpaquete" name="idpaquete"> -->     
-                        <button class="btn btn-sm" type="button" id="nextBtn" onclick="nextPrev(1)">
+                        <button class="btn btn-sm" type="button" id="nextBtn" onclick="initPedido()">
                             Selecciona Método de Pago
                         </button>
                     </div>
@@ -161,14 +166,14 @@
                     <div class="text-right mt-20">
                         <!-- <input type="hidden" required="" id="idmethod" name="idmethod"> -->     
                         <button class="btn btn-sm btn-usar" type="button" id="nextBtn" onclick="nextPrev(-1)">Volver</button>
-                        <button class="btn btn-sm" type="button" id="nextBtn" onclick="nextPrev(1)">
+                        <button class="btn btn-sm hidden" type="button" id="nextBtn" onclick="nextPrev(1)">
                             Confirmar Pago
                         </button>
                     </div>
                 </div>
 
                 <div class="tab-form-fich dest">
-                    <h3 class="bold1">Confirmar Compra</h3>
+                    <h3 class="bold1">¡Gracias por tu compra!</h3>
                     <hr>
                     <h5 class="bold1">Datos del Pedido</h5>
                     <hr class="mb-0">
@@ -210,8 +215,7 @@
                         </div>
                     </div>
                     <div class="text-right mt-20">
-                        <button class="btn btn-sm btn-usar" type="button" id="nextBtn" onclick="nextPrev(-1)">Volver</button>
-                        <button class="btn btn-sm" type="button" id="procesarCompra">Aceptar</button>
+                        <button class="btn btn-sm" type="button" id="procesarCompra">Mis fichas</button>
                     </div>
                 </div>
             </form>
@@ -226,15 +230,18 @@
 ?>
 <script src="<?= base_url() ?>public/admin/plugins/bower_components/jquery/dist/jquery.min.js"></script>
 <script>
+
     var currentTab = 0;
     showTab(currentTab);
 
     var CARRITO = [];
+    var HOME = "<?= base_url() ?>";
 
     CARRITO["user"] = "<?= $_SESSION["user_id"] ?>";
     CARRITO["cupon"] = "";
     CARRITO["paquete_id"] = "";
     CARRITO["paquete_metodo_pago"] = "";
+    CARRITO["pedido_id"] = "";
 
     jQuery(document).ready(function() {
         jQuery(".paquete_item").on("click", function(e){
@@ -248,10 +255,30 @@
             CARRITO["paquete_precio"] = jQuery(this).attr("data-precio");
             CARRITO["paquete_cantidad"] = jQuery(this).attr("data-cantidad");
 
+            jQuery(".total_pagar").html( (CARRITO["paquete_precio"])+"€" );
+
             if( CARRITO["cupon"] != "" ){
                 aplicarCupon( CARRITO["cupon"][1] );
             }
         });
+
+        <?php if( $prepago["cupon"] != "" ){ ?>
+            CARRITO["cupon"] = eval('<?= json_encode($prepago["cupon"]) ?>');
+        <?php } ?>
+
+        <?php if( $prepago["paquete_id"] != "" && $prepago["metodo"] != "" ){ ?>
+            CARRITO["pedido_id"] = "<?= $prepago["pedido_id"] ?>";
+            CARRITO["paquete_id"] = "<?= $prepago["paquete_id"] ?>";
+            CARRITO["paquete_metodo_pago"] = "<?= $prepago["metodo"] ?>";
+            selectpaquete(<?= $prepago["paquete_id"] ?>);
+            jQuery("#paq<?= $prepago["paquete_id"] ?>").click();
+            <?php if( $prepago["status_pago"] == "ok" ){ ?>
+                nextPrev(1);
+                selectmetodo_2(1);
+                nextPrev(1);
+                jQuery(".pasos").css("visibility", "hidden")
+            <?php } ?>
+        <?php } ?>
 
         jQuery("#btn_cupon").on("click", function(e){
             var cupon = jQuery("#txt_cupon").val();
@@ -266,6 +293,40 @@
             comprar_fichas();
         });
     });
+
+    function initPedido(){
+        jQuery.post(
+            "<?= base_url() ?>cuenta/init_pedido",
+            {
+                "pedido_id" : CARRITO["pedido_id"],
+                "user_id" : CARRITO["user"],
+                "cupon" : CARRITO["cupon"],
+                "paquete_id" : CARRITO["paquete_id"]
+            },
+            function(data){
+                CARRITO["pedido_id"] = data.pedido_id;
+                nextPrev(1);
+            }, 'json'
+        );
+    }
+
+    function update_metodo(){
+        jQuery.post(
+            "<?= base_url() ?>cuenta/init_pedido",
+            {
+                "pedido_id" : CARRITO["pedido_id"],
+                "user_id" : CARRITO["user"],
+                "cupon" : CARRITO["cupon"],
+                "paquete_id" : CARRITO["paquete_id"],
+                "paquete_metodo_pago" : CARRITO["paquete_metodo_pago"],
+            },
+            function(data){
+                if( CARRITO["paquete_metodo_pago"] == "Paypal" ){
+                    location.href = HOME+"paypal/buy_fichas/"+CARRITO["pedido_id"];
+                }
+            }, 'json'
+        );
+    }
 
     function aplicarCupon(cupon){
         if( String(cupon).trim() == "" ){
@@ -383,28 +444,39 @@
             jQuery(".metodo_pago").html("Paypal");
             document.getElementById("formcard").className =document.getElementById("formcard").className.replace( /(?:^|\s)mostrar(?!\S)/g , '' )
         }
+        update_metodo();
+    }
+
+    function selectmetodo_2(idmetodo){
+        var idmetodo=idmetodo;
+        var i, x = document.getElementsByClassName("metod_paid");
+        for (i = 0; i < x.length; i++) {
+            x[i].className = x[i].className.replace(" active-credit", "");
+        }
+        document.getElementById("met"+idmetodo).className += " active-credit";
+        if (idmetodo=='2') {
+            CARRITO["paquete_metodo_pago"] = "Visa";
+            jQuery(".metodo_pago").html("Visa");
+            document.getElementById("formcard").className += " mostrar";
+        }else{
+            CARRITO["paquete_metodo_pago"] = "Paypal";
+            jQuery(".metodo_pago").html("Paypal");
+            document.getElementById("formcard").className =document.getElementById("formcard").className.replace( /(?:^|\s)mostrar(?!\S)/g , '' )
+        }
     }
 
     function comprar_fichas(){
-
         if( CARRITO["user"] != "" && CARRITO["paquete_id"] != "" && CARRITO["paquete_metodo_pago"] != "" ){
-            jQuery.post(
-                "<?= base_url() ?>cuenta/procesarCompraFicha",
-                {
-                    "user_id" : CARRITO["user"],
-                    "cupon" : CARRITO["cupon"],
-                    "paquete_id" : CARRITO["paquete_id"],
-                    "paquete_metodo_pago" : CARRITO["paquete_metodo_pago"]
-                },
-                function(data){
-                    alert("Fichas Compradas Exitosamente");
-                    location.href = "<?= base_url() ?>perfil/";
-                }, 'json'
-            );
+            location.href = "<?= base_url() ?>perfil/";
         }else{
             alert("Debe completar todos los pasos primero")
         }
-        
     }
 
 </script>
+
+<?php
+    $this->session->unset_userdata('paquete_id');
+    $this->session->unset_userdata('metodo');
+    $this->session->unset_userdata('status_pago');
+?>

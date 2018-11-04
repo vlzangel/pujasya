@@ -11,6 +11,37 @@ class Cuenta extends CI_Controller {
         $this->load->model('Cuenta_model');
     }
 
+    function init_pedido(){
+        $paquete = $this->Fichas_Model->getAnuncio( $this->input->post('paquete_id') )[0];
+        $info["paquete_id"] = $this->input->post('paquete_id');
+        $info["paquete_name"] = $paquete->nombre;
+        $info["paquete_precio"] = $paquete->precio;
+        $info["paquete_fichas"] = $paquete->cantidad;
+        $info["cupon"] = $this->input->post('cupon');
+        $info["metodo_pago"] = $this->input->post('paquete_metodo_pago');
+        $data = [
+            "user" => $this->input->post('user_id'),
+            "data" => json_encode($info)
+        ];
+        if( $this->input->post('pedido_id') == "" ){
+            $pedido_id = $this->Fichas_Model->saveCompra($data, $paquete->cantidad);
+        }else{
+            $this->Fichas_Model->update_pedido($this->input->post('pedido_id'), $data);
+            $pedido_id = $this->input->post('pedido_id');
+        }
+        echo json_encode(["error" => "", "pedido_id" => $pedido_id]);
+    }
+
+    function update_pedido_fichas($pedido_id){
+        $pedido = $this->Fichas_Model->get_pedido( $pedido_id )[0];
+        $info["metodo_pago"] = $this->input->post('paquete_metodo_pago');
+        $data = [
+            "data" => json_encode($info)
+        ];
+        $this->Fichas_Model->update_pedido($pedido_id, $data);
+        echo json_encode(["error" => ""]);
+    }
+
     function procesarCompraFicha(){
         $paquete = $this->Fichas_Model->getAnuncio( $this->input->post('paquete_id') )[0];
         $info["paquete_id"] = $this->input->post('paquete_id');
@@ -80,6 +111,13 @@ class Cuenta extends CI_Controller {
     }
 
     public function comprarfichas(){
+        $data["prepago"]['pedido_id'] = $this->session->userdata('pedido_id');
+        $data["prepago"]['paquete_id'] = $this->session->userdata('paquete_id');
+        $data["prepago"]['metodo'] = $this->session->userdata('metodo');
+        $data["prepago"]['status_pago'] = $this->session->userdata('status_pago');
+        $data["prepago"]['cupon'] = $this->session->userdata('cupon');
+
+
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $data['paquetes'] = $this->Fichas_Model->get_list("Activo");
         $data['meta'] = array(
