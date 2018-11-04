@@ -1,14 +1,14 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Users extends SuperController {
+class Usuarios extends CI_Controller {
   
     public function __construct(){
         parent::__construct();
-        $this->load->model('Users_model');
+        $this->load->model('Usuarios_model');
     }
 
     public function list() {
-        $users = $this->Users_model->get_list();
+        $users = $this->Usuarios_model->get_list();
 
         $data["data"] = [];
         foreach ($users as $key => $users) {

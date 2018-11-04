@@ -59,26 +59,20 @@ class Cuenta extends CI_Controller {
     }
 
     function procesarCompraProducto(){
-
         $producto_id = $this->input->post('producto_id');
-
         $info["producto_precio"] = $this->input->post('producto_precio');
         $info["producto_puja"] = $this->input->post('producto_puja');
         $info["producto_envio"] = $this->input->post('producto_envio');
         $info["pago"] = $this->input->post('pago');
         $info["metodo_pago"] = $this->input->post('paquete_metodo_pago');
-
         $data = [
             "user_id" => $this->input->post('user_id'),
             "producto_id" => $producto_id,
             "operacion" => "compra",
             "data" => json_encode($info)
         ];
-
         $this->Anuncios_model->saveCompraProducto($data);
-
         $this->Anuncios_model->updateStatus($producto_id, "comprada");
-
         echo json_encode(["error" => ""]);
     }
 
@@ -116,8 +110,6 @@ class Cuenta extends CI_Controller {
         $data["prepago"]['metodo'] = $this->session->userdata('metodo');
         $data["prepago"]['status_pago'] = $this->session->userdata('status_pago');
         $data["prepago"]['cupon'] = $this->session->userdata('cupon');
-
-
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $data['paquetes'] = $this->Fichas_Model->get_list("Activo");
         $data['meta'] = array(
@@ -155,11 +147,8 @@ class Cuenta extends CI_Controller {
 
     public function favoritos(){
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-
         $this->load->model('Favoritos_model');
-
         $data['anuncios'] = $this->Favoritos_model->get_all( $this->session->userdata('user_id') );
-
         $data['title'] = 'Mis Favoritos';
         $data['contenido'] = 'cuenta/favoritos';
         $this->load->view('frontend/templates/plantilla',$data);

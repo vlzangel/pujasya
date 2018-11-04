@@ -122,7 +122,7 @@
                                     <li><a href="<?= base_url('ingresar/salir')?>">Salir</a></li>
                                   </ul>
                                 </li>
-                                 <li style="color: white;">Tienes <span style="color:orange"><?= $user['fichas']?></span> Fichas</li>
+                                 <li style="color: white;">Tienes <span style="color:orange" id="mis_fichas"><?= $user['fichas']?></span> Fichas</li>
                                 
                                  <!-- <li><a href="<?= base_url('registro')?>">Tienes <span style="color:orange">0</span> Fichas</a></li> -->
                                  <li>

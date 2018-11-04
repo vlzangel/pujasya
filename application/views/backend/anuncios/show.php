@@ -52,6 +52,33 @@
 		<div class="row">
 		  	<div class="col-sm-3">
 				<div class="form-group">
+					<label for="precio_reventa">Precio de reventa:</label>
+					<input value="<?= $info->precio_reventa ?>" class="form-control" type="number" step="0.01" id="precio_reventa" name="precio_reventa" placeholder="Precio de reventa" required />
+				</div>
+		  	</div>
+		  	<div class="col-sm-3">
+				<div class="form-group">
+					<label for="precio_maximo">Precio máximo:</label>
+					<input value="<?= $info->precio_maximo ?>" class="form-control" type="number" step="0.01" id="precio_maximo" name="precio_maximo" placeholder="Precio máximo" required />
+				</div>
+		  	</div>
+		  	<div class="col-sm-3">
+				<div class="form-group">
+					<label for="precio_puja">Precio de puja:</label>
+					<input value="<?= $info->precio_puja ?>" class="form-control" type="text" id="precio_puja" name="precio_puja" placeholder="Precio de puja" disabled />
+				</div>
+		  	</div>
+		  	<div class="col-sm-3">
+				<div class="form-group">
+					<label for="cantidad_fichas">Cantidad de fichas:</label>
+					<input value="<?= $info->cantidad_fichas ?>" class="form-control" type="number" step="0.01" id="cantidad_fichas" name="cantidad_fichas" placeholder="Precio de compra" required />
+				</div>
+		  	</div>
+		</div>
+
+		<div class="row">
+		  	<div class="col-sm-3">
+				<div class="form-group">
 					<label for="tiempo_puja">Tiempo de puja:</label>
 					<select id="tiempo_puja" name="tiempo_puja" class="form-control" >
 						<?php
@@ -73,39 +100,6 @@
 				<div class="form-group">
 					<label for="inicio">Hora inicio:</label>
 					<input value="<?= $info->inicio ?>" class="form-control" type="time" id="inicio" name="inicio" required  />
-				</div>
-		  	</div>
-		  	<div class="col-sm-3">
-				<div class="form-group">
-					<label for="cierre">Hora cierre:</label>
-					<input value="<?= $info->cierre ?>" class="form-control" type="time" id="cierre" name="cierre" required />
-				</div>
-		  	</div>
-		</div>
-
-		<div class="row">
-		  	<div class="col-sm-3">
-				<div class="form-group">
-					<label for="precio_reventa">Precio de reventa:</label>
-					<input value="<?= $info->precio_reventa ?>" class="form-control" type="number" step="0.01" id="precio_reventa" name="precio_reventa" placeholder="Precio de reventa" required />
-				</div>
-		  	</div>
-		  	<div class="col-sm-3">
-				<div class="form-group">
-					<label for="precio_maximo">Precio máximo:</label>
-					<input value="<?= $info->precio_maximo ?>" class="form-control" type="number" step="0.01" id="precio_maximo" name="precio_maximo" placeholder="Precio máximo" required />
-				</div>
-		  	</div>
-		  	<div class="col-sm-3">
-				<div class="form-group">
-					<label for="precio_puja">Precio de puja:</label>
-					<input value="<?= $info->precio_puja ?>" class="form-control" type="text" id="precio_puja" name="precio_puja" placeholder="Precio de puja" disabled />
-				</div>
-		  	</div>
-		  	<div class="col-sm-3">
-				<div class="form-group">
-					<label for="cantidad_fichas">Cantidad de fichas:</label>
-					<input value="<?= $info->cantidad_fichas ?>" class="form-control" type="number" step="0.01" id="cantidad_fichas" name="cantidad_fichas" placeholder="Precio de compra" required />
 				</div>
 		  	</div>
 		</div>

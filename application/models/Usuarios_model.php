@@ -1,6 +1,6 @@
 <?php
 
-class Users_model extends CI_Model {
+class Usuarios_model extends CI_Model {
 
 
     function __construct() {
@@ -13,6 +13,14 @@ class Users_model extends CI_Model {
         $this->db->order_by('id_user','DESC');
         $query = $this->db->get();
         return ($query) ? $query->result() : false;
+    }
+
+    function get_user($id){
+        $this->db->select('*');
+        $this->db->from('vv_users');
+        $this->db->where('id_user', $id);
+        $query = $this->db->get();
+        return ($query) ? $query->result()[0] : false;
     }
 
 }

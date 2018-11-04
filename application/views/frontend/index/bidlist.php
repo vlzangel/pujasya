@@ -17,7 +17,10 @@
     <div class="col-md-12 col-sm-12 col-xs-12 splr"><?php 
         $i = 0; 
         foreach ($premium as $p): ?>
-            <div class="panel content-card born2">
+            <div class="panel content-card born2 anuncio_item" 
+                data-fichas="<?= $p['cantidad_fichas'] ?>"
+                data-tiempo="<?= $p['tiempo_puja'] ?>"
+            >
                 <div class="row">
                     <div class="col-md-4 col-sm-4 col-xs-12 plr-2 ctr">
                         <div class="row">
