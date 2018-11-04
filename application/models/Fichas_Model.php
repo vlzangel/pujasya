@@ -61,7 +61,7 @@
             $query = $this->db->get();
             $user = $query->result()[0];
 
-            $this->db->where('id_user', $data["user"]);
+            $this->db->where('id_user', $user_id);
             $this->db->update('vv_users', ["fichas" => ($user->fichas+$fichas) ]);
         }
         
@@ -75,9 +75,30 @@
             return $insert ? true : false;
         }
 
+        function getTransaction($pedido_id) {
+            $this->db->select('*');
+            $this->db->from('payments');
+            $this->db->where('pedido_id', $pedido_id);
+            $query = $this->db->get();
+            return ($query) ? $query->result()[0] : false;
+        }
+
+        function updateTransaction($payment_id, $data){
+            $this->db->where('payment_id', $payment_id);
+            $this->db->update('payments', $data);
+        }
+
         function update_pedido($id, $data){
             $this->db->where('id', $id);
             $this->db->update('compras_fichas', $data);
+        }
+
+        function procesar_compra($pedido_id, $user_id, $fichas){
+            $data["status"] = "Pagado";
+            $this->db->where('id', $pedido_id);
+            $this->db->update('compras_fichas', $data);
+
+            $this->asignarFichas($user_id, $fichas);
         }
 
     }
