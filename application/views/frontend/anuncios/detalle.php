@@ -206,7 +206,7 @@
                                                                 <h5 class="text-right" style="font-weight: 700;"><?= number_format($anuncio['precio_reventa'], 2, '.', ',') ?>€</h5>
                                                             </div>
                                                         </div>
-                                                        <div class="row rsinmlf fila">
+                                                        <div class="row rsinmlf fila hidden">
                                                             <div class="col-md-8 col-xs-6">
                                                                 <h5 class="text-left">Horas de Puja<a style="font-size: 10px; margin-left: 11px; color: orange;" data-toggle="modal" href="" data-target="#info-subasta">Más Información</a></h5>
                                                             </div>
@@ -273,8 +273,23 @@
                                                             <div class="col-md-5 col-xs-5">
                                                                 <h5 class="text-right">Cantidad</h5>
                                                             </div>
-                                                        </div>
-                                                        <div class="row fila rsinmlf">
+                                                        </div><?php
+                                                        if( count($historial) > 0 ){
+                                                            foreach ($historial as $key => $value) {
+                                                                echo '
+                                                                    <div class="row encabezado rsinmlf">
+                                                                        <div class="col-md-7 col-xs-7">
+                                                                            <h5 class=" text-left">'.$value->nombre.'</h5>
+                                                                        </div>
+                                                                        <div class="col-md-5 col-xs-5">
+                                                                            <h5 class="text-right">'.$value->monto.'</h5>
+                                                                        </div>
+                                                                    </div>
+                                                                ';
+                                                            }
+                                                        } ?>
+
+                                                        <!-- <div class="row fila rsinmlf">
                                                             <div class="col-md-7 col-xs-7">
                                                                 <h5 class="text-left">Julian</h5>
                                                             </div>
@@ -289,7 +304,7 @@
                                                             <div class="col-md-5 col-xs-5">
                                                                 <h5 class=" text-right">$20</h5>
                                                             </div>
-                                                        </div>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                                 <div role="tabpanel" class="tab-pane fade mt-30 text-justify" id="envio">

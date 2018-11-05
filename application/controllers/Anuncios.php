@@ -183,6 +183,13 @@ class Anuncios extends SuperController {
             exit;
         }
 
+        $historial = $this->Anuncios_Model->getHistorial($id_anuncio);
+        if( $historial == false ){
+            $data["historial"] = [];
+        }else{
+            $data["historial"] = $historial;
+        }
+
         $check = applib::check_favorito($id_anuncio);
         if($check == true){
             $data["favoritos"] = "YES";

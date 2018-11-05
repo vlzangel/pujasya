@@ -24,9 +24,11 @@ class Pujar extends SuperController {
         $this->Anuncios_Model->updateAnuncio($this->input->post('id_anuncio'), $data);
         $data_2 = [
             "anuncio_id" => $this->input->post('id_anuncio'),
-            "user_id" => $usuario->id_user
+            "user_id" => $usuario->id_user,
+            "monto" => $this->input->post('precio_puja')
         ];
         $this->Anuncios_Model->newPuja($data_2);
+
         echo json_encode([
             "user" => $usuario->nickname
         ]);
