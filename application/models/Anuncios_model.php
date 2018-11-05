@@ -37,6 +37,10 @@ class Anuncios_model extends CI_Model {
         $this->db->where('id_anuncio', $id_anuncio);
         $this->db->update('anuncios', $data);
     }
+
+    function newPuja($data){
+        $this->db->insert('historial_pujas', $data);
+    }
         
     function delete($id){
         $this->db->where('id_anuncio', $id);
@@ -45,17 +49,6 @@ class Anuncios_model extends CI_Model {
 
     function saveCompraProducto($data){
         $this->db->insert('compras_productos', $data);
-
-        /*
-        $this->db->select('*');
-        $this->db->from('vv_users');
-        $this->db->where('id_user', $data["user"]);
-        $query = $this->db->get();
-        $user = $query->result()[0];
-
-        $this->db->where('id_user', $data["user"]);
-        $this->db->update('vv_users', ["fichas" => ($user->fichas+$fichas) ]);
-        */
     }
 
     function get_pedido($id_pedido){

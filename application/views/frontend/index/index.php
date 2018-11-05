@@ -71,13 +71,22 @@
                                     <h2 class="lbl2" id="precio_puja_<?=$p['id_anuncio']?>"><?= number_format($p['precio_puja'], 2, '.', ',') ?>€</h2>
                                 </div>
                                 <div class="col-md-4 col-sm-4 col-xs-6 co1-co2">
-                                    <h5 id="timer_<?= $p['id_anuncio']?>" class="timer timerfin">00:00:00</h5>
+                                    <h5 id="timer_<?= $p['id_anuncio']?>" class="timer">00:00:00</h5>
                                     <?php
                                         echo '<h5 class="usuariop" id="ult_user_'.$p['id_anuncio'].'">'.$p["ult_puja_user"].'</h5>';
                                     ?>     
                                 </div>
                                 <div class="col-md-1 col-sm-1 col-xs-4 co4" >
-                                    <button class="btn btnatt2" onclick="window.location='<?= base_url('cuenta/misautopujas')?>'">
+                                    <button 
+                                        data-fichas="<?= $p['cantidad_fichas'] ?>"
+                                        data-tiempo="<?= $p['tiempo_puja'] ?>"
+                                        data-id="<?= $p['id_anuncio'] ?>"
+                                        data-precio_puja="<?= $p['precio_puja'] ?>"
+                                        data-tiempo_actual="<?= $p['tiempo_puja'] ?>"
+
+                                        class="btn btnatt anuncio_item" 
+                                        onclick="window.location='<?= base_url('cuenta/misautopujas')?>'"
+                                    >
                                         <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/a-circle.png?v0" alt="">
                                     </button>
                                 </div>
@@ -100,7 +109,17 @@
                                                 PUJAR
                                             </button> <?php 
                                         }else{ ?>
-                                            <button class="btn btnatt" data-toggle="modal" data-target="#alert-cfichas">
+                                            <button 
+                                                data-fichas="<?= $p['cantidad_fichas'] ?>"
+                                                data-tiempo="<?= $p['tiempo_puja'] ?>"
+                                                data-id="<?= $p['id_anuncio'] ?>"
+                                                data-precio_puja="<?= $p['precio_puja'] ?>"
+                                                data-tiempo_actual="<?= $p['tiempo_puja'] ?>"
+
+                                                class="btn btnatt anuncio_item" 
+                                                data-toggle="modal" 
+                                                data-target="#alert-cfichas"
+                                            >
                                                 <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
                                                 PUJAR
                                             </button> <?php 
