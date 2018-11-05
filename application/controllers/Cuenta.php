@@ -68,7 +68,7 @@ class Cuenta extends CI_Controller {
         $data = [
             "user_id" => $this->input->post('user_id'),
             "producto_id" => $producto_id,
-            "operacion" => "compra",
+            "operacion" => "Compra",
             "data" => json_encode($info)
         ];
         $this->Anuncios_model->saveCompraProducto($data);

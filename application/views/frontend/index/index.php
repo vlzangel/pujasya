@@ -52,7 +52,7 @@
                         <figure class="deal-thumbnail embed-responsive embed-responsive-16by9" data-bg-img="<?= $imagen ?>" style="height:262px">
                             <div class="deal-store-logo">
                                 <h4 style="font-weight: bold;">
-                                    MAX <?= number_format($p['precio_maximo'], 2, '.', ',') ?>€
+                                    MAX <?= number_format($p['precio_maximo'], 2, '.', ',') ?>
                                     <span style="font-size:14px">€</span>
                                 </h4>
                             </div>
@@ -76,30 +76,34 @@
                                         echo '<h5 class="usuariop" id="ult_user_'.$p['id_anuncio'].'">'.$p["ult_puja_user"].'</h5>';
                                     ?>     
                                 </div>
-                                <div class="col-md-1 col-sm-1 col-xs-4 co4" >
-                                    <button 
-                                        data-fichas="<?= $p['cantidad_fichas'] ?>"
-                                        data-tiempo="<?= $p['tiempo_puja'] ?>"
-                                        data-id="<?= $p['id_anuncio'] ?>"
-                                        data-precio_puja="<?= $p['precio_puja'] ?>"
-                                        data-tiempo_actual="<?= $p['tiempo_puja'] ?>"
-
-                                        class="btn btnatt anuncio_item" 
-                                        onclick="window.location='<?= base_url('cuenta/misautopujas')?>'"
-                                    >
-                                        <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/a-circle.png?v0" alt="">
-                                    </button>
+                                <div class="col-md-1 col-sm-1 col-xs-4 co4" ><?php 
+                                    if( $p['status'] == "activa" ){ ?>
+                                        <button id="autopuja_<?=$p['id_anuncio']?>" class="btn btnatt" onclick="window.location='<?= base_url('cuenta/misautopujas')?>'" >
+                                            <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/a-circle.png?v0" alt="">
+                                        </button><?php
+                                    }else{ ?>
+                                        <button id="autopuja_<?=$p['id_anuncio']?>" class="btn btnatt btn-inact">
+                                            <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/a-circle.png?v0" alt="">
+                                        </button><?php
+                                    } ?>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-8 co3"><?php 
                                     if($this->session->userdata('user_id') != ""):
                                         if( $user['fichas']+0 > 0 ){ ?>
-                                            <button class="btn btnatt anuncio_item" 
-                                                data-fichas="<?= $p['cantidad_fichas'] ?>"
-                                                data-tiempo="<?= $p['tiempo_puja'] ?>"
-                                                data-id="<?= $p['id_anuncio'] ?>"
-                                                data-precio_puja="<?= $p['precio_puja'] ?>"
-                                                data-tiempo_actual="<?= $p['tiempo_puja'] ?>"
-                                                <?php if( $p["se_compra"] == 1 && $p["status"] == "activa" ){ ?>
+                                            <button <?php 
+                                                if( $p['status'] == "activa" ){ ?>
+                                                    id="pujar_<?= $p['id_anuncio'] ?>"
+                                                    class="btn btnatt anuncio_item"
+                                                    data-fichas="<?= $p['cantidad_fichas'] ?>"
+                                                    data-tiempo="<?= $p['tiempo_puja'] ?>"
+                                                    data-id="<?= $p['id_anuncio'] ?>"
+                                                    data-precio_puja="<?= $p['precio_puja'] ?>"
+                                                    data-tiempo_actual="<?= $p['tiempo_puja'] ?>"
+                                                    data-status="<?= $p['status'] ?>" <?php 
+                                                }else{ ?>
+                                                    class="btn btnatt btn-inact" <?php
+                                                }
+                                                if( $p["se_compra"] == 1 && $p["status"] == "activa" ){ ?>
                                                     data-compra="<?= $p['precio_compra'] ?>"
                                                 <?php }else{ ?>
                                                     data-compra="No"
@@ -110,12 +114,6 @@
                                             </button> <?php 
                                         }else{ ?>
                                             <button 
-                                                data-fichas="<?= $p['cantidad_fichas'] ?>"
-                                                data-tiempo="<?= $p['tiempo_puja'] ?>"
-                                                data-id="<?= $p['id_anuncio'] ?>"
-                                                data-precio_puja="<?= $p['precio_puja'] ?>"
-                                                data-tiempo_actual="<?= $p['tiempo_puja'] ?>"
-
                                                 class="btn btnatt anuncio_item" 
                                                 data-toggle="modal" 
                                                 data-target="#alert-cfichas"
@@ -133,17 +131,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="well">
+                        <div id="seccion_comprar_<?= $p['id_anuncio']?>" class="well">
                             <div class="row"> <?php 
                                 if( $p["se_compra"] == 1 && $p["status"] == "activa" ){ ?>
-                                    <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
+                                    <div class="col-md-4 col-sm-4 col-xs-6 co1-co2 comprar_ahora" >
                                         <h6 class="lbl1">Comprar Ahora</h6>
                                         <h2 class="lbl2" id="precio_compra_<?=$p['id_anuncio']?>"><?= number_format($p['precio_compra']-$p["precio_puja"], 2, '.', ',') ?>€</h2>
                                     </div>
-                                    <div class="col-md-5 col-sm-5 col-xs-6 co1-co2">
+                                    <div class="col-md-5 col-sm-5 col-xs-6 co1-co2 mensaje_comprar">
                                         <h5 class="lbl3">El precio disminuye a medida que pujas</h5>
                                     </div>
-                                    <div class="col-md-3 col-sm-3 col-xs-12 co3"> <?php 
+                                    <div class="col-md-3 col-sm-3 col-xs-12 co3 boton_comprar"> <?php 
                                         if( $this->session->userdata('user_id') != "" ): ?>
                                             <button 
                                                 id="comprar_<?=$p['id_anuncio']?>"

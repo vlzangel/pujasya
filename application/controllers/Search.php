@@ -55,11 +55,6 @@ class Search extends CI_Controller {
     function grid($status = null, $orderBy = null) {
         $data = $this->getProduts($status, $orderBy);
         $data['contenido'] = 'index/index';
-
-        /*echo "<pre>";
-            print_r( $data );
-        echo "</pre>";*/
-
         $this->load->view('frontend/templates/plantilla',$data);
     }
 

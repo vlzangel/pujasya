@@ -7,10 +7,15 @@
                 <?= $premium[0]['premium'] == 1?' | <i class="fa fa-bullseye" style="margin-right: 6px;"></i>PREMIUM': '';
             else: $status_show = ( isset($status) ) ? $status: 1; ?>
                 <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "activa") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/activa/<?= $orderBy+0 ?>">pujas en vivo</a>
-                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "ganada") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/ganada/<?= $orderBy+0 ?>">próximas pujas</a>
-                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "cerrada") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/cerrada/<?= $orderBy+0 ?>">pujas cerradas</a>
-                <a class="btn btn-primary ocultar2 btn-inactivos" href="#" >pujas favoritas</a>
-                <a class="btn btn-primary ocultar2 btn-inactivos" href="#" >pujas ganadas</a>
+                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "proximas") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/proximas/<?= $orderBy+0 ?>">próximas pujas</a>
+                <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "cerrada") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/cerrada/<?= $orderBy+0 ?>">pujas cerradas</a> <?php
+                if( $this->session->userdata('user_id') == "" ){ ?>
+                    <a class="btn btn-primary ocultar2 btn-inactivos" href="#" >pujas favoritas</a>
+                    <a class="btn btn-primary ocultar2 btn-inactivos" href="#" >pujas ganadas</a> <?php
+                }else{ ?>
+                    <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "favoritos") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/favoritos/<?= $orderBy+0 ?>" >pujas favoritas</a>
+                    <a class="btn btn-primary ocultar2 btn-activos <?= ($status_show == "ganada") ? 'btn-seleted': ''; ?>" href="<?= base_url()?>search/<?= $way_of_showing ?>/ganada/<?= $orderBy+0 ?>" >pujas ganadas</a> <?php
+                } ?>
                 <!-- <a class="btn btn-primary ocultar2" href="/#" style="padding: 3px 5px !important; height: 28px; font-size: 12px;  margin-top: -2px; text-transform: inherit; letter-spacing: 0px; font-weight: 600; background: #d0d0d0 !important; color: black; border: 1px solid #a0a0a0;">shop</a> --><?php 
             endif ?>
         </span>

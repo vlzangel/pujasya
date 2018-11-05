@@ -28,7 +28,7 @@
                                 <div class="col-md-12 col-sm-12 col-xs-12 splr"> <?php
                                     foreach ($anuncios as $anuncio) { 
                                         $info = json_decode($anuncio->data);
-                                        $tipo = ( $anuncio->operacion == "puja" ) ? "Puja Ganada": "Compra"; 
+                                        $tipo = $anuncio->operacion; 
                                         $imagen = ( $anuncio->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$anuncio->id_anuncio.'/'.$anuncio->img_principal; ?>
                                         <div class="panel content-card born2">
                                             <div class="col-md-12 col-sm-12 col-xs-12 plr-2 ctr">
@@ -47,13 +47,15 @@
                                                     <div class="col-md-2 col-sm-2 col-xs-12 ptb-20 text-center">
                                                         <p class="" style="margin-bottom: 0;"><strong><?= $tipo ?></strong></p> 
                                                     </div>
-                                                    <div class="col-md-3 col-sm-3 col-xs-6 text-right ptb-20">
-                                                        <p class="" style="margin-bottom: 0;"><strong>Precio:</strong> <?= $info->producto_precio ?>€ </p> 
-                                                        <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p> <?php
+                                                    <div class="col-md-3 col-sm-3 col-xs-6 text-right ptb-20"> <?php
                                                         if( $tipo == "Compra" ){ ?>
-                                                            <p class="" style="margin-bottom: 0;"><strong>Precio Puja:</strong> - <?= $info->producto_puja ?>€ </p> <?php
+                                                            <p class="" style="margin-bottom: 0;"><strong>Precio:</strong> <?= $info->producto_precio ?>€ </p> 
+                                                            <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p>
+                                                            <p class="" style="margin-bottom: 0;"><strong>Precio Puja:</strong> - <?= $info->producto_puja ?>€ </p>
+                                                            <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5>  <?php
+                                                        }else{ ?>
+                                                            <h5 class="bold1" style="margin-bottom: 0;">Precio Puja: <?= $info->producto_puja ?>€</h5>  <?php
                                                         } ?>
-                                                        <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5> 
                                                     </div>
                                                     <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20">
                                                         <div class="etiq etiq-success">PAGADA</div>
