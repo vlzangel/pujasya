@@ -81,26 +81,31 @@ function contadores() {
     }
 } 
 
+var REVISAR = true;
+
 function ganadores() {
-    jQuery.post(
-        HOME+"Pujar/revisarPujas",
-        {},
-        function(data){
-            if( data[0].length > 0 ){
-                console.log( data[0] );
-                jQuery.each(data[0], function(i, anuncio){
-                    var id = anuncio.id_anuncio;
-                    cerrar_anuncio(id);
-                });
-            }
-            if( data[1].length > 0 ){
-                jQuery.each(data[1], function(i, anuncio){
-                    console.log( anuncio );
-                    actualizar_anuncio(anuncio);
-                });
-            }
-        }, 'json'
-    );
+    if( REVISAR ){
+        jQuery.post(
+            HOME+"Pujar/revisarPujas",
+            {},
+            function(data){
+                // console.log( data );
+                if( data[0].length > 0 ){
+                    console.log( data[0] );
+                    jQuery.each(data[0], function(i, anuncio){
+                        var id = anuncio.id_anuncio;
+                        cerrar_anuncio(id);
+                    });
+                }
+                if( data[1].length > 0 ){
+                    jQuery.each(data[1], function(i, anuncio){
+                        console.log( anuncio.donde );
+                        actualizar_anuncio(anuncio);
+                    });
+                }
+            }, 'json'
+        );
+    }
 } 
 
 function actualizar_anuncio(anuncio){

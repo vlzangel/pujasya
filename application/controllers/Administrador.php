@@ -42,6 +42,12 @@ class Administrador extends SuperController {
         $this->load->view('backend/templates/plantilla', $data);
     }
 
+    public function robots(){
+        $data['title'] = 'Entrar';
+        $data['contenido'] = 'robots/list';
+        $this->load->view('backend/templates/plantilla', $data);
+    }
+
     public function salir(){
         $this->removeCache();
         // $this->Administrador_model->outSession();

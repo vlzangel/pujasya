@@ -7,6 +7,7 @@ class Anuncios extends SuperController {
         $this->load->helper(array('ayuda_helper'));
         $this->load->model('Anuncios_Model');
         $this->load->model('Favoritos_model');
+        $this->load->model('Robots_Model');
     }
 
     public function list(){
@@ -34,15 +35,17 @@ class Anuncios extends SuperController {
     }
 
     public function new(){
+        $data["robots"] = $this->Robots_Model->get_list();
         $this->load->view('backend/templates/modal', [
             "titulo" => "Nuevo Anuncio",
             "accion" => "Crear",
-            "data" => [],
+            "data" => $data,
             "plantilla" => "anuncios/show"
         ]);
     }
 
     public function edit($id){
+        $data["robots"] = $this->Robots_Model->get_list();
         $data["info"] = $this->Anuncios_Model->getAnuncio($id)[0];
 
         $this->load->view('backend/templates/modal', [
@@ -73,6 +76,12 @@ class Anuncios extends SuperController {
             'cantidad_fichas' => $this->input->post('cantidad_fichas'),
             'img_principal' => $imagenes[$this->input->post("img_principal")],
             'imgs' => json_encode($imagenes),
+
+            'robot_id' => $this->input->post('robot_id'),
+            'robot_seg' => $this->input->post('robot_seg'),
+            'robot_monto_maximo' => $this->input->post('robot_monto_maximo'),
+            'robot_status' => $this->input->post('robot_status'),
+
             'status' => 1
         ];
 
@@ -116,6 +125,12 @@ class Anuncios extends SuperController {
             'precio_envio' => $this->input->post('precio_envio'),
             'cantidad_fichas' => $this->input->post('cantidad_fichas'),
             'img_principal' => $imagenes[$this->input->post("img_principal")],
+
+            'robot_id' => $this->input->post('robot_id'),
+            'robot_seg' => $this->input->post('robot_seg'),
+            'robot_monto_maximo' => $this->input->post('robot_monto_maximo'),
+            'robot_status' => $this->input->post('robot_status'),
+
             'imgs' => json_encode($imagenes),
         ];
 
@@ -142,10 +157,13 @@ class Anuncios extends SuperController {
 
     public function activo_inactivo($id_anuncio, $status){
         $datos = [
-            'status' => $status
+            "status" => $status,
+            "ult_puja_user" => "",
+            "ult_puja_time" => "0000-00-00 00:00:00",
+            "precio_puja" => 0
         ];
         $this->Anuncios_Model->updateAnuncio($id_anuncio, $datos);
-        print_r( json_encode( $datos ) );
+        print_r( json_encode( [$id_anuncio, $status] ) );
     }
 
     public function delete($id){

@@ -19,6 +19,7 @@
             <li> <a href="<?= base_url('Administrador/anuncios') ?>" class="waves-effect"><i class="fa fa-bullhorn p-r-10"></i> <span class="hide-menu"> Anuncios </span></a> </li>
             <li> <a href="<?= base_url('Administrador/fichas') ?>" class="waves-effect"><i class="fa fa-star p-r-10"></i> <span class="hide-menu"> Fichas </span></a> </li>
             <li> <a href="<?= base_url('Administrador/cupones') ?>" class="waves-effect"><i class="fa fa-ticket p-r-10"></i> <span class="hide-menu"> Cupones </span></a> </li>
+            <li> <a href="<?= base_url('Administrador/robots') ?>" class="waves-effect"><i class="fa fa-android p-r-10"></i> <span class="hide-menu"> Robots </span></a> </li>
             <!-- <li> <a href="<?= base_url('Administrador/users') ?>" class="waves-effect"><i class="fa fa-users p-r-10"></i> <span class="hide-menu"> Usuarios </span></a> </li> -->
         </ul>
     </div>

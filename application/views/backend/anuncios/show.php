@@ -175,6 +175,45 @@
 		  	</div>
 		</div>
 
+		<hr style="margin-top: 0px;">
+
+		<div class="row">
+		  	<div class="col-sm-3">
+					<label for="robot_id">Seleccione un robot:</label>
+					<select id="robot_id" name="robot_id" class="form-control" >
+						<?php
+							foreach ($robots as $value) {
+								$selected = ( $value->id_user == $info->robot_id ) ? "selected": "";
+								echo "<option value='{$value->id_user}' {$selected}>{$value->name} ({$value->nickname})</option>";
+							}
+						?>
+					</select>
+		  	</div>
+		  	<div class="col-sm-3">
+				<label for="robot_seg">Pujar faltando (Seg):</label>
+				<input value="<?= $info->robot_seg ?>" class="form-control" type="number" id="robot_seg" name="robot_seg" placeholder="Tiempo de puja" />
+		  	</div>
+		  	<div class="col-sm-3">
+				<label for="robot_monto_maximo">Monto máximo de puja:</label>
+				<input value="<?= $info->robot_monto_maximo ?>" class="form-control" type="number" step="0.01" id="robot_monto_maximo" name="robot_monto_maximo" placeholder="Monto máximo de puja" />
+		  	</div>
+		  	<div class="col-sm-3">
+				<label for="robot_status">Status robot:</label>
+				<select id="robot_status" name="robot_status" class="form-control" >
+					<?php
+						$robots = [
+							1 => "Activado",
+							2 => "Desactivado"
+						];
+						foreach ($robots as $key => $value) {
+							$selected = ( $key == $info->robot_status ) ? "selected": "";
+							echo "<option value='{$key}' {$selected}>{$value}</option>";
+						}
+					?>
+				</select>
+		  	</div>
+		</div>
+
 	</div>
 
     <div class="tab-pane" id="tab_2">
