@@ -19,7 +19,7 @@ class Anuncios extends SuperController {
                 $anuncio->id_anuncio,
                 $anuncio->titulo,
                 ($anuncio->precio_compra+0)."€",
-                $anuncio->finalizacion,
+                date("d/m/Y", strtotime($anuncio->fecha_inicio) ),
                 '
                 <a href="javascript: editar('.$anuncio->id_anuncio.');" title="Editar" style="margin-right: 10px;">
                     <i class="fa fa-pencil text-danger" style="background: #01c0c8; padding: 12px; margin-top: -10px;color: white !important; border-radius: 5px;"></i>
@@ -67,6 +67,7 @@ class Anuncios extends SuperController {
             'precio_compra' => $this->input->post('precio_compra'),
             'precio_reventa' => $this->input->post('precio_reventa'),
             'precio_maximo' => $this->input->post('precio_maximo'),
+            'fecha_inicio ' => $this->input->post('fecha_inicio'),
             'finalizacion ' => $this->input->post('finalizacion'),
             'tiempo_puja' => $this->input->post('tiempo_puja'),
             'inicio' => $this->input->post('inicio'),
@@ -78,6 +79,7 @@ class Anuncios extends SuperController {
             'imgs' => json_encode($imagenes),
 
             'robot_id' => $this->input->post('robot_id'),
+            'robot_id_2' => $this->input->post('robot_id_2'),
             'robot_seg' => $this->input->post('robot_seg'),
             'robot_monto_maximo' => $this->input->post('robot_monto_maximo'),
             'robot_status' => $this->input->post('robot_status'),
@@ -117,6 +119,7 @@ class Anuncios extends SuperController {
             'precio_compra' => $this->input->post('precio_compra'),
             'precio_reventa' => $this->input->post('precio_reventa'),
             'precio_maximo' => $this->input->post('precio_maximo'),
+            'fecha_inicio ' => $this->input->post('fecha_inicio'),
             'finalizacion ' => $this->input->post('finalizacion'),
             'tiempo_puja' => $this->input->post('tiempo_puja'),
             'inicio' => $this->input->post('inicio'),
@@ -127,6 +130,7 @@ class Anuncios extends SuperController {
             'img_principal' => $imagenes[$this->input->post("img_principal")],
 
             'robot_id' => $this->input->post('robot_id'),
+            'robot_id_2' => $this->input->post('robot_id_2'),
             'robot_seg' => $this->input->post('robot_seg'),
             'robot_monto_maximo' => $this->input->post('robot_monto_maximo'),
             'robot_status' => $this->input->post('robot_status'),

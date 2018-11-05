@@ -92,10 +92,16 @@
 		  	</div>
 		  	<div class="col-sm-3">
 				<div class="form-group">
-					<label for="finalizacion">Fecha de finalización:</label>
-					<input value="<?= $info->finalizacion ?>" class="form-control" type="date" id="finalizacion" name="finalizacion" required />
+					<label for="fecha_inicio">Fecha de inicio:</label>
+					<input value="<?= date("Y-m-d", strtotime($info->fecha_inicio) ) ?>" class="form-control" type="date" id="fecha_inicio" name="fecha_inicio" required />
 				</div>
 		  	</div>
+		  	<!-- <div class="col-sm-3">
+				<div class="form-group">
+					<label for="finalizacion">Fecha de finalización:</label>
+					<input value="<?= $info->finalizacion ?>" class="form-control" type="date" id="finalizacion" name="finalizacion" />
+				</div>
+		  	</div> -->
 		  	<div class="col-sm-3">
 				<div class="form-group">
 					<label for="inicio">Hora inicio:</label>
@@ -178,16 +184,27 @@
 		<hr style="margin-top: 0px;">
 
 		<div class="row">
-		  	<div class="col-sm-3">
-					<label for="robot_id">Seleccione un robot:</label>
-					<select id="robot_id" name="robot_id" class="form-control" >
-						<?php
-							foreach ($robots as $value) {
-								$selected = ( $value->id_user == $info->robot_id ) ? "selected": "";
-								echo "<option value='{$value->id_user}' {$selected}>{$value->name} ({$value->nickname})</option>";
-							}
-						?>
-					</select>
+		  	<div class="col-sm-2">
+				<label for="robot_id">Robot 1:</label>
+				<select id="robot_id" name="robot_id" class="form-control" >
+					<?php
+						foreach ($robots as $value) {
+							$selected = ( $value->id_user == $info->robot_id ) ? "selected": "";
+							echo "<option value='{$value->id_user}' {$selected}>{$value->name} ({$value->nickname})</option>";
+						}
+					?>
+				</select>
+		  	</div>
+		  	<div class="col-sm-2">
+				<label for="robot_id_2">Robot 2:</label>
+				<select id="robot_id_2" name="robot_id_2" class="form-control" >
+					<?php
+						foreach ($robots as $value) {
+							$selected = ( $value->id_user == $info->robot_id_2 ) ? "selected": "";
+							echo "<option value='{$value->id_user}' {$selected}>{$value->name} ({$value->nickname})</option>";
+						}
+					?>
+				</select>
 		  	</div>
 		  	<div class="col-sm-3">
 				<label for="robot_seg">Pujar faltando (Seg):</label>
@@ -197,7 +214,7 @@
 				<label for="robot_monto_maximo">Monto máximo de puja:</label>
 				<input value="<?= $info->robot_monto_maximo ?>" class="form-control" type="number" step="0.01" id="robot_monto_maximo" name="robot_monto_maximo" placeholder="Monto máximo de puja" />
 		  	</div>
-		  	<div class="col-sm-3">
+		  	<div class="col-sm-2">
 				<label for="robot_status">Status robot:</label>
 				<select id="robot_status" name="robot_status" class="form-control" >
 					<?php

@@ -75,7 +75,13 @@ class Pujar extends SuperController {
                     if( $anuncio["robot_status"] == 1 ){
                         if( $faltan <= $anuncio["robot_seg"] ){
                             if( $anuncio["robot_monto_maximo"] > $actualizadas_ids[ $anuncio["id_anuncio"] ] ){
-                                $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id"], $actualizadas_ids[ $anuncio["id_anuncio"] ]);
+
+                                if( $anuncio["ultimo_robot"] == $anuncio["robot_id_2"] || $anuncio["ultimo_robot"] == 0 ){
+                                    $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id"], $actualizadas_ids[ $anuncio["id_anuncio"] ]);
+                                }else{
+                                    $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id_2"], $actualizadas_ids[ $anuncio["id_anuncio"] ]);
+                                }
+
                                 $_temp_anuncio = (array) $this->Anuncios_Model->getAnuncio( $anuncio["id_anuncio"] )[0];
                                 $_temp_anuncio["tiempo_actual"] = $anuncio["tiempo_puja"]-( $ahora - $tiempo_actual );
                                 $_temp_anuncio["donde"] = "Tiempo minimo alcanzado: ".$faltan." <= ".$anuncio["robot_seg"];
@@ -125,12 +131,14 @@ class Pujar extends SuperController {
         $data = [
             "precio_puja" => $precio_puja+0.01,
             "ult_puja_user" => $usuario->nickname,
-            "ult_puja_time" => date("Y-m-d H:i:s")
+            "ult_puja_time" => date("Y-m-d H:i:s"),
+            "ultimo_robot" => $id_robot
         ];
         $this->Anuncios_Model->updateAnuncio($id_anuncio, $data);
         $data_2 = [
             "anuncio_id" => $id_anuncio,
-            "user_id" => $usuario->id_user
+            "user_id" => $usuario->id_user,
+            "monto" => $precio_puja+0.01
         ];
         $this->Anuncios_Model->newPuja($data_2);
     }

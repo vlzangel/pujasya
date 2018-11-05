@@ -51,6 +51,9 @@
     <script src="<?= base_url()?>public/assets/js/jquery-1.12.3.min.js"></script>
     <script>
       var HOME = "<?= base_url()?>";
+      <?php if($this->session->userdata('user_id') != ""):?>
+        var USER_NICKNAME = "<?= $user['nickname'] ?>";
+      <?php endif ?>
     </script>
 </head>
 
@@ -103,9 +106,6 @@
                                 <li>
                               <button onclick="window.location.href='<?= base_url('registro')?>'" type="" class="btn btn-info btn-block btn-sm upload-button" style="background-color: #fb9029; margin-top: -10px; max-height: 27px; line-height: 10px;">Registrarse </button> </li>
   
-                                
-                                
-                                
                                 <?php else: ?>
                                 
                                  <li class="menu menu-hover">

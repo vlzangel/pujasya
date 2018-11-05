@@ -2,39 +2,45 @@ var bucle_contador = "";
 var revisar_ganadores = "";
 jQuery(document).ready(function() {
     jQuery(".anuncio_item").on("click", function(e){
-        var mis_fichas = parseInt( jQuery("#mis_fichas").html() );
-        if( mis_fichas > 0 && jQuery(this).attr("data-status") == "activa" ){
-            // jQuery(this).attr("data-tiempo_actual", jQuery(this).attr("data-tiempo") );
-            var id = jQuery(this).attr("data-id");
-            var puja = jQuery(this).attr("data-precio_puja");
-            puja = ( puja == "0.00" ) ? 0: parseFloat(puja);
-            puja += 0.01;
-            puja = (Math.round(puja * 100) / 100);
-            /*jQuery(this).attr("data-precio_puja", puja);
-            jQuery("#precio_puja_"+id).html(puja+"€");
-            jQuery("#comprar_"+id).attr("data-puja", puja);
-            if( jQuery(this).attr("data-compra") != "No" ){
-                var compra = jQuery(this).attr("data-compra");
-                compra = ( compra == "0.00" ) ? 0: parseFloat(compra);
-                compra = (Math.round(compra * 100) / 100);
-                jQuery("#precio_compra_"+id).html((compra-puja)+"€");
-            }*/
-            var cantidad_fichas = jQuery(this).attr("data-fichas");
-            jQuery("#mis_fichas").html( mis_fichas-cantidad_fichas );
-            jQuery.post(
-                HOME+"Pujar/pujar",
-                {
-                    "id_anuncio": jQuery(this).attr("data-id"),
-                    "precio_puja": puja
-                },
-                function(data){
-                    console.log(data);
-                    jQuery("#ult_user_"+id).html(data.user);
-                }, 'json'
-            );
-        }else{
-            if( mis_fichas <= 0 ){
-                jQuery("#alert-cfichas").modal('show');
+
+        if( !jQuery(this).hasClass("btn-inact") ){
+            var mis_fichas = parseInt( jQuery("#mis_fichas").html() );
+            if( mis_fichas > 0 && jQuery(this).attr("data-status") == "activa" ){
+                // jQuery(this).attr("data-tiempo_actual", jQuery(this).attr("data-tiempo") );
+                var id = jQuery(this).attr("data-id");
+                var puja = jQuery(this).attr("data-precio_puja");
+                puja = ( puja == "0.00" ) ? 0: parseFloat(puja);
+                puja += 0.01;
+                puja = (Math.round(puja * 100) / 100);
+                /*jQuery(this).attr("data-precio_puja", puja);
+                jQuery("#precio_puja_"+id).html(puja+"€");
+                jQuery("#comprar_"+id).attr("data-puja", puja);
+                if( jQuery(this).attr("data-compra") != "No" ){
+                    var compra = jQuery(this).attr("data-compra");
+                    compra = ( compra == "0.00" ) ? 0: parseFloat(compra);
+                    compra = (Math.round(compra * 100) / 100);
+                    jQuery("#precio_compra_"+id).html((compra-puja)+"€");
+                }*/
+                var cantidad_fichas = jQuery(this).attr("data-fichas");
+                jQuery("#mis_fichas").html( mis_fichas-cantidad_fichas );
+
+                jQuery("#pujar_"+id).addClass("btn-inact");
+
+                jQuery.post(
+                    HOME+"Pujar/pujar",
+                    {
+                        "id_anuncio": jQuery(this).attr("data-id"),
+                        "precio_puja": puja
+                    },
+                    function(data){
+                        console.log(data);
+                        jQuery("#ult_user_"+id).html(data.user);
+                    }, 'json'
+                );
+            }else{
+                if( mis_fichas <= 0 ){
+                    jQuery("#alert-cfichas").modal('show');
+                }
             }
         }
     });
@@ -116,6 +122,10 @@ function actualizar_anuncio(anuncio){
     jQuery("#comprar_"+id).attr("data-puja", anuncio.precio_puja);
     jQuery("#pujar_"+id).attr("data-precio_puja", anuncio.precio_puja);
     jQuery("#precio_puja_"+id).html(anuncio.precio_puja+"€");
+
+    if( anuncio.ult_puja_user != USER_NICKNAME ){
+        jQuery("#pujar_"+id).removeClass("btn-inact");
+    }
 
     if( parseInt(anuncio.se_compra) == 1 ){
         var compra = parseFloat(anuncio.precio_compra);

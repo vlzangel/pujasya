@@ -31,7 +31,7 @@
 					            <th> ID </th>
 					            <th> Titulo </th>
 					            <th> Precio Compra </th>
-					            <th> Finaliza </th>
+					            <th> Inicia </th>
 					            <th> Acciones</th>
 					        </tr>
 					    </thead>
