@@ -73,7 +73,7 @@ class Paypal extends CI_Controller {
         $transaccion = $this->Fichas_Model->getTransaction( $pedido_id );
         if( $transaccion == false ){
             $this->Fichas_Model->procesar_compra($pedido_id, $pedido->user, $info->paquete_fichas+0);
-            $this->Fichas_Model->insertTransaction($_temp);
+            $this->Fichas_Model->insertTransaction($data);
         }
 
         redirect( base_url("comprarfichas") );
