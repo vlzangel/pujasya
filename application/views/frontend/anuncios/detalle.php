@@ -264,7 +264,7 @@
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div role="tabpanel" class="tab-pane fade in active" id="historial">
+                                                <div style="max-height: 550px; overflow: auto;" role="tabpanel" class="tab-pane fade in active" id="historial">
                                                     <div class="mt-30">
                                                         <div class="row encabezado rsinmlf">
                                                             <div class="col-md-7 col-xs-7">
