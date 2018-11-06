@@ -54,54 +54,64 @@
                         </div>
                     </div>
 
-                    <div class="row slmr0 hidden resumen_pedido">
-                        <h5 class="bold1">Resumen del Pedido</h5>
-                        <hr class="mb-0">
+                    <div class="resumen_pedido hidden">
+                        <div class="row slmr0 ">
+                            <h5 class="bold1">Resumen del Pedido</h5>
+                            <hr class="mb-0">
 
-                        <div class="col-md-8">
-                            <div class="row fila">
-                                <div class="col-md-9 col-sm-9 col-xs-9  text-left">
-                                    <p class="p1 pedido_name">X-SMALL: 100 Fichas</p>
+                            <div class="col-md-8">
+                                <div class="row fila">
+                                    <div class="col-md-9 col-sm-9 col-xs-9  text-left">
+                                        <p class="p1 pedido_name"></p>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 text-right">
+                                        <p class="p1 pedido_precio"></p>
+                                    </div>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                                    <p class="p1 pedido_precio">10€</p>
+                                <!-- fila en caso de cupon de descuento -->
+                                <div class="row fila hidden descuento_container">
+                                    <div class="col-md-9 col-sm-9 col-xs-9 text-left">
+                                        <p class="p1 descuento"></p>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 text-right">
+                                        <p class="p1 descuento_cantidad"></p>
+                                    </div>
+                                </div>
+                                <div class="row fila f2">
+                                    <div class="col-md-9 col-sm-9 col-xs-9 text-left">
+                                        <h5 class="bold1">Total</h5>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-3 text-right">
+                                        <h5 class="bold1 total_pagar"></h5>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- fila en caso de cupon de descuento -->
-                            <div class="row fila hidden descuento_container">
-                                <div class="col-md-9 col-sm-9 col-xs-9 text-left">
-                                    <p class="p1 descuento"></p>
+
+                            <div class="col-md-4 mt-20">
+                                <div 
+                                    id="alerta_cupon"
+                                    style="padding: 1px 10px; position: absolute; bottom: -22px; right: 14px;display: none;" 
+                                    class="alert alert-danger" 
+                                    role="alert"
+                                > This is a danger alert—check it out! </div>
+
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Código de Promoción" id="txt_cupon" >
+                                    <span class="input-group-btn">
+                                        <button id="btn_cupon" class="btn btn-usar" type="button">Usar</button>
+                                    </span>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                                    <p class="p1 descuento_cantidad"></p>
-                                </div>
+                                <p class="text-muted newp">Opcional</p>
                             </div>
-                            <div class="row fila f2">
-                                <div class="col-md-9 col-sm-9 col-xs-9 text-left">
-                                    <h5 class="bold1">Total</h5>
-                                </div>
-                                <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                                    <h5 class="bold1 total_pagar"></h5>
-                                </div>
-                            </div>
+
                         </div>
 
-                        <div class="col-md-4 mt-20">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Código de Promoción" id="txt_cupon" >
-                                <span class="input-group-btn">
-                                    <button id="btn_cupon" class="btn btn-usar" type="button">Usar</button>
-                                </span>
-                            </div>
-                            <p class="text-muted newp">Opcional</p>
+                        <div class="text-right mt-20">
+                            <!-- <input type="hidden" required="" id="idpaquete" name="idpaquete"> -->     
+                            <button class="btn btn-sm" type="button" id="nextBtn" onclick="initPedido()">
+                                Selecciona Método de Pago
+                            </button>
                         </div>
-                    </div>
-
-                    <div class="text-right mt-20">
-                        <!-- <input type="hidden" required="" id="idpaquete" name="idpaquete"> -->     
-                        <button class="btn btn-sm" type="button" id="nextBtn" onclick="initPedido()">
-                            Selecciona Método de Pago
-                        </button>
                     </div>
                 </div>
 
@@ -330,21 +340,22 @@
 
     function aplicarCupon(cupon){
         if( String(cupon).trim() == "" ){
-            alert("Debes ingresar un código de promoción");
+            mostrarErrorCupon("Debes ingresar un código de promoción");
         }else{
             if( CARRITO["paquete_precio"] == "" ){
-                alert("Debes seleccionar un paquete primero");
+                mostrarErrorCupon("Debes seleccionar un paquete primero");
             }else{
                 if( existe_cupon(cupon) ){
-                    alert("Este cupon ya esta en uso");
+                    mostrarErrorCupon("Este cupon ya esta en uso");
                 }else{
                     jQuery.post(
                         "<?= base_url() ?>Cuenta/apply_coupon/"+cupon+"/"+CARRITO["paquete_precio"],
                         {},
                         function(data){
                             if( data.error != "" ){
-                                alert(data.error);
+                                mostrarErrorCupon(data.error);
                             }else{
+                                quitarErrorCupon();
                                 CARRITO["cupon"] = data.descuento;
                                 jQuery(".descuento").html(data.descuento[2]+"% de descuento por Cupón: <strong>"+cupon+"</strong>");
                                 jQuery(".descuento_cantidad").html("-"+data.descuento[3]+"€");
@@ -356,6 +367,15 @@
                 }
             }
         }
+    }
+
+    function mostrarErrorCupon(error){
+        jQuery("#alerta_cupon").html(error);
+        jQuery("#alerta_cupon").show();
+    }
+
+    function quitarErrorCupon(){
+        jQuery("#alerta_cupon").hide();
     }
 
     function existe_cupon(cupon){

@@ -42,6 +42,8 @@ jQuery(document).ready(function() {
                     jQuery("#alert-cfichas").modal('show');
                 }
             }
+
+            jQuery(this).blur();
         }
     });
 
@@ -49,43 +51,6 @@ jQuery(document).ready(function() {
 
     revisar_ganadores = setInterval("ganadores()", 1000);
 });
-
-function contadores() {
-    var activas = 0;
-    jQuery(".anuncio_item").each(function(i, v){
-        var id = jQuery(this).attr("data-id");
-        activas++;
-        if( String(jQuery("#ult_user_"+id).html()).trim() != "" && jQuery(this).attr("data-status") == "activa" ){
-            var tiempo_actual = parseInt( jQuery(this).attr("data-tiempo_actual") );
-            var new_tiempo = (tiempo_actual-1);
-            if( new_tiempo >= 0 ){
-                var temp = 0;
-                if( new_tiempo > 9 ) {
-                    temp = new_tiempo;
-                    if( new_tiempo == 10 ){
-                        jQuery("#timer_"+id).addClass("timerfin");
-                    }else{
-                        jQuery("#timer_"+id).removeClass("timerfin");
-                    }
-                }else{
-                    jQuery("#timer_"+id).addClass("timerfin");
-                    temp = "0"+new_tiempo;
-                }
-                jQuery("#timer_"+id).html( "00:00:"+temp );
-                jQuery(this).attr("data-tiempo_actual", new_tiempo);
-                if( new_tiempo == 0 ){
-                    cerrar_anuncio(id);
-                }
-            }else{
-                activas--;
-            }
-        }
-    });
-    if( activas == 0 ){
-        clearInterval( bucle_contador );
-        clearInterval( revisar_ganadores );
-    }
-} 
 
 var REVISAR = true;
 
@@ -165,3 +130,40 @@ function cerrar_anuncio(id){
         jQuery("#seccion_comprar_"+id+" .boton_comprar button").addClass("btn-inact");
     }
 }
+
+/*function contadores() {
+    var activas = 0;
+    jQuery(".anuncio_item").each(function(i, v){
+        var id = jQuery(this).attr("data-id");
+        activas++;
+        if( String(jQuery("#ult_user_"+id).html()).trim() != "" && jQuery(this).attr("data-status") == "activa" ){
+            var tiempo_actual = parseInt( jQuery(this).attr("data-tiempo_actual") );
+            var new_tiempo = (tiempo_actual-1);
+            if( new_tiempo >= 0 ){
+                var temp = 0;
+                if( new_tiempo > 9 ) {
+                    temp = new_tiempo;
+                    if( new_tiempo == 10 ){
+                        jQuery("#timer_"+id).addClass("timerfin");
+                    }else{
+                        jQuery("#timer_"+id).removeClass("timerfin");
+                    }
+                }else{
+                    jQuery("#timer_"+id).addClass("timerfin");
+                    temp = "0"+new_tiempo;
+                }
+                jQuery("#timer_"+id).html( "00:00:"+temp );
+                jQuery(this).attr("data-tiempo_actual", new_tiempo);
+                if( new_tiempo == 0 ){
+                    cerrar_anuncio(id);
+                }
+            }else{
+                activas--;
+            }
+        }
+    });
+    if( activas == 0 ){
+        clearInterval( bucle_contador );
+        clearInterval( revisar_ganadores );
+    }
+} */
