@@ -64,6 +64,18 @@ class Paypal extends CI_Controller {
         $this->session->set_userdata('metodo', 'paypal');
         $this->session->set_userdata('status_pago', 'ok');
 
+        $this->load->model('Fichas_Model');
+
+        $data['user_id'] = $pedido->user;
+        $data['pedido_id'] = $pedido_id;
+        $data['payment_status'] = "Completed";
+        
+        $transaccion = $this->Fichas_Model->getTransaction( $pedido_id );
+        if( $transaccion == false ){
+            $this->Fichas_Model->procesar_compra($pedido_id, $pedido->user, $info->paquete_fichas+0);
+            $this->Fichas_Model->insertTransaction($_temp);
+        }
+
         redirect( base_url("comprarfichas") );
     }
 
@@ -96,7 +108,9 @@ class Paypal extends CI_Controller {
 
     function ipnf($pedido_id){
         $this->load->model('Fichas_Model');
+
         $paypalInfo = $this->input->post();
+
         $data['user_id'] = $paypalInfo['custom'];
         $data['pedido_id'] = $paypalInfo["item_number"];
         $data['txn_id'] = $paypalInfo["txn_id"];
@@ -104,21 +118,19 @@ class Paypal extends CI_Controller {
         $data['currency_code'] = $paypalInfo["mc_currency"];
         $data['payer_email'] = $paypalInfo["payer_email"];
         $data['payment_status'] = $paypalInfo["payment_status"];
-        file_put_contents('export.txt', var_export($data, true) );
-        $_temp = $data;
+
         $pedido = $this->Fichas_Model->get_pedido($paypalInfo["item_number"]+0);
         $_data = json_decode($pedido->data);
-        $this->Fichas_Model->procesar_compra($paypalInfo["item_number"]+0, $paypalInfo['custom']+0, $_data->paquete_fichas+0);
-        $this->Fichas_Model->insertTransaction($_temp);
+
         $transaccion = $this->Fichas_Model->getTransaction( $paypalInfo["item_number"]+0 );
         if( $transaccion == false ){
-            $this->Fichas_Model->insertTransaction($_temp);
+            $this->Fichas_Model->insertTransaction($data);
 
             if( strtolower(trim($data['payment_status'])) == strtolower("Completed") ){
                 $this->Fichas_Model->procesar_compra($paypalInfo["item_number"]+0, $paypalInfo['custom']+0, $_data->paquete_fichas+0);
             }
         }else{
-            // $this->Fichas_Model->updateTransaction($transaccion->payment_id, $data);
+            $this->Fichas_Model->updateTransaction($transaccion->payment_id, $data);
         }
     }
 }

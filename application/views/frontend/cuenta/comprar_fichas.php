@@ -16,7 +16,7 @@
                         <div class="m1">2</div>
                         <p class="m2">Pago</p>
                     </div>
-                    <div class="step text-center">
+                    <div class="step text-center step_3">
                         <div class="m1">3</div>
                         <p class="m2">Comenzar a Pujar</p>
                     </div>
@@ -108,7 +108,7 @@
 
                         <div class="text-right mt-20">
                             <!-- <input type="hidden" required="" id="idpaquete" name="idpaquete"> -->     
-                            <button class="btn btn-sm" type="button" id="nextBtn" onclick="initPedido()">
+                            <button class="btn btn-sm" type="button" id="nextBtn_1" onclick="initPedido()">
                                 Selecciona Método de Pago
                             </button>
                         </div>
@@ -175,15 +175,15 @@
                     </div>
                     <div class="text-right mt-20">
                         <!-- <input type="hidden" required="" id="idmethod" name="idmethod"> -->     
-                        <button class="btn btn-sm btn-usar" type="button" id="nextBtn" onclick="nextPrev(-1)">Volver</button>
-                        <button class="btn btn-sm hidden" type="button" id="nextBtn" onclick="nextPrev(1)">
+                        <button class="btn btn-sm btn-usar" type="button" id="nextBtn_2" onclick="nextPrev(-1)">Volver</button>
+                        <button class="btn btn-sm" type="button" id="nextBtn" onclick="nextPrev(1)">
                             Confirmar Pago
                         </button>
                     </div>
                 </div>
 
                 <div class="tab-form-fich dest">
-                    <h3 class="bold1">¡Gracias por tu compra!</h3>
+                    <h3 id="gracias" class="bold1">Confirmar compra</h3>
                     <hr>
                     <h5 class="bold1">Datos del Pedido</h5>
                     <hr class="mb-0">
@@ -225,7 +225,9 @@
                         </div>
                     </div>
                     <div class="text-right mt-20">
-                        <button class="btn btn-sm" type="button" id="procesarCompra">Mis fichas</button>
+                        <button class="btn btn-sm btn-usar" type="button" id="nextBtn_3" onclick="nextPrev(-1)">Volver</button>
+                        <button class="btn btn-sm" type="button" id="procesarCompra">Aceptar</button>
+                        <button id="perfil_go" class="btn btn-sm hidden" type="button" onclick="location.href = HOME+'perfil/';">Mi perfil</button>
                     </div>
                 </div>
             </form>
@@ -286,7 +288,12 @@
                 nextPrev(1);
                 selectmetodo_2(1);
                 nextPrev(1);
-                jQuery(".pasos").css("visibility", "hidden")
+                // jQuery(".pasos").css("visibility", "hidden");
+                jQuery("#perfil_go").removeClass("hidden");
+                jQuery("#nextBtn_3").addClass("hidden");
+                jQuery("#procesarCompra").addClass("hidden");
+                jQuery(".step_3 .m1, .step_3 .m2").addClass("finish");
+                jQuery("#gracias").html("¡Gracias por tu compra!");
             <?php } ?>
         <?php } ?>
 
@@ -332,7 +339,7 @@
             },
             function(data){
                 if( CARRITO["paquete_metodo_pago"] == "Paypal" ){
-                    location.href = HOME+"paypal/buy_fichas/"+CARRITO["pedido_id"];
+                    // nextPrev(1);
                 }
             }, 'json'
         );
@@ -486,10 +493,10 @@
     }
 
     function comprar_fichas(){
-        if( CARRITO["user"] != "" && CARRITO["paquete_id"] != "" && CARRITO["paquete_metodo_pago"] != "" ){
-            location.href = "<?= base_url() ?>perfil/";
+        if( CARRITO["paquete_metodo_pago"] == "Paypal" ){
+            location.href = HOME+"paypal/buy_fichas/"+CARRITO["pedido_id"];
         }else{
-            alert("Debe completar todos los pasos primero")
+            alert("Proceso de pago con tarjeta en construcción");
         }
     }
 
