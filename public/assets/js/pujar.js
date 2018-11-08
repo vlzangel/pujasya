@@ -42,9 +42,8 @@ jQuery(document).ready(function() {
                     jQuery("#alert-cfichas").modal('show');
                 }
             }
-
-            jQuery(this).blur();
         }
+        jQuery(this).blur();
     });
 
     // bucle_contador = setInterval("contadores()", 1000);
@@ -90,6 +89,8 @@ function actualizar_anuncio(anuncio){
 
     if( anuncio.ult_puja_user != USER_NICKNAME ){
         jQuery("#pujar_"+id).removeClass("btn-inact");
+    }else{
+        jQuery("#pujar_"+id).addClass("btn-inact");
     }
 
     if( parseInt(anuncio.se_compra) == 1 ){

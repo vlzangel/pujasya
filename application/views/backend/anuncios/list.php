@@ -108,8 +108,23 @@
         params = {'anuncio' : anuncio}; 
         show_modal('Anuncios/edit/'+anuncio, params, function(html, cerrar){
             console.log(html);
-    		cerrar();
-    	}, true);  
+            cerrar();
+        }, true);  
+    }
+
+    function activar_desactivar(_this){
+        var anuncio = _this.attr("data-id");
+        var status = _this.attr("data-status");
+        var ns = ( status == "activa" ) ? "cerrada" : "activa";
+        var bg = ( status == "activa" ) ? "#01c0c8" : "#999";
+        jQuery.post(
+            "<?= base_url( 'Anuncios/activo_inactivo/' ) ?>"+anuncio+"/"+status, 
+            {},
+            function(data){
+                _this.attr("data-status", ns);
+                _this.find("i").css("background", bg);
+            }
+        ); 
     }
 
 </script>

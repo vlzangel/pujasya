@@ -15,6 +15,10 @@ class Anuncios extends SuperController {
 
         $data["data"] = [];
         foreach ($anuncios as $key => $anuncio) {
+            $bg = ( $anuncio->status == "activa" ) ? "background: #01c0c8;": "background: #999;";
+            $st = ( $anuncio->status == "activa" ) ? "cerrada": "activa";
+
+
             $data["data"][] = [
                 $anuncio->id_anuncio,
                 $anuncio->titulo,
@@ -26,6 +30,9 @@ class Anuncios extends SuperController {
                 </a>
                 <a href="javascript:;" onclick="eliminar(jQuery(this));" title="Eliminar" data-id="'.$anuncio->id_anuncio.'" data-url="Anucios" style="margin-right: 10px;">
                     <i class="fa fa-trash text-danger" style="background: #01c0c8; padding: 12px; margin-top: -10px;color: white !important; border-radius: 5px;"></i>
+                </a>
+                <a href="javascript:;" onclick="activar_desactivar(jQuery(this));" title="Activar/Desactivar" data-id="'.$anuncio->id_anuncio.'" data-status="'.$st.'" data-url="Anucios" style="margin-right: 10px;">
+                    <i class="fa fa-check text-danger" style="'.$bg.' padding: 12px; margin-top: -10px;color: white !important; border-radius: 5px;"></i>
                 </a>
                 '
             ];

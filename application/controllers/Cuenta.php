@@ -9,6 +9,8 @@ class Cuenta extends CI_Controller {
         $this->load->model('Cupones_Model');
         $this->load->model('Anuncios_model');
         $this->load->model('Cuenta_model');
+        $this->load->model('Search_model');
+        $this->load->model('Pujar_model');
     }
 
     function init_pedido(){
@@ -169,6 +171,21 @@ class Cuenta extends CI_Controller {
             redirect(base_url('cuenta'));
             exit;
         }
+    }
+
+    public function misautopujas(){
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
+        $condition = array('a.status !=' => 2, 'f.user_id' => $this->session->userdata('user_id'));
+
+        $this->load->model('favoritos_model');
+
+        $data['autopujas'] = $this->Pujar_model->get_all_autopujas_by_user( $this->session->userdata('user_id') );
+
+        $data['anuncios'] = $this->Search_model->get_productos([ 'status' => "activa" ], null);
+
+        $data['title'] = 'Mis AutoPujas';
+        $data['contenido'] = 'cuenta/misautopujas';
+        $this->load->view('frontend/templates/plantilla',$data);
     }
 
 
@@ -788,21 +805,6 @@ class Cuenta extends CI_Controller {
         $data['contenido'] = 'cuenta/mispujas';
         $this->load->view('frontend/templates/plantilla',$data);
     }
-
-    public function misautopujas()
-    {
-        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-        $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
-
-        $this->load->model('favoritos_model');
-
-        $data['anuncios'] = $this->favoritos_model->get_all($condition);
-
-        $data['title'] = 'Mis AutoPujas';
-        $data['contenido'] = 'cuenta/misautopujas';
-        $this->load->view('frontend/templates/plantilla',$data);
-    }
-
 
     public function chat()
     {

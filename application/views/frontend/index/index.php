@@ -30,7 +30,7 @@
                         <li class="like-deal">
                             <span id="favoritos_span_<?= $p['id_anuncio']?>"><?php
                                 if( in_array($p['id_anuncio'], $favoritos) ){ ?>
-                                    <a href="http://localhost/pujasya/cuenta/favoritos" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a> <?php
+                                    <a href="<?= base_url("cuenta/favoritos"); ?>" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a> <?php
                                 }else{ ?>
                                     <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a> <?php
                                 } ?>
