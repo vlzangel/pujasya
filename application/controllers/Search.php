@@ -25,19 +25,14 @@ class Search extends CI_Controller {
         foreach ($favoritos as $favorito) {
             $data["favoritos"][] = $favorito["anuncio_id"];
         }
-
         $status = ( $status != null ) ? $status : 'activa';
         $orderByStr = ( $orderBy != null ) ? $this->getOrderBy($orderBy) : null;
-
         $conditions = [
             'status' => $status
         ];
-
         $data['status'] = $status;
         $data['orderBy'] = $orderBy;
-
         $data['premium'] = $this->Search_model->get_productos($conditions, $orderByStr);
-
         //Extraer nuevos usuarios
         $data['users'] = applib::get_all('*',applib::$users_table,array('status' => 1,'name !=' => null,'nickname !=' => null,'seo !=' => null,'mostrar_perfil' => 1),'id_user DESC','18,0');
         $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');

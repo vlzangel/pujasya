@@ -19,10 +19,22 @@ class Search_model extends CI_Model {
         $this->db->select('*');
         $this->db->from( $this->table );
         foreach ($conditions as $key => $value) {
-            if( $value == "cerrada" ){
-                $this->db->where( "status = 'cerrada' OR status = 'ganada' OR status = 'comprada'" );
-            }else{
-                $this->db->where( $key, $value );
+            switch ( $value ) {
+                case 'activa':
+                    $this->db->where( "status = 'activa' AND fecha_inicio <= NOW()" );
+                break;
+
+                case 'cerrada':
+                    $this->db->where( "status = 'cerrada' OR status = 'ganada' OR status = 'comprada'" );
+                break;
+
+                case 'proximas':
+                    $this->db->where( "status = 'activa' AND fecha_inicio > NOW()" );
+                break;
+                
+                default:
+                    $this->db->where( $key, $value );
+                break;
             }
         }
         if( $order_by != null ){
