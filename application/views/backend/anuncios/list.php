@@ -8,7 +8,7 @@
         <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12"> 
             <ol class="breadcrumb">
                 <li><a href="<?= base_url('Administrador/home') ?>">Panel Escritorio</a></li>
-                <li class="active">Anuncios</li>
+                <li class="active">Pujas</li>
             </ol>
         </div>
         <!-- /.col-lg-12 -->
@@ -19,8 +19,8 @@
 	        <div class="white-box">
 
                 <div style="overflow: hidden;">
-                    <h3 class="box-title pull-left">Listado de Anuncios</h3> 
-                    <button id="new_anuncio" class="btn btn-success pull-right">Nuevo Anuncio</button>
+                    <h3 class="box-title pull-left">Listado de Pujas</h3> 
+                    <button id="new_anuncio" class="btn btn-success pull-right">Nueva Puja</button>
                 </div>
                 <hr>
 
@@ -97,7 +97,6 @@
 
 	    jQuery("#new_anuncio").on("click", function(e){
 	    	show_modal('Anuncios/new', {}, function(html, cerrar){
-
 	    		cerrar();
 	    	}, true);
 	    });
