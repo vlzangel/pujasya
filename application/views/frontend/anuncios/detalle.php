@@ -264,7 +264,7 @@
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div style="max-height: 550px; overflow: auto;" role="tabpanel" class="tab-pane fade in active" id="historial">
+                                                <div role="tabpanel" class="tab-pane fade in active" id="historial">
                                                     <div class="mt-30">
                                                         <div class="row encabezado rsinmlf">
                                                             <div class="col-md-7 col-xs-7">
@@ -277,34 +277,17 @@
                                                         if( count($historial) > 0 ){
                                                             foreach ($historial as $key => $value) {
                                                                 echo '
-                                                                    <div class="row encabezado rsinmlf">
-                                                                        <div class="col-md-7 col-xs-7">
-                                                                            <h5 class=" text-left">'.$value->nombre.'</h5>
-                                                                        </div>
-                                                                        <div class="col-md-5 col-xs-5">
-                                                                            <h5 class="text-right">'.$value->monto.'</h5>
-                                                                        </div>
+                                                                <div class="row fila rsinmlf">
+                                                                    <div class="col-md-7 col-xs-7">
+                                                                        <h5 class="text-left">'.$value->nombre.'</h5>
                                                                     </div>
+                                                                    <div class="col-md-5 col-xs-5">
+                                                                        <h5 class=" text-right">'.$value->monto.'</h5>
+                                                                    </div>
+                                                                </div>
                                                                 ';
                                                             }
                                                         } ?>
-
-                                                        <!-- <div class="row fila rsinmlf">
-                                                            <div class="col-md-7 col-xs-7">
-                                                                <h5 class="text-left">Julian</h5>
-                                                            </div>
-                                                            <div class="col-md-5 col-xs-5">
-                                                                <h5 class=" text-right">$20</h5>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row fila rsinmlf">
-                                                            <div class="col-md-7 col-xs-7">
-                                                                <h5 class="text-left">Julian</h5>
-                                                            </div>
-                                                            <div class="col-md-5 col-xs-5">
-                                                                <h5 class=" text-right">$20</h5>
-                                                            </div>
-                                                        </div> -->
                                                     </div>
                                                 </div>
                                                 <div role="tabpanel" class="tab-pane fade mt-30 text-justify" id="envio">
