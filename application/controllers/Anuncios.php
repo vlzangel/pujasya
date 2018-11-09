@@ -44,7 +44,7 @@ class Anuncios extends SuperController {
     public function new(){
         $data["robots"] = $this->Robots_Model->get_list();
         $this->load->view('backend/templates/modal', [
-            "titulo" => "Nuevo Puja",
+            "titulo" => "Nueva Puja",
             "accion" => "Crear",
             "data" => $data,
             "plantilla" => "anuncios/show"
