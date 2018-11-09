@@ -33,4 +33,9 @@ class Pujar_model extends CI_Model {
         $this->db->update('autopujas', $data);
     }
 
+    function update_by_anuncio($anuncio_id, $data){
+        $this->db->where('anuncio_id', $anuncio_id);
+        $this->db->update('autopujas', $data);
+    }
+
 }

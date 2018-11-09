@@ -6,29 +6,16 @@ jQuery(document).ready(function() {
         if( !jQuery(this).hasClass("btn-inact") ){
             var mis_fichas = parseInt( jQuery("#mis_fichas").html() );
             if( mis_fichas > 0 && jQuery(this).attr("data-status") == "activa" ){
-                // jQuery(this).attr("data-tiempo_actual", jQuery(this).attr("data-tiempo") );
                 var id = jQuery(this).attr("data-id");
                 var puja = jQuery(this).attr("data-precio_puja");
                 puja = ( puja == "0.00" ) ? 0: parseFloat(puja);
                 puja += 0.01;
                 puja = (Math.round(puja * 100) / 100);
-                /*jQuery(this).attr("data-precio_puja", puja);
-                jQuery("#precio_puja_"+id).html(puja+"€");
-                jQuery("#comprar_"+id).attr("data-puja", puja);
-                if( jQuery(this).attr("data-compra") != "No" ){
-                    var compra = jQuery(this).attr("data-compra");
-                    compra = ( compra == "0.00" ) ? 0: parseFloat(compra);
-                    compra = (Math.round(compra * 100) / 100);
-                    jQuery("#precio_compra_"+id).html((compra-puja)+"€");
-                }*/
                 var cantidad_fichas = jQuery(this).attr("data-fichas");
                 jQuery("#mis_fichas").html( mis_fichas-cantidad_fichas );
-
                 jQuery("#pujar_"+id).addClass("btn-inact");
-
                 jQuery.post(
-                    HOME+"Pujar/pujar",
-                    {
+                    HOME+"Pujar/pujar", {
                         "id_anuncio": jQuery(this).attr("data-id"),
                         "precio_puja": puja
                     },
@@ -46,12 +33,23 @@ jQuery(document).ready(function() {
         jQuery(this).blur();
     });
 
-    // bucle_contador = setInterval("contadores()", 1000);
-
     revisar_ganadores = setInterval("ganadores()", 1000);
+    // cron = setInterval("cron()", 1000);
 });
 
 var REVISAR = true;
+
+function new_cron() {
+    if( REVISAR ){
+        jQuery.post(
+            HOME+"Pujar/cronPujas",
+            {},
+            function(data){
+                console.log(data);
+            }, 'json'
+        );
+    }
+} 
 
 function ganadores() {
     if( REVISAR ){
@@ -59,9 +57,7 @@ function ganadores() {
             HOME+"Pujar/revisarPujas",
             {},
             function(data){
-                // console.log( data );
                 if( data[0].length > 0 ){
-                    console.log( data[0] );
                     jQuery.each(data[0], function(i, anuncio){
                         var id = anuncio.id_anuncio;
                         cerrar_anuncio(id);
@@ -69,7 +65,6 @@ function ganadores() {
                 }
                 if( data[1].length > 0 ){
                     jQuery.each(data[1], function(i, anuncio){
-                        console.log( anuncio.donde );
                         actualizar_anuncio(anuncio);
                     });
                 }
@@ -131,40 +126,3 @@ function cerrar_anuncio(id){
         jQuery("#seccion_comprar_"+id+" .boton_comprar button").addClass("btn-inact");
     }
 }
-
-/*function contadores() {
-    var activas = 0;
-    jQuery(".anuncio_item").each(function(i, v){
-        var id = jQuery(this).attr("data-id");
-        activas++;
-        if( String(jQuery("#ult_user_"+id).html()).trim() != "" && jQuery(this).attr("data-status") == "activa" ){
-            var tiempo_actual = parseInt( jQuery(this).attr("data-tiempo_actual") );
-            var new_tiempo = (tiempo_actual-1);
-            if( new_tiempo >= 0 ){
-                var temp = 0;
-                if( new_tiempo > 9 ) {
-                    temp = new_tiempo;
-                    if( new_tiempo == 10 ){
-                        jQuery("#timer_"+id).addClass("timerfin");
-                    }else{
-                        jQuery("#timer_"+id).removeClass("timerfin");
-                    }
-                }else{
-                    jQuery("#timer_"+id).addClass("timerfin");
-                    temp = "0"+new_tiempo;
-                }
-                jQuery("#timer_"+id).html( "00:00:"+temp );
-                jQuery(this).attr("data-tiempo_actual", new_tiempo);
-                if( new_tiempo == 0 ){
-                    cerrar_anuncio(id);
-                }
-            }else{
-                activas--;
-            }
-        }
-    });
-    if( activas == 0 ){
-        clearInterval( bucle_contador );
-        clearInterval( revisar_ganadores );
-    }
-} */

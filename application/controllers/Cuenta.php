@@ -71,7 +71,8 @@ class Cuenta extends CI_Controller {
             "user_id" => $this->input->post('user_id'),
             "producto_id" => $producto_id,
             "operacion" => "Compra",
-            "data" => json_encode($info)
+            "data" => json_encode($info),
+            "status" => "Pagada"
         ];
         $this->Anuncios_model->saveCompraProducto($data);
         $this->Anuncios_model->updateStatus($producto_id, "comprada");
@@ -99,9 +100,7 @@ class Cuenta extends CI_Controller {
                 ];
             }
         }else{
-            $r = [
-                "error" => "Cupón invalido"
-            ];
+            $r = ["error" => "Cupón invalido"];
         }
         echo json_encode($r);
     }

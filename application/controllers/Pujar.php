@@ -36,8 +36,34 @@ class Pujar extends SuperController {
     }
 
     public function revisarPujas(){
-        $this->run_autopujas();
+        $ahora = time();
+        $anuncios = $this->Search_model->get_revision();
+        $ganadas = [];
+        $actualizadas = [];
+        foreach ($anuncios as $anuncio) {
+            if( $anuncio["status"] == "activa" ){
+                if( $anuncio["ult_puja_user"] != "" ){
+                    $tiempo_actual = strtotime($anuncio["ult_puja_time"]);
+                    $anuncio["tiempo_actual"] = $anuncio["tiempo_puja"]-( $ahora - $tiempo_actual );
+                    $actualizadas[] = $anuncio;
+                }
+            }else{
+                $ganadas[] = $anuncio;
+            }
+        }
+        echo json_encode([$ganadas, $actualizadas]);
+    }
 
+    public function ejecutarCron(){
+        set_time_limit (0);
+        for ($i=0; $i < 60; $i++) { 
+            $this->cronPujas();
+            sleep(1);
+        }
+    }
+
+    public function cronPujas(){
+        $anuncios_pujados = $this->run_autopujas();
         $ahora = time();
         $conditions = [ 'status' => "activa" ];
         $anuncios = $this->Search_model->get_productos($conditions, null);
@@ -55,13 +81,11 @@ class Pujar extends SuperController {
                 }
             }
         }
-
-        $actualizadas = $this->robots( $actualizadas_ids );
-
-        echo json_encode([$ganadas, $actualizadas]);
+        $actualizadas = $this->robots( $actualizadas_ids, $anuncios_pujados );
+        echo json_encode([$ganadas, $actualizadas, $anuncios_pujados]);
     }
 
-    private function robots($actualizadas_ids){
+    private function robots($actualizadas_ids, $anuncios_pujados){
         if( count($actualizadas_ids) > 0){
             $ahora = time();
             $conditions = [ 'status' => "activa" ];
@@ -77,10 +101,14 @@ class Pujar extends SuperController {
                         if( $faltan <= $anuncio["robot_seg"] ){
                             if( $anuncio["robot_monto_maximo"] > $actualizadas_ids[ $anuncio["id_anuncio"] ] ){
 
-                                if( $anuncio["ultimo_robot"] == $anuncio["robot_id_2"] || $anuncio["ultimo_robot"] == 0 ){
-                                    $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id"], $actualizadas_ids[ $anuncio["id_anuncio"] ], $anuncio["cantidad_fichas"]);
-                                }else{
-                                    $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id_2"], $actualizadas_ids[ $anuncio["id_anuncio"] ], $anuncio["cantidad_fichas"]);
+                                if( !in_array($anuncio["id_anuncio"], $anuncios_pujados)){
+
+                                    if( $anuncio["ultimo_robot"] == $anuncio["robot_id_2"] || $anuncio["ultimo_robot"] == 0 ){
+                                        $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id"], $actualizadas_ids[ $anuncio["id_anuncio"] ], $anuncio["cantidad_fichas"]);
+                                    }else{
+                                        $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id_2"], $actualizadas_ids[ $anuncio["id_anuncio"] ], $anuncio["cantidad_fichas"]);
+                                    }
+
                                 }
 
                                 $_temp_anuncio = (array) $this->Anuncios_Model->getAnuncio( $anuncio["id_anuncio"] )[0];
@@ -113,6 +141,9 @@ class Pujar extends SuperController {
     private function pujaGanada($id_anuncio){
         $anuncio = $this->Anuncios_Model->getAnuncio( $id_anuncio )[0];
         $user = $this->Usuarios_model->get_user_nick($anuncio->ult_puja_user);
+
+        $this->Pujar_model->update($id_anuncio, ["status" => "terminada" ]);
+
         $info["producto_precio"] = $anuncio->precio_compra;
         $info["producto_puja"] = $anuncio->precio_puja;
         $info["producto_envio"] = $anuncio->precio_envio;
@@ -121,7 +152,8 @@ class Pujar extends SuperController {
             "user_id" => $user->id_user,
             "producto_id" => $id_anuncio,
             "operacion" => "Puja Ganada",
-            "data" => json_encode($info)
+            "data" => json_encode($info),
+            "status" => "Pendiente"
         ];
         $this->Anuncios_Model->saveCompraProducto($data);
     }
@@ -154,42 +186,36 @@ class Pujar extends SuperController {
 
 
     private function run_autopujas(){
+        $anuncios_pujados = [];
         $autopujas = $this->Pujar_model->get_all_autopujas();
-
         $ahora = time();
         foreach ($autopujas as $key => $autopuja) {
-            $tiempo_actual = strtotime($autopujas->ult_puja_time);
-            $faltan = $autopujas->tiempo_puja-( $ahora - $tiempo_actual );
-
-            $usuario = $this->Usuarios_model->get_user($autopuja->user_id);
-
-            if( $faltan <= $autopuja->pujar_cada ){
-
-                if( $autopuja->ult_puja_user != $usuario->nickname ){
-
-                    if( $autopuja->max_monto > $autopuja->precio_puja ){
-
-                        if( $autopuja->max_fichas > $autopuja->fichas_usadas ){
-
-                            if( $usuario->fichas > $autopuja->cantidad_fichas ){
-
-                                $this->pujar_robot($autopuja->id_anuncio, $autopuja->user_id, $autopuja->precio_puja, $autopuja->cantidad_fichas, false);
-                                $this->Pujar_model->update($autopuja->id, ["fichas_usadas" => $autopuja->fichas_usadas+$autopuja->cantidad_fichas ]);
-
+            if( !in_array($autopuja->id_anuncio, $anuncios_pujados)){
+                $tiempo_actual = strtotime($autopuja->ult_puja_time);
+                $faltan = $autopuja->tiempo_puja-( $ahora - $tiempo_actual );
+                $usuario = $this->Usuarios_model->get_user($autopuja->user_id);
+                if( $faltan <= $autopuja->pujar_cada ){
+                    if( $autopuja->ult_puja_user != $usuario->nickname ){
+                        if( $autopuja->max_monto > $autopuja->precio_puja ){
+                            if( $autopuja->max_fichas > $autopuja->fichas_usadas ){
+                                if( $usuario->fichas > $autopuja->cantidad_fichas ){
+                                    $this->pujar_robot($autopuja->id_anuncio, $autopuja->user_id, $autopuja->precio_puja, $autopuja->cantidad_fichas, false);
+                                    $this->Pujar_model->update($autopuja->id, ["fichas_usadas" => $autopuja->fichas_usadas+$autopuja->cantidad_fichas ]);
+                                    $anuncios_pujados[] = $autopuja->id_anuncio;
+                                }else{
+                                    $this->Pujar_model->update($autopuja->id, ["status" => "terminada" ]);
+                                }
                             }else{
                                 $this->Pujar_model->update($autopuja->id, ["status" => "terminada" ]);
                             }
-                            
-
                         }else{
                             $this->Pujar_model->update($autopuja->id, ["status" => "terminada" ]);
                         }
-                    }else{
-                        $this->Pujar_model->update($autopuja->id, ["status" => "terminada" ]);
                     }
                 }
             }
         }
+        return $anuncios_pujados;
     }
 
     public function saveAutopujas(){

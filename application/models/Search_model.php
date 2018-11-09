@@ -8,6 +8,13 @@ class Search_model extends CI_Model {
         parent::__construct();
     }
 
+    function get_revision(){
+        $this->db->select('*');
+        $this->db->from( $this->table );
+        $query = $this->db->get();
+        return ($query) ? $query->result_array() : false;
+    }
+
     function get_productos($conditions, $order_by){
         $this->db->select('*');
         $this->db->from( $this->table );
