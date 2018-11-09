@@ -70,13 +70,14 @@ class Cuenta extends CI_Controller {
         $data = [
             "user_id" => $this->input->post('user_id'),
             "producto_id" => $producto_id,
-            "operacion" => "Compra",
+            "operacion" => $this->input->post('operacion'),
             "data" => json_encode($info),
-            "status" => "Pagada"
+            "status" => "Pendiente"
         ];
         $this->Anuncios_model->saveCompraProducto($data);
-        $this->Anuncios_model->updateStatus($producto_id, "comprada");
-        echo json_encode(["error" => ""]);
+        // $this->Anuncios_model->updateStatus($producto_id, "comprada");
+        $compra = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') )[0];
+        echo json_encode(["pedido_id" => $compra->id]);
     }
 
     public function apply_coupon($cupon_name, $total){
@@ -125,7 +126,14 @@ class Cuenta extends CI_Controller {
     }
 
     function comprarproducto($id){   
+
+        $data["prepago"]['pedido_id'] = $this->session->userdata('pedido_id');
+        $data["prepago"]['producto_id'] = $this->session->userdata('producto_id');
+        $data["prepago"]['metodo'] = $this->session->userdata('metodo');
+        $data["prepago"]['status_pago'] = $this->session->userdata('status_pago');
+
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
+        $data['compras'] = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') );
         $data['p'] = $this->Anuncios_model->getAnuncio($id)[0];
         $data['meta'] = array(
             array(

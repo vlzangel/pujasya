@@ -54,14 +54,6 @@ class Pujar extends SuperController {
         echo json_encode([$ganadas, $actualizadas]);
     }
 
-    public function ejecutarCron(){
-        set_time_limit (0);
-        for ($i=0; $i < 60; $i++) { 
-            $this->cronPujas();
-            sleep(1);
-        }
-    }
-
     public function cronPujas(){
         $anuncios_pujados = $this->run_autopujas();
         $ahora = time();
@@ -82,7 +74,8 @@ class Pujar extends SuperController {
             }
         }
         $actualizadas = $this->robots( $actualizadas_ids, $anuncios_pujados );
-        echo json_encode([$ganadas, $actualizadas, $anuncios_pujados]);
+        //echo json_encode([$ganadas, $actualizadas, $anuncios_pujados]);
+        echo json_encode(["cron" => true]);
     }
 
     private function robots($actualizadas_ids, $anuncios_pujados){

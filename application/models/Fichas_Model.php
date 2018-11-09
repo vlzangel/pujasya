@@ -75,10 +75,10 @@
             return $insert ? true : false;
         }
 
-        function getTransaction($pedido_id) {
+        function getTransaction($producto_id) {
             $this->db->select('*');
             $this->db->from('payments');
-            $this->db->where('pedido_id', $pedido_id);
+            $this->db->where('producto_id', $producto_id);
             $query = $this->db->get();
             return ($query) ? $query->result()[0] : false;
         }

@@ -55,7 +55,9 @@
                                                                 <p class="" style="margin-bottom: 0;"><strong>Precio Puja:</strong> - <?= $info->producto_puja ?>€ </p>
                                                                 <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5>  <?php
                                                             }else{ ?>
-                                                                <h5 class="bold1" style="margin-bottom: 0;">Precio Puja: <?= $info->producto_puja ?>€</h5>  <?php
+                                                                <h5 class="bold1" style="margin-bottom: 0;">Precio Puja: <?= $info->producto_puja ?>€</h5>
+                                                                <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p> 
+                                                                <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->producto_puja+$info->producto_envio ?>€</h5> <?php
                                                             } ?>
                                                         </div>
                                                         <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20"><?php

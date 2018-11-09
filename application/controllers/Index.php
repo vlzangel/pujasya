@@ -7,6 +7,10 @@ class Index extends CI_Controller {
         applib::destroy_filters();
     }
     
+    function cron(){      
+        $this->load->view('frontend/index/cron', []);
+    }
+    
     function terminos_y_condiciones(){      
         $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
         $data['meta'] = array(
