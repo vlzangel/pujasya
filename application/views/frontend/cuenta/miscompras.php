@@ -59,12 +59,12 @@
                                                             } ?>
                                                         </div>
                                                         <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20"><?php
-                                                            switch ( $info->status ) {
+                                                            switch ( $anuncio->status_compra ) {
                                                                 case 'Pagada':
                                                                     echo '<div class="etiq etiq-success">PAGADA</div>';
                                                                 break;
                                                                 case 'Pendiente':
-                                                                    echo '<div class="etiq etiq-success">PAGADA</div>';
+                                                                    echo '<a class="btn btn-default btn-sm btn-block" href="'.base_url("comprarproducto/").$anuncio->id_anuncio.'">PAGAR</a>';
                                                                 break;
                                                             } ?>
                                                         </div>
