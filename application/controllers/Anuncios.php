@@ -101,15 +101,12 @@ class Anuncios extends SuperController {
     }
 
     public function update($id_anuncio){
-
         $anuncio = $this->Anuncios_Model->getAnuncio($id_anuncio)[0];
-
         if( $anuncio->imgs != "" ){
             $imgs_actuales = json_decode( $anuncio->imgs );
         }else{
             $imgs_actuales = [];
         }
-
         $name_base = time();
         $imagenes = $this->save_imgs( $this->input->post('imgs'), $id_anuncio, $name_base);
         foreach ($imgs_actuales as $key => $value) {
@@ -119,7 +116,6 @@ class Anuncios extends SuperController {
                 }
             }
         }
-
         $datos = [
             'titulo' => $this->input->post('titulo'),
             'descripcion' => $this->input->post('descripcion'),
@@ -135,20 +131,15 @@ class Anuncios extends SuperController {
             'precio_envio' => $this->input->post('precio_envio'),
             'cantidad_fichas' => $this->input->post('cantidad_fichas'),
             'img_principal' => $imagenes[$this->input->post("img_principal")],
-
             'robot_id' => $this->input->post('robot_id'),
             'robot_id_2' => $this->input->post('robot_id_2'),
             'robot_seg' => $this->input->post('robot_seg'),
             'robot_monto_maximo' => $this->input->post('robot_monto_maximo'),
             'robot_status' => $this->input->post('robot_status'),
-
             'imgs' => json_encode($imagenes),
         ];
-
         $this->Anuncios_Model->updateAnuncio($id_anuncio, $datos);
-
         print_r( json_encode( [$imagenes, $this->input->post("img_principal")] ) );
-
     }
 
     private function save_imgs($imgs, $id_anuncio, $name_base){
@@ -167,11 +158,13 @@ class Anuncios extends SuperController {
 
 
     public function activo_inactivo($id_anuncio, $status){
+        $anuncio = $this->Anuncios_Model->getAnuncio($id_anuncio)[0];
         $datos = [
             "status" => $status,
             "ult_puja_user" => "",
             "ult_puja_time" => "0000-00-00 00:00:00",
-            "precio_puja" => 0
+            "precio_puja" => 0,
+            "reventa" => $anuncio["reventa"]+1
         ];
         $this->Anuncios_Model->updateAnuncio($id_anuncio, $datos);
         print_r( json_encode( [$id_anuncio, $status] ) );
@@ -186,35 +179,29 @@ class Anuncios extends SuperController {
 
     public function anuncio($id_anuncio = NULL) {
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-        
         $data["anuncio"] = (array) $this->Anuncios_Model->getAnuncio($id_anuncio)[0];
-
         if($data['anuncio'] == "") {
             redirect(base_url());
             exit;
         }
-
-        $historial = $this->Anuncios_Model->getHistorial($id_anuncio);
+        $historial = $this->Anuncios_Model->getHistorial($id_anuncio, $data["anuncio"]["reventa"]);
         if( $historial == false ){
             $data["historial"] = [];
         }else{
             $data["historial"] = $historial;
         }
-
         $check = applib::check_favorito($id_anuncio);
         if($check == true){
             $data["favoritos"] = "YES";
         } else {
             $data["favoritos"] = "NO";
         }
-
         $data['meta'] = array(
             array(
                 'name'      => 'description',
                 'content'   => ''.$data['anuncio']['titulo'].' | Pujas'
             )
         );
-
         $data['title'] = $data['anuncio']['titulo'];
         $data['contenido'] = 'anuncios/detalle';
         $this->load->view('frontend/templates/plantilla', $data);

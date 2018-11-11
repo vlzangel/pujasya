@@ -38,27 +38,20 @@ class Index extends CI_Controller {
     }
 
     function vlz_contactar(){
-
         $this->load->library('captcha/recaptchalib');
-
         $this->recaptchalib->Recaptchalib("6Le5hHUUAAAAADyBA1kVcoaO8EkIt5C2uoJjkIEe");
         $response = $this->recaptchalib->verifyResponse($_SERVER["REMOTE_ADDR"],$_POST["g-recaptcha-response"]);
-
         if($response == null || $response->success == false) {
-
             $data['info'] = array(
                 'nombre'   => $this->input->post('nombre'),
                 'email'     => $this->input->post('email'),
                 'asunto'  => $this->input->post('asunto'),
                 'mensaje'   => $this->input->post('mensaje')
             );
-
             applib::flash('danger','¡Debes completar el captcha!');
-
             $data['title'] = 'Contacta';
             $data['contenido'] = 'index/contacta';
             $this->load->view('frontend/templates/plantilla', $data);
-            
         }else{
             if( $this->input->post() ){
                 $data_in = array(
@@ -90,7 +83,7 @@ class Index extends CI_Controller {
         if($this->input->post()){
             $this->load->library('form_validation');
             $this->form_validation->set_rules('email', 'Correo electrónico', 'required');
-            $this->form_validation->set_rules('horario', 'Hoario/Día', 'required');
+            $this->form_validation->set_rules('horario', 'Horario/Día', 'required');
             if ($this->form_validation->run()){
                 $data_in = array(
                     'plan_id'   => $this->input->post('id_pack',true),

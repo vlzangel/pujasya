@@ -22,14 +22,15 @@ class Pujar extends SuperController {
             "ult_puja_user" => $usuario->nickname,
             "ult_puja_time" => date("Y-m-d H:i:s")
         ];
+        $anuncio = $this->Anuncios_Model->getAnuncio($this->input->post('id_anuncio'))[0];
         $this->Anuncios_Model->updateAnuncio($this->input->post('id_anuncio'), $data);
         $data_2 = [
             "anuncio_id" => $this->input->post('id_anuncio'),
             "user_id" => $usuario->id_user,
-            "monto" => $this->input->post('precio_puja')
+            "monto" => $this->input->post('precio_puja'),
+            "reventa" => $anuncio->reventa
         ];
         $this->Anuncios_Model->newPuja($data_2);
-
         echo json_encode([
             "user" => $usuario->nickname
         ]);

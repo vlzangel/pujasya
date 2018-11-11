@@ -37,9 +37,7 @@ class Cuenta extends CI_Controller {
     function update_pedido_fichas($pedido_id){
         $pedido = $this->Fichas_Model->get_pedido( $pedido_id )[0];
         $info["metodo_pago"] = $this->input->post('paquete_metodo_pago');
-        $data = [
-            "data" => json_encode($info)
-        ];
+        $data = [ "data" => json_encode($info) ];
         $this->Fichas_Model->update_pedido($pedido_id, $data);
         echo json_encode(["error" => ""]);
     }
@@ -126,12 +124,10 @@ class Cuenta extends CI_Controller {
     }
 
     function comprarproducto($id){   
-
         $data["prepago"]['pedido_id'] = $this->session->userdata('pedido_id');
         $data["prepago"]['producto_id'] = $this->session->userdata('producto_id');
         $data["prepago"]['metodo'] = $this->session->userdata('metodo');
         $data["prepago"]['status_pago'] = $this->session->userdata('status_pago');
-
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $data['compras'] = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') );
         $data['p'] = $this->Anuncios_model->getAnuncio($id)[0];
@@ -183,13 +179,9 @@ class Cuenta extends CI_Controller {
     public function misautopujas(){
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $condition = array('a.status !=' => 2, 'f.user_id' => $this->session->userdata('user_id'));
-
         $this->load->model('favoritos_model');
-
         $data['autopujas'] = $this->Pujar_model->get_all_autopujas_by_user( $this->session->userdata('user_id') );
-
         $data['anuncios'] = $this->Search_model->get_productos([ 'status' => "activa" ], null);
-
         $data['title'] = 'Mis AutoPujas';
         $data['contenido'] = 'cuenta/misautopujas';
         $this->load->view('frontend/templates/plantilla',$data);

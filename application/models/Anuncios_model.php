@@ -29,11 +29,12 @@ class Anuncios_model extends CI_Model {
         return ($query) ? $query->result() : false;
     }
 
-    function getHistorial($id_anuncio){
+    function getHistorial($id_anuncio, $reventa){
         $this->db->select('vv_users.nickname AS nombre, historial_pujas.monto AS monto');
         $this->db->from('historial_pujas');
         $this->db->join('vv_users', 'vv_users.id_user = historial_pujas.user_id', 'inner');
         $this->db->where('historial_pujas.anuncio_id', $id_anuncio);
+        $this->db->where('historial_pujas.reventa', $reventa);
         $this->db->order_by('historial_pujas.id','DESC');
         $query = $this->db->get();
         return ($query) ? $query->result() : false;
