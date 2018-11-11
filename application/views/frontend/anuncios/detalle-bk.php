@@ -19,6 +19,7 @@
 <main id="mainContent" class="main-content">
     <div class="page-container ptb-60">
         <div class="container">
+            <!--  <p class="navegar_filtro">Estás en: <a href="<?= base_url('anuncios/'.$anuncio['cat_seo'])?>" title="<?= $anuncio['categoria'] ?>"><?= $anuncio['categoria'] ?></a> | <a href="<?= base_url('anuncios/'.$anuncio['cat_seo'].'/'.$anuncio['subcat_seo'])?>" title="<?= $anuncio['subcategoria'] ?>"><?= $anuncio['subcategoria'] ?></a></p> -->
             <div class="row row-rl-10 row-tb-20">
                 <h1 class="mb-10 mt-30 h3">
                     <strong>
@@ -92,70 +93,25 @@
                                                 <div class="row" style="">
                                                     <div class="col-md-3 col-sm-3 col-xs-6 co1-co2">
                                                         <h6 class="lbl1">Precio de Puja</h6>
-                                                        <h2 class="lbl2" id="precio_puja_<?=$anuncio['id_anuncio']?>"><?= number_format($anuncio['precio_puja'], 2, '.', ',') ?>€</h2>
+                                                        <h2 class="lbl2"><?= number_format($anuncio['precio_puja'], 2, '.', ',') ?>€</h2>
                                                     </div>
                                                     <div class="col-md-6 col-sm-6 col-xs-6 co1-co2">
-                                                        <h5 id="timer_<?= $anuncio['id_anuncio'] ?>" class="timer timerfin">00:00:00</h5>
+                                                        <h5 class="timer timerfin">00:00:00</h5>
                                                         <?php
-                                                            echo '<h5 class="usuariop" id="ult_user_'.$anuncio['id_anuncio'].'">'.$p["ult_puja_user"].'</h5>';
+                                                            if( $anuncio["ult_puja_user"] != "" ){
+                                                                echo '<h5 class="usuariop">'.$anuncio["ult_puja_user"].'</h5>';
+                                                            }
                                                         ?> 
                                                     </div>
                                                     <div class="col-md-1 col-sm-1 col-xs-4 co4" >
-                                                        <?php 
-                                                            if( $anuncio['status'] == "activa" ){ ?>
-                                                                <button id="autopuja_<?=$anuncio['id_anuncio']?>" class="btn btnatt" onclick="window.location='<?= base_url('cuenta/misautopujas')?>'" >
-                                                                    <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/a-circle.png?v0" alt="">
-                                                                </button><?php
-                                                            }else{ ?>
-                                                                <button id="autopuja_<?=$anuncio['id_anuncio']?>" class="btn btnatt btn-inact">
-                                                                    <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/a-circle.png?v0" alt="">
-                                                                </button><?php
-                                                            } 
-                                                        ?>
+                                                        <button class="btn btnatt2" >
+                                                        <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/a-circle.png?v0" alt=""></button>
                                                     </div>
                                                     <div class="col-md-2 col-sm-2 col-xs-8 co3">
-
-                                                        <?php 
-                                                            if($this->session->userdata('user_id') != ""):
-                                                                if( $user['fichas']+0 > 0 ){ ?>
-                                                                    <button <?php 
-                                                                        if( $anuncio['status'] == "activa" ){ ?>
-                                                                            id="pujar_<?= $anuncio['id_anuncio'] ?>"
-                                                                            class="btn btnatt anuncio_item"
-                                                                            data-fichas="<?= $anuncio['cantidad_fichas'] ?>"
-                                                                            data-tiempo="<?= $anuncio['tiempo_puja'] ?>"
-                                                                            data-id="<?= $anuncio['id_anuncio'] ?>"
-                                                                            data-precio_puja="<?= $anuncio['precio_puja'] ?>"
-                                                                            data-tiempo_actual="<?= $anuncio['tiempo_puja'] ?>"
-                                                                            data-status="<?= $anuncio['status'] ?>" <?php 
-                                                                        }else{ ?>
-                                                                            class="btn btnatt btn-inact" <?php
-                                                                        }
-                                                                        if( $p["se_compra"] == 1 && $p["status"] == "activa" ){ ?>
-                                                                            data-compra="<?= $anuncio['precio_compra'] ?>"
-                                                                        <?php }else{ ?>
-                                                                            data-compra="No"
-                                                                        <?php } ?>
-                                                                    >
-                                                                        <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
-                                                                        PUJAR
-                                                                    </button> <?php 
-                                                                }else{ ?>
-                                                                    <button 
-                                                                        class="btn btnatt anuncio_item" 
-                                                                        data-toggle="modal" 
-                                                                        data-target="#alert-cfichas"
-                                                                    >
-                                                                        <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
-                                                                        PUJAR
-                                                                    </button> <?php 
-                                                                }
-                                                            else: ?>
-                                                                <button class="btn btnatt" onclick="window.location='<?= base_url('ingresar')?>'">
-                                                                    <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
-                                                                    PUJAR
-                                                                </button> <?php 
-                                                            endif ?>
+                                                        <button class="btn btnatt">
+                                                            <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
+                                                            PUJAR
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -389,5 +345,4 @@
     </div>
   </div>
 </div>
-<script type="text/javascript" src="<?= base_url('public/assets/js/pujar.js?v='.time()) ?>"></script>
 <script type="text/javascript" src="<?= base_url('public/assets/js/comprar.js?v='.time()) ?>"></script>
