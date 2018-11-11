@@ -317,21 +317,23 @@
                                                             <div class="col-md-5 col-xs-5">
                                                                 <h5 class="text-right">Cantidad</h5>
                                                             </div>
-                                                        </div><?php
-                                                        if( count($historial) > 0 ){
-                                                            foreach ($historial as $key => $value) {
-                                                                echo '
-                                                                <div class="row fila rsinmlf">
-                                                                    <div class="col-md-7 col-xs-7">
-                                                                        <h5 class="text-left">'.$value->nombre.'</h5>
+                                                        </div>
+                                                        <div id="historial_list" data-id="<?= $anuncio['id_anuncio'] ?>"><?php
+                                                            if( count($historial) > 0 ){
+                                                                foreach ($historial as $key => $value) {
+                                                                    echo '
+                                                                    <div class="row fila rsinmlf">
+                                                                        <div class="col-md-7 col-xs-7">
+                                                                            <h5 class="text-left">'.$value->nombre.'</h5>
+                                                                        </div>
+                                                                        <div class="col-md-5 col-xs-5">
+                                                                            <h5 class=" text-right">'.$value->monto.'</h5>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="col-md-5 col-xs-5">
-                                                                        <h5 class=" text-right">'.$value->monto.'</h5>
-                                                                    </div>
-                                                                </div>
-                                                                ';
-                                                            }
-                                                        } ?>
+                                                                    ';
+                                                                }
+                                                            } ?>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div role="tabpanel" class="tab-pane fade mt-30 text-justify" id="envio">

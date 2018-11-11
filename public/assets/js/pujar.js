@@ -39,23 +39,15 @@ jQuery(document).ready(function() {
 
 var REVISAR = true;
 
-function new_cron() {
-    if( REVISAR ){
-        jQuery.post(
-            HOME+"Pujar/cronPujas",
-            {},
-            function(data){
-                console.log(data);
-            }, 'json'
-        );
-    }
-} 
-
 function ganadores() {
     if( REVISAR ){
+        var historial = ( jQuery("#historial_list").length == 1 ) ? jQuery("#historial_list").attr("data-id") : 0;
+        
         jQuery.post(
             HOME+"Pujar/revisarPujas",
-            {},
+            {
+                historial: historial
+            },
             function(data){
                 if( data[0].length > 0 ){
                     jQuery.each(data[0], function(i, anuncio){
@@ -75,24 +67,20 @@ function ganadores() {
 
 function actualizar_anuncio(anuncio){
     var id = anuncio.id_anuncio;
-
     jQuery("#pujar_"+id).attr("data-tiempo_actual", anuncio.tiempo_actual);
     jQuery("#ult_user_"+id).html(anuncio.ult_puja_user);
     jQuery("#comprar_"+id).attr("data-puja", anuncio.precio_puja);
     jQuery("#pujar_"+id).attr("data-precio_puja", anuncio.precio_puja);
     jQuery("#precio_puja_"+id).html(anuncio.precio_puja+"€");
-
     if( anuncio.ult_puja_user != USER_NICKNAME ){
         jQuery("#pujar_"+id).removeClass("btn-inact");
     }else{
         jQuery("#pujar_"+id).addClass("btn-inact");
     }
-
     if( parseInt(anuncio.se_compra) == 1 ){
         var compra = parseFloat(anuncio.precio_compra);
         jQuery("#precio_compra_"+id).html( (compra-anuncio.precio_puja)+"€" );
     }
-
     var temp = 0;
     if( anuncio.tiempo_actual > 9 ) {
         temp = anuncio.tiempo_actual;
@@ -110,6 +98,11 @@ function actualizar_anuncio(anuncio){
     if( anuncio.tiempo_actual == 0 ){
         cerrar_anuncio(id);
     }
+
+    if( jQuery("#historial_list").length == 1 ){
+        jQuery("#historial_list").html(anuncio.historial);
+    }
+    
 }
 
 function cerrar_anuncio(id){

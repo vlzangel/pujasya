@@ -42,17 +42,54 @@ class Pujar extends SuperController {
         $ganadas = [];
         $actualizadas = [];
         foreach ($anuncios as $anuncio) {
-            if( $anuncio["status"] == "activa" ){
-                if( $anuncio["ult_puja_user"] != "" ){
-                    $tiempo_actual = strtotime($anuncio["ult_puja_time"]);
-                    $anuncio["tiempo_actual"] = $anuncio["tiempo_puja"]-( $ahora - $tiempo_actual );
-                    $actualizadas[] = $anuncio;
+            if( $this->input->post('historial') != 0 ){
+
+                if( $anuncio["id_anuncio"] == $this->input->post('historial') ){
+                    $anuncio["historial"] = $this->get_historial($anuncio["id_anuncio"], $anuncio["reventa"]);
+                    if( $anuncio["status"] == "activa" ){
+                        if( $anuncio["ult_puja_user"] != "" ){
+                            $tiempo_actual = strtotime($anuncio["ult_puja_time"]);
+                            $anuncio["tiempo_actual"] = $anuncio["tiempo_puja"]-( $ahora - $tiempo_actual );
+                            $actualizadas[] = $anuncio;
+                        }
+                    }else{
+                        $ganadas[] = $anuncio;
+                    }
                 }
+                
             }else{
-                $ganadas[] = $anuncio;
+                if( $anuncio["status"] == "activa" ){
+                    if( $anuncio["ult_puja_user"] != "" ){
+                        $tiempo_actual = strtotime($anuncio["ult_puja_time"]);
+                        $anuncio["tiempo_actual"] = $anuncio["tiempo_puja"]-( $ahora - $tiempo_actual );
+                        $actualizadas[] = $anuncio;
+                    }
+                }else{
+                    $ganadas[] = $anuncio;
+                }
             }
         }
         echo json_encode([$ganadas, $actualizadas]);
+    }
+
+    private function get_historial($id_anuncio, $reventa){
+        $historial_str = '';
+        $historial = $this->Anuncios_Model->getHistorial($id_anuncio, $reventa);
+        if( count($historial) > 0 ){
+            foreach ($historial as $key => $value) {
+                $historial_str .= '
+                <div class="row fila rsinmlf">
+                    <div class="col-md-7 col-xs-7">
+                        <h5 class="text-left">'.$value->nombre.'</h5>
+                    </div>
+                    <div class="col-md-5 col-xs-5">
+                        <h5 class=" text-right">'.$value->monto.'</h5>
+                    </div>
+                </div>
+                ';
+            }
+        }
+        return $historial_str;
     }
 
     public function cronPujas(){
@@ -88,23 +125,17 @@ class Pujar extends SuperController {
             foreach ($anuncios as $anuncio) {
                 if( array_key_exists($anuncio["id_anuncio"], $actualizadas_ids ) ){
                     $tiempo_actual = strtotime($anuncio["ult_puja_time"]);
-
                     $faltan = $anuncio["tiempo_puja"]-( $ahora - $tiempo_actual );
-
                     if( $anuncio["robot_status"] == 1 ){
                         if( $faltan <= $anuncio["robot_seg"] ){
                             if( $anuncio["robot_monto_maximo"] > $actualizadas_ids[ $anuncio["id_anuncio"] ] ){
-
                                 if( !in_array($anuncio["id_anuncio"], $anuncios_pujados)){
-
                                     if( $anuncio["ultimo_robot"] == $anuncio["robot_id_2"] || $anuncio["ultimo_robot"] == 0 ){
                                         $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id"], $actualizadas_ids[ $anuncio["id_anuncio"] ], $anuncio["cantidad_fichas"]);
                                     }else{
                                         $this->pujar_robot($anuncio["id_anuncio"], $anuncio["robot_id_2"], $actualizadas_ids[ $anuncio["id_anuncio"] ], $anuncio["cantidad_fichas"]);
                                     }
-
                                 }
-
                                 $_temp_anuncio = (array) $this->Anuncios_Model->getAnuncio( $anuncio["id_anuncio"] )[0];
                                 $_temp_anuncio["tiempo_actual"] = $anuncio["tiempo_puja"]-( $ahora - $tiempo_actual );
                                 $_temp_anuncio["donde"] = "Tiempo minimo alcanzado: ".$faltan." <= ".$anuncio["robot_seg"];
@@ -135,9 +166,7 @@ class Pujar extends SuperController {
     private function pujaGanada($id_anuncio){
         $anuncio = $this->Anuncios_Model->getAnuncio( $id_anuncio )[0];
         $user = $this->Usuarios_model->get_user_nick($anuncio->ult_puja_user);
-
         $this->Pujar_model->update($id_anuncio, ["status" => "terminada" ]);
-
         $info["producto_precio"] = $anuncio->precio_compra;
         $info["producto_puja"] = $anuncio->precio_puja;
         $info["producto_envio"] = $anuncio->precio_envio;
@@ -160,7 +189,6 @@ class Pujar extends SuperController {
             "ult_puja_user" => $usuario->nickname,
             "ult_puja_time" => date("Y-m-d H:i:s")
         ];
-
         if( $is_robot ){
             $data["ultimo_robot"] = $id_robot;
         }else{
@@ -168,12 +196,13 @@ class Pujar extends SuperController {
                 "fichas" => ($usuario->fichas-$cantidad_fichas)
             ]);
         }
-
+        $anuncio = $this->Anuncios_Model->getAnuncio( $id_anuncio )[0];
         $this->Anuncios_Model->updateAnuncio($id_anuncio, $data);
         $data_2 = [
             "anuncio_id" => $id_anuncio,
             "user_id" => $usuario->id_user,
-            "monto" => $precio_puja+0.01
+            "monto" => $precio_puja+0.01,
+            "reventa" => $anuncio->reventa
         ];
         $this->Anuncios_Model->newPuja($data_2);
     }

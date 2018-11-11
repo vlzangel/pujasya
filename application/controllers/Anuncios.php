@@ -64,10 +64,8 @@ class Anuncios extends SuperController {
     }
 
     public function save(){
-
         $name_base = time();
         $imagenes = $this->save_imgs( $this->input->post('imgs'), $id_anuncio, $name_base);
-
         $datos = [
             'titulo' => $this->input->post('titulo'),
             'descripcion' => $this->input->post('descripcion'),
@@ -84,20 +82,15 @@ class Anuncios extends SuperController {
             'cantidad_fichas' => $this->input->post('cantidad_fichas'),
             'img_principal' => $imagenes[$this->input->post("img_principal")],
             'imgs' => json_encode($imagenes),
-
             'robot_id' => $this->input->post('robot_id'),
             'robot_id_2' => $this->input->post('robot_id_2'),
             'robot_seg' => $this->input->post('robot_seg'),
             'robot_monto_maximo' => $this->input->post('robot_monto_maximo'),
             'robot_status' => $this->input->post('robot_status'),
-
             'status' => 1
         ];
-
         $this->Anuncios_Model->saveAnuncio($datos);
-
         print_r( json_encode( $this->input->post() ) );
-
     }
 
     public function update($id_anuncio){
@@ -159,12 +152,13 @@ class Anuncios extends SuperController {
 
     public function activo_inactivo($id_anuncio, $status){
         $anuncio = $this->Anuncios_Model->getAnuncio($id_anuncio)[0];
+        $reventa = ( $status == "activa") ? $anuncio->reventa+1: $anuncio->reventa;
         $datos = [
             "status" => $status,
             "ult_puja_user" => "",
             "ult_puja_time" => "0000-00-00 00:00:00",
             "precio_puja" => 0,
-            "reventa" => $anuncio["reventa"]+1
+            "reventa" => $reventa
         ];
         $this->Anuncios_Model->updateAnuncio($id_anuncio, $datos);
         print_r( json_encode( [$id_anuncio, $status] ) );
