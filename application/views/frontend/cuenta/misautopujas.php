@@ -80,129 +80,138 @@
 
                                 <div class="col-md-12 col-sm-12 col-xs-12 splr">
                                     <div class="panel content-card born2">
-                                        <?php
-                                            /*echo "<pre>";
-                                                print_r($autopujas);
-                                            echo "</pre>";*/
 
-                                            foreach ($autopujas as $key => $autopuja) {
-                                                $imagen = ( $autopuja->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$autopuja->id_anuncio.'/'.$autopuja->img_principal;
-                                                
-                                                if( $autopuja->status == "activa" ){
-                                                    $pujar = '
-                                                        id="pujar_'.$autopuja->id_anuncio.'"
-                                                        class="btn btnatt anuncio_item"
-                                                        data-fichas="'.$autopuja->cantidad_fichas.'"
-                                                        data-tiempo="'.$autopuja->tiempo_puja.'"
-                                                        data-id="'.$autopuja->id_anuncio.'"
-                                                        data-precio_puja="'.$autopuja->precio_puja.'"
-                                                        data-tiempo_actual="'.$autopuja->tiempo_puja.'"
-                                                        data-status="'.$autopuja->status.'"';
-                                                }else{
-                                                    $pujar = 'class="btn btnatt btn-inact"';
-                                                }
-                                                if( $p["se_compra"] == 1 && $p["status"] == "activa" ){
-                                                    $pujar .= 'data-compra="'.$autopuja->precio_compra.'"';
-                                                }else{
-                                                    $pujar .= 'data-compra="No"';
-                                                }
+                                        <table id="cart_list" class="wishlist" style="    background-color: white;">
+                                            <tbody>
 
-                                                $comprar = '';
-                                                if( $autopuja->se_compra == 1 && $autopuja->status == "activa" ){
-                                                    $btn_comprar = '
-                                                        id="comprar_'.$autopuja->id_anuncio.'"
-                                                        class="btn btnatt producto" 
-                                                        data-id="'.$autopuja->id_anuncio.'"
-                                                        data-precio="'.$autopuja->precio_compra.'"
-                                                        data-puja="'.$autopuja->precio_puja.'"
-                                                        data-envio="'.$autopuja->precio_envio.'"
-                                                        data-titulo="'.$autopuja->titulo.'"
-                                                        data-img="'.$autopuja->id_anuncio.'/'.$autopuja->img_principal.'"
-                                                    ';
-                                                    $comprar .= '
-                                                        <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
-                                                            <h6 class="lbl1">Comprar Ahora</h6>
-                                                            <h2 class="lbl2">'.number_format($autopuja->precio_compra-$autopuja->precio_puja, 2, '.', ',').'€</h2>
-                                                        </div>
-                                                        <div class="col-md-5 col-sm-5 col-xs-6 co1-co2">
-                                                            <h5 class="lbl3">El precio disminuye a medida que pujas</h5>
-                                                        </div>
-                                                        <div class="col-md-3 col-sm-3 col-xs-12 co3">
-                                                            <button '.$btn_comprar.' >
-                                                              <img class="icoatt icoatt4" src="'.base_url().'public/assets/images/icons/shopping-cart.png?v0" alt="">
-                                                              COMPRAR
-                                                            </button>
-                                                        </div>
-                                                    ';
-                                                }else{
-                                                    $comprar .= '
-                                                        <div class="col-md-9 col-sm-5 col-xs-6 co1-co2">
-                                                            <h5 class="lbl3">Compra no disponible</h5>
-                                                        </div>
-                                                        <div class="col-md-3 col-sm-3 col-xs-12 co3">
-                                                            <button class="btn btnatt btn-inact">
-                                                                <img class="icoatt icoatt4" src="'.base_url().'public/assets/images/icons/shopping-cart.png?v0" alt="">
-                                                                COMPRAR
-                                                            </button>
-                                                        </div>
-                                                    ';
-                                                }
+                                                <?php
+                                                    /*echo "<pre>";
+                                                        print_r($autopujas);
+                                                    echo "</pre>";*/
 
-                                                echo '
-                                                    <div class="row pujas puja_'.$autopuja->status.'">
-                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2 ctr">
-                                                            <div class="row">
-                                                                <div class="col-md-2 splr text-center">
-                                                                    <img class="imgmin2" src="'.$imagen.'" alt="">
+                                                    foreach ($autopujas as $key => $autopuja) {
+                                                        $imagen = ( $autopuja->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$autopuja->id_anuncio.'/'.$autopuja->img_principal;
+                                                        
+                                                        if( $autopuja->status == "activa" ){
+                                                            $pujar = '
+                                                                id="pujar_'.$autopuja->id_anuncio.'"
+                                                                class="btn btnatt anuncio_item"
+                                                                data-fichas="'.$autopuja->cantidad_fichas.'"
+                                                                data-tiempo="'.$autopuja->tiempo_puja.'"
+                                                                data-id="'.$autopuja->id_anuncio.'"
+                                                                data-precio_puja="'.$autopuja->precio_puja.'"
+                                                                data-tiempo_actual="'.$autopuja->tiempo_puja.'"
+                                                                data-status="'.$autopuja->status.'"';
+                                                        }else{
+                                                            $pujar = 'class="btn btnatt btn-inact"';
+                                                        }
+                                                        if( $p["se_compra"] == 1 && $p["status"] == "activa" ){
+                                                            $pujar .= 'data-compra="'.$autopuja->precio_compra.'"';
+                                                        }else{
+                                                            $pujar .= 'data-compra="No"';
+                                                        }
+
+                                                        $comprar = '';
+                                                        if( $autopuja->se_compra == 1 && $autopuja->status == "activa" ){
+                                                            $btn_comprar = '
+                                                                id="comprar_'.$autopuja->id_anuncio.'"
+                                                                class="btn btnatt producto" 
+                                                                data-id="'.$autopuja->id_anuncio.'"
+                                                                data-precio="'.$autopuja->precio_compra.'"
+                                                                data-puja="'.$autopuja->precio_puja.'"
+                                                                data-envio="'.$autopuja->precio_envio.'"
+                                                                data-titulo="'.$autopuja->titulo.'"
+                                                                data-img="'.$autopuja->id_anuncio.'/'.$autopuja->img_principal.'"
+                                                            ';
+                                                            $comprar .= '
+                                                                <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
+                                                                    <h6 class="lbl1">Comprar Ahora</h6>
+                                                                    <h2 class="lbl2">'.number_format($autopuja->precio_compra-$autopuja->precio_puja, 2, '.', ',').'€</h2>
                                                                 </div>
-                                                                <div class="col-md-1 text-center">
-                                                                    <span id="favoritos_span_">
-                                                                        <a href="javascript:;" onclick=""><i class="fa fa-heart"></i></a>
-                                                                    </span>
+                                                                <div class="col-md-5 col-sm-5 col-xs-6 co1-co2">
+                                                                    <h5 class="lbl3">El precio disminuye a medida que pujas</h5>
                                                                 </div>
-                                                                <div class="col-md-9 pt-20">
-                                                                    <a class="atitle" href="'.base_url().'anuncio/'.$autopuja->id_anuncio.'" title="'.$autopuja->titulo.'">'.strtoupper(applib::titulo(substr($autopuja->titulo, 0, 16)).( (strlen($autopuja->titulo) > 16) ? '...' : '' )).'</a>
-                                                                    <p class="mb-0">Tiempo de Subasta '.$autopuja->tiempo_puja.'s</p> 
-                                                                    <div class=" text-right cfichas">
-                                                                        <span>
-                                                                            '.$autopuja->cantidad_fichas.' x <i class="fa fa-certificate"></i>
-                                                                        </span>
+                                                                <div class="col-md-3 col-sm-3 col-xs-12 co3">
+                                                                    <button '.$btn_comprar.' >
+                                                                      <img class="icoatt icoatt4" src="'.base_url().'public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                                      COMPRAR
+                                                                    </button>
+                                                                </div>
+                                                            ';
+                                                        }else{
+                                                            $comprar .= '
+                                                                <div class="col-md-9 col-sm-5 col-xs-6 co1-co2">
+                                                                    <h5 class="lbl3">Compra no disponible</h5>
+                                                                </div>
+                                                                <div class="col-md-3 col-sm-3 col-xs-12 co3">
+                                                                    <button class="btn btnatt btn-inact">
+                                                                        <img class="icoatt icoatt4" src="'.base_url().'public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                                        COMPRAR
+                                                                    </button>
+                                                                </div>
+                                                            ';
+                                                        }
+
+                                                        echo '
+                                                            <tr class="col-sm-12 col-md-12">
+                                                                <td class="col-sm-8 col-md-8">
+                                                                    <div class="row pujas puja_'.$autopuja->status.'">
+                                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2 ctr">
+                                                                            <div class="row">
+                                                                                <div class="col-md-2 splr text-center">
+                                                                                    <img class="imgmin2" src="'.$imagen.'" alt="">
+                                                                                </div>
+                                                                                <div class="col-md-1 text-center">
+                                                                                    <span id="favoritos_span_">
+                                                                                        <a href="javascript:;" onclick=""><i class="fa fa-heart"></i></a>
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="col-md-9 pt-20">
+                                                                                    <a class="atitle" href="'.base_url().'anuncio/'.$autopuja->id_anuncio.'" title="'.$autopuja->titulo.'">'.strtoupper(applib::titulo(substr($autopuja->titulo, 0, 16)).( (strlen($autopuja->titulo) > 16) ? '...' : '' )).'</a>
+                                                                                    <p class="mb-0">Tiempo de Subasta '.$autopuja->tiempo_puja.'s</p> 
+                                                                                    <div class=" text-right cfichas">
+                                                                                        <span>
+                                                                                            '.$autopuja->cantidad_fichas.' x <i class="fa fa-certificate"></i>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2">
+                                                                            <div class="well well2 text-center">
+                                                                                <div class="row" style="">
+                                                                                    <div class="col-md-5 col-sm-4 col-xs-6 co1-co2">
+                                                                                        <h6 class="lbl1">Precio de Puja</h6>
+                                                                                        <h2 class="lbl2" id="precio_puja_'.$autopuja->id_anuncio.'">'.$autopuja->precio_puja.'€</h2>
+                                                                                    </div>
+                                                                                    <div class="col-md-4 col-sm-4 col-xs-6 co1-co2 timerlistm">
+                                                                                        <h5 id="timer_'.$autopuja->id_anuncio.'" class="timer">00:00:00</h5>
+                                                                                        <h5 class="usuariop" id="ult_user_'.$autopuja->id_anuncio.'">'.$autopuja->ult_puja_user.'</h5>
+                                                                                    </div>
+                                                                                    <div class="col-md-3 col-sm-3 col-xs-8 co3">
+                                                                                        <button '.$pujar.'>
+                                                                                          <img class="icoatt" src="'.base_url().'public/assets/images/icons/mazo.png?v0" alt="">
+                                                                                          PUJAR
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2">
+                                                                            <div class="well well2 text-center">
+                                                                                <div class="row">
+                                                                                    '.$comprar.'
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2">
-                                                            <div class="well well2 text-center">
-                                                                <div class="row" style="">
-                                                                    <div class="col-md-5 col-sm-4 col-xs-6 co1-co2">
-                                                                        <h6 class="lbl1">Precio de Puja</h6>
-                                                                        <h2 class="lbl2" id="precio_puja_'.$autopuja->id_anuncio.'">'.$autopuja->precio_puja.'€</h2>
-                                                                    </div>
-                                                                    <div class="col-md-4 col-sm-4 col-xs-6 co1-co2 timerlistm">
-                                                                        <h5 id="timer_'.$autopuja->id_anuncio.'" class="timer">00:00:00</h5>
-                                                                        <h5 class="usuariop" id="ult_user_'.$autopuja->id_anuncio.'">'.$autopuja->ult_puja_user.'</h5>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-sm-3 col-xs-8 co3">
-                                                                        <button '.$pujar.'>
-                                                                          <img class="icoatt" src="'.base_url().'public/assets/images/icons/mazo.png?v0" alt="">
-                                                                          PUJAR
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2">
-                                                            <div class="well well2 text-center">
-                                                                <div class="row">
-                                                                    '.$comprar.'
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ';
-                                            }
-                                        ?>
-                                                
+                                                                </td>
+                                                            </tr>
+                                                        ';
+                                                    }
+                                                ?>
+                                            </tbody>
+                                        </table>
                                     </div> <!-- panel -->
                                 </div>
 

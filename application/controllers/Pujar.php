@@ -236,7 +236,6 @@ class Pujar extends SuperController {
             "reventa" => $anuncio->reventa
         ];
         $this->Anuncios_Model->newPuja($data_2);
-
         $this->Pujar_model->updatePuja_by_anuncio(
             $id_anuncio, [
             "precio_actual" => $precio_puja+0.01
@@ -254,21 +253,36 @@ class Pujar extends SuperController {
                 $faltan = $autopuja->tiempo_puja-( $ahora - $tiempo_actual );
                 $usuario = $this->Usuarios_model->get_user($autopuja->user_id);
                 if( $faltan <= $autopuja->pujar_cada ){
-                    if( $autopuja->ult_puja_user != $usuario->nickname ){
+                    if( $autopuja->ult_puja_user != $usuario->nickname && $autopuja->ult_puja_user != "" ){
                         if( $autopuja->max_monto > $autopuja->precio_puja ){
                             if( $autopuja->max_fichas > $autopuja->fichas_usadas ){
                                 if( $usuario->fichas > $autopuja->cantidad_fichas ){
                                     $this->pujar_robot($autopuja->id_anuncio, $autopuja->user_id, $autopuja->precio_puja, $autopuja->cantidad_fichas, false);
-                                    $this->Pujar_model->update($autopuja->id, ["fichas_usadas" => $autopuja->fichas_usadas+$autopuja->cantidad_fichas ]);
+                                    $this->Pujar_model->updateAutopujas($autopuja->id, ["fichas_usadas" => $autopuja->fichas_usadas+$autopuja->cantidad_fichas ]);
                                     $anuncios_pujados[] = $autopuja->id_anuncio;
+
+
+                                    $mipuja = $this->Pujar_model->get_pujas_by_user_anuncio($autopuja->user_id, $autopuja->id_anuncio);
+                                    $data_puja = [];
+                                    if( $mipuja == false ){
+                                        $data_puja["anuncio_id"] = $autopuja->id_anuncio;
+                                        $data_puja["user_id"] = $autopuja->user_id;
+                                        $data_puja["status"] = "activa";
+                                        $data_puja["ult_puja"] = $this->input->post('precio_puja');
+                                        $this->Pujar_model->savePuja($data_puja);
+                                    }else{
+                                        $data_puja["ult_puja"] = $this->input->post('precio_puja');
+                                        $this->Pujar_model->updatePuja($mipuja[0]->id, $data_puja);
+                                    }
+                                    
                                 }else{
-                                    $this->Pujar_model->update($autopuja->id, ["status" => "terminada" ]);
+                                    $this->Pujar_model->updateAutopujas($autopuja->id, ["status" => "terminada" ]);
                                 }
                             }else{
-                                $this->Pujar_model->update($autopuja->id, ["status" => "terminada" ]);
+                                $this->Pujar_model->updateAutopujas($autopuja->id, ["status" => "terminada" ]);
                             }
                         }else{
-                            $this->Pujar_model->update($autopuja->id, ["status" => "terminada" ]);
+                            $this->Pujar_model->updateAutopujas($autopuja->id, ["status" => "terminada" ]);
                         }
                     }
                 }
