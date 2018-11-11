@@ -29,10 +29,14 @@
                     <ul class="deal-actions top-15 right-20">
                         <li class="like-deal">
                             <span id="favoritos_span_<?= $p['id_anuncio']?>"><?php
-                                if( in_array($p['id_anuncio'], $favoritos) ){ ?>
-                                    <a href="<?= base_url("cuenta/favoritos"); ?>" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a> <?php
-                                }else{ ?>
-                                    <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a> <?php
+                                if($this->session->userdata('user_id') != ""){
+                                    if( in_array($p['id_anuncio'], $favoritos) ){ ?>
+                                        <a href="<?= base_url("cuenta/favoritos"); ?>" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a> <?php
+                                    }else{ ?>
+                                        <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a> <?php
+                                    }
+                                }else{
+                                    echo '<a href="'.base_url("ingresar").'" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a>';
                                 } ?>
                             </span>
                         </li>

@@ -34,10 +34,14 @@
                             <div class="deal-deatails panel">
                                 <div class="text-right p-20" >
                                     <span id="favoritos_span_<?= $anuncio['id_anuncio']?>"><?php
-                                        if( $favoritos == "YES" ){ ?>
-                                            <a href="http://localhost/pujasya/cuenta/favoritos" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart" style="font-size:30px;"></i></a> <?php
-                                        }else{ ?>
-                                            <a href="javascript:;" onclick="favoritos_listado(<?= $anuncio['id_anuncio']?>)"><i class="fa fa-heart" style="font-size:30px;"></i></a> <?php
+                                        if($this->session->userdata('user_id') != ""){
+                                            if( in_array($p['id_anuncio'], $favoritos) ){ ?>
+                                                <a href="<?= base_url("cuenta/favoritos"); ?>" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart" style="font-size:30px;"></i></a> <?php
+                                            }else{ ?>
+                                                <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart" style="font-size:30px;"></i></a> <?php
+                                            }
+                                        }else{
+                                            echo '<a href="'.base_url("ingresar").'" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart" style="font-size:30px;"></i></a>';
                                         } ?>
                                     </span>
                                 </div>

@@ -216,7 +216,4 @@
             </section>
         </div> <!-- fin container -->
     </div>
-
-
 </main>
-        <!-- –––––––––––––––[ END PAGE CONTENT ]––––––––––––––– -->

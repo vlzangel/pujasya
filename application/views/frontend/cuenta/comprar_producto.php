@@ -406,7 +406,8 @@
                                 }, 'json'
                             );
                         }else{
-                            location.href = HOME+"paypal/buy_producto/"+data.pedido_id;
+                            console.log( HOME+"paypal/buy_producto/"+CARRITO["pedido_id"] );
+                            // location.href = HOME+"paypal/buy_producto/"+CARRITO["pedido_id"];
                         }
                     } <?php
                 }else{ ?>
@@ -499,11 +500,9 @@
             </div>
         </div> <?php 
     } 
-?>
 
-<?php
     $this->session->unset_userdata('pedido_id');
     $this->session->unset_userdata('producto_id');
     $this->session->unset_userdata('metodo');
     $this->session->unset_userdata('status_pago');
-?>b 
+?>
