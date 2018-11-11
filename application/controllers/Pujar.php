@@ -13,6 +13,20 @@ class Pujar extends SuperController {
     public function pujar(){
         $user_id = $this->session->userdata('user_id');
         $usuario = $this->Usuarios_model->get_user($user_id);
+        
+        $mipuja = $this->Pujar_model->get_pujas_by_user_anuncio($user_id, $this->input->post('id_anuncio'));
+        $data_puja = [];
+        if( $mipuja == false ){
+            $data_puja["anuncio_id"] = $this->input->post('id_anuncio');
+            $data_puja["user_id"] = $usuario->id_user;
+            $data_puja["status"] = "activa";
+            $data_puja["ult_puja"] = $this->input->post('precio_puja');
+            $this->Pujar_model->savePuja($data_puja);
+        }else{
+            $data_puja["ult_puja"] = $this->input->post('precio_puja');
+            $this->Pujar_model->updatePuja($mipuja[0]->id, $data_puja);
+        }
+
         $fichas = $usuario->fichas;
         $this->Usuarios_model->update($user_id, [
             "fichas" => ($usuario->fichas-10)
@@ -32,7 +46,14 @@ class Pujar extends SuperController {
         ];
         $this->Anuncios_Model->newPuja($data_2);
         echo json_encode([
-            "user" => $usuario->nickname
+            "user" => $usuario->nickname,
+            "data_puja" => $data_puja,
+            "updateAnuncio" => $data
+        ]);
+
+        $this->Pujar_model->updatePuja_by_anuncio(
+             $this->input->post('id_anuncio'), [
+            "precio_actual" => $this->input->post('precio_puja')
         ]);
     }
 
@@ -166,11 +187,10 @@ class Pujar extends SuperController {
     private function pujaGanada($id_anuncio){
         $anuncio = $this->Anuncios_Model->getAnuncio( $id_anuncio )[0];
         $user = $this->Usuarios_model->get_user_nick($anuncio->ult_puja_user);
-        $this->Pujar_model->update($id_anuncio, ["status" => "terminada" ]);
+        $this->Pujar_model->updateAutopujas($id_anuncio, ["status" => "terminada" ]);
         $info["producto_precio"] = $anuncio->precio_compra;
         $info["producto_puja"] = $anuncio->precio_puja;
         $info["producto_envio"] = $anuncio->precio_envio;
-        $info["metodo_pago"] = "Fichas";
         $data = [
             "user_id" => $user->id_user,
             "producto_id" => $id_anuncio,
@@ -179,6 +199,17 @@ class Pujar extends SuperController {
             "status" => "Pendiente"
         ];
         $this->Anuncios_Model->saveCompraProducto($data);
+
+        $this->Pujar_model->updatePuja_by_user_anuncio(
+            $user->id_user,
+            $id_anuncio, [
+            "status" => "ganada"
+        ]);
+
+        $this->Pujar_model->updatePuja_by_anuncio(
+            $id_anuncio, [
+            "status" => "culminada"
+        ]);
     }
 
     private function pujar_robot($id_anuncio, $id_robot, $precio_puja, $cantidad_fichas, $is_robot = true){
@@ -205,6 +236,11 @@ class Pujar extends SuperController {
             "reventa" => $anuncio->reventa
         ];
         $this->Anuncios_Model->newPuja($data_2);
+
+        $this->Pujar_model->updatePuja_by_anuncio(
+            $id_anuncio, [
+            "precio_actual" => $precio_puja+0.01
+        ]);
     }
 
 

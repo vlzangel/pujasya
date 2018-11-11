@@ -1,3 +1,38 @@
+<style type="text/css">
+
+    .filtros{
+        display: none;
+    }
+
+    #list_container > .panel {
+        display: none;
+    }
+
+    input#todas:checked ~ #filtros_container .todas,
+    input#por_pagar:checked ~ #filtros_container .por_pagar,
+    input#pagadas:checked ~ #filtros_container .pagadas,
+    input#expiradas:checked ~ #filtros_container .expiradas {
+        background-color: #fb9029 !important;
+        color: #FFF !important;
+    }
+
+    input#todas:checked ~ #list_container .puja_toda,
+    input#por_pagar:checked ~ #list_container .puja_Pendiente,
+    input#pagadas:checked ~ #list_container .puja_Pagada,
+    input#expiradas:checked ~ #list_container .puja_Expirada {
+        display: block;
+    }
+
+    .inactivo {
+        background-color: #E5E5E5;
+        border: 1px solid #DBDBDB;
+        color: black;
+    }
+
+</style>
+<!-- <pre>
+    <?php print_r($anuncios); ?>
+</pre> -->
 <main id="mainContent" class="main-content">
     <div class="page-container ptb-20">
         <div class="container">
@@ -11,27 +46,33 @@
                                 <a href="<?= base_url('cuenta/mispujas')?>" class="list-group-item">Mis Pujas</a>
                                 <a href="<?= base_url('cuenta/misautopujas')?>" class="list-group-item">Mis Autopujas</a>
                                 <a href="<?= base_url('cuenta/miscompras')?>" class="list-group-item activelist">Mis Compras</a>
-                                <a href="javascript:;" onclick="cancelarcuenta(<?= $user['id']?>)" class="list-group-item">Cancelar Cuenta</a>
+                                <a href="javascript:;" onclick="cancelarcuenta(<?= $user['id'] ?>)" class="list-group-item">Cancelar Cuenta</a>
                             </div>
                         </div>
                         <div class="col-md-10 col-sm-12 col-xs-12">
                             <div class="wishlist-wrapper">
                                 <h3 class="h-title mb-40 t-uppercase">Mis Compras</h3>
-                                <div class="mb-40 text-center">
+
+                                <input type="radio" class="filtros" name="filtros" id="todas" checked />
+                                <input type="radio" class="filtros" name="filtros" id="por_pagar" />
+                                <input type="radio" class="filtros" name="filtros" id="pagadas" />
+                                <input type="radio" class="filtros" name="filtros" id="expiradas" />
+
+                                <div id="filtros_container" class="mb-40 text-center">
                                     <div class="btn-group" role="group" aria-label="...">
-                                        <button type="button" class="btn btn-default btn-sm">Todas</button>
-                                        <button type="button" class="btn btn-default btn-sm">Por Pagar</button>
-                                        <button type="button" class="btn btn-default btn-sm">Pagadas</button>
-                                        <button type="button" class="btn btn-default btn-sm">Expiradas</button>
+                                        <label for="todas" data-status="todas" class="todas btn btn-default btn-sm inactivo">Todas</label>
+                                        <label for="por_pagar" data-status="por_pagar" class="por_pagar btn btn-default btn-sm inactivo">Por Pagar</label>
+                                        <label for="pagadas" data-status="pagadas" class="pagadas btn btn-default btn-sm inactivo">Pagadas</label>
+                                        <label for="expiradas" data-status="expiradas" class="expiradas btn btn-default btn-sm inactivo">Expiradas</label>
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-sm-12 col-xs-12 splr"> <?php
+                                <div id="list_container" class="col-md-12 col-sm-12 col-xs-12 splr"> <?php
                                     if( count($anuncios) > 0 ){
                                         foreach ($anuncios as $anuncio) { 
                                             $info = json_decode($anuncio->data);
                                             $tipo = $anuncio->operacion; 
                                             $imagen = ( $anuncio->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$anuncio->id_anuncio.'/'.$anuncio->img_principal; ?>
-                                            <div class="panel content-card born2">
+                                            <div class="panel content-card born2 puja_toda puja_<?= $anuncio->status_compra ?>" >
                                                 <div class="col-md-12 col-sm-12 col-xs-12 plr-2 ctr">
                                                     <div class="row">
                                                         <div class="col-md-1 col-sm-1 col-xs-12 splr text-center">
@@ -62,11 +103,14 @@
                                                         </div>
                                                         <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20"><?php
                                                             switch ( $anuncio->status_compra ) {
+                                                                case 'Expirada':
+                                                                    echo '<div class="etiq etiq-exp">EXPIRADA</div>';
+                                                                break;
                                                                 case 'Pagada':
                                                                     echo '<div class="etiq etiq-success">PAGADA</div>';
                                                                 break;
                                                                 case 'Pendiente':
-                                                                    echo '<a class="btn btn-default btn-sm btn-block" href="'.base_url("comprarproducto/").$anuncio->id_anuncio.'">PAGAR</a>';
+                                                                    echo '<a class="etiq etiq-espera" href="'.base_url("comprarproducto/").$anuncio->id_anuncio.'">PAGAR</a>';
                                                                 break;
                                                             } ?>
                                                         </div>

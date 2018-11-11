@@ -144,11 +144,22 @@ class Cuenta extends CI_Controller {
 
     public function miscompras(){
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-        $data['anuncios'] = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') );
+        $data['anuncios'] = [];
+        $anuncios = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') );
+        foreach ($anuncios as $key => $anuncio) {
+            if( $anuncio->status_compra == "Pendiente" && ( time() > strtotime ( '+1 day' , strtotime ( $anuncio->fecha ) ) ) ){
+                $this->Cuenta_model->get_mis_compras(  $anuncio->id, [
+                    "status" => "Expirada"
+                ] );
+                $anuncio->status_compra = "Expirada";
+            }
+            $data['anuncios'][] = $anuncio;
+        }
         $data['title'] = 'Mis Compras';
         $data['contenido'] = 'cuenta/miscompras';
-        $this->load->view('frontend/templates/plantilla',$data);
+        $this->load->view('frontend/templates/plantilla', $data);
     }
+
 
     public function favoritos(){
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
@@ -184,6 +195,17 @@ class Cuenta extends CI_Controller {
         $data['anuncios'] = $this->Search_model->get_productos([ 'status' => "activa" ], null);
         $data['title'] = 'Mis AutoPujas';
         $data['contenido'] = 'cuenta/misautopujas';
+        $this->load->view('frontend/templates/plantilla',$data);
+    }
+
+    public function mispujas() {
+        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
+        $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
+
+        $data['anuncios'] = $this->Pujar_model->get_pujas_by_user($this->session->userdata('user_id'));
+
+        $data['title'] = 'Mis Pujas';
+        $data['contenido'] = 'cuenta/mispujas';
         $this->load->view('frontend/templates/plantilla',$data);
     }
 
@@ -789,20 +811,6 @@ class Cuenta extends CI_Controller {
             redirect(base_url('cuenta'));
             exit;
         }
-    }
-
-   public function mispujas()
-    {
-        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-        $condition = array('a.status !=' => 2,'f.user_id' => $this->session->userdata('user_id'));
-
-        $this->load->model('favoritos_model');
-
-        $data['anuncios'] = $this->favoritos_model->get_all($condition);
-
-        $data['title'] = 'Mis Pujas';
-        $data['contenido'] = 'cuenta/mispujas';
-        $this->load->view('frontend/templates/plantilla',$data);
     }
 
     public function chat()
