@@ -402,11 +402,12 @@
                                 },
                                 function(data){
                                     CARRITO["pedido_id"] = data.pedido_id;
+                                    location.href = HOME+"paypal/buy_producto/"+data.pedido_id;
                                 }, 'json'
                             );
+                        }else{
+                            location.href = HOME+"paypal/buy_producto/"+data.pedido_id;
                         }
-
-                        location.href = HOME+"paypal/buy_producto/"+CARRITO["pedido_id"];
                     } <?php
                 }else{ ?>
                     location.href = HOME+"cuenta/miscompras"; <?php
@@ -505,4 +506,4 @@
     $this->session->unset_userdata('producto_id');
     $this->session->unset_userdata('metodo');
     $this->session->unset_userdata('status_pago');
-?>
+?>b 
