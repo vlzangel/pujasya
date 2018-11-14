@@ -199,6 +199,9 @@
                             </div>
                         </div>
                     </div>
+                    <div id="error" class="alert alert-danger hidden" style="margin-bottom: 10px;"> 
+                        Debes seleccionar un metodo de pago primero
+                    </div>
                 </div>
                 <div class="text-right mt-20">
                     <!-- <input type="hidden" required="" id="idmethod" name="idmethod"> -->     
@@ -414,32 +417,41 @@
     jQuery(document).ready(function() {
 
         jQuery("#confirma_metodo_pago").on("click", function(e){
-            if( CARRITO["metodo_pago"] == "Paypal" ){
-                nextPrev(1);
-            }else{
-                if( validar() ){
-                    var form = jQuery('#payment-form');
-                    Stripe.createToken(form, function(status, response) {
 
-                        console.log(status);
-                        console.log(response);
+            console.log( CARRITO["paquete_metodo_pago"] );
 
+            if( CARRITO["paquete_metodo_pago"] != "" ){
+                jQuery("#error").addClass("hidden");
+                if( CARRITO["paquete_metodo_pago"] == "Paypal" ){
+                    nextPrev(1);
+                }else{
+                    if( validar() ){
                         var form = jQuery('#payment-form');
-                        if (response.error) {
-                            jQuery("#alerta_visa").html( MSG_STRYPE[response.error.code] );
-                            jQuery("#alerta_visa").css( "display", "block" );
-                        } else {
-                            jQuery('<input>', {
-                                'type': 'hidden',
-                                'id': 'stripeToken',
-                                'name': 'stripeToken',
-                                'value': response.id
-                            }).appendTo(form);
-                            nextPrev(1);
-                        }
-                    });
+                        Stripe.createToken(form, function(status, response) {
+
+                            console.log(status);
+                            console.log(response);
+
+                            var form = jQuery('#payment-form');
+                            if (response.error) {
+                                jQuery("#alerta_visa").html( MSG_STRYPE[response.error.code] );
+                                jQuery("#alerta_visa").css( "display", "block" );
+                            } else {
+                                jQuery('<input>', {
+                                    'type': 'hidden',
+                                    'id': 'stripeToken',
+                                    'name': 'stripeToken',
+                                    'value': response.id
+                                }).appendTo(form);
+                                nextPrev(1);
+                            }
+                        });
+                    }
                 }
+            }else{
+                jQuery("#error").removeClass("hidden");
             }
+                
         });
 
         jQuery('#payment-form input').on("keyup", function(e){

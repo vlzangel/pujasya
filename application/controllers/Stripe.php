@@ -16,21 +16,35 @@ class Stripe extends CI_Controller {
     }
 
     public function fichas_pagadas($pedido_id){
-
         $this->load->model('Fichas_Model');
         $pedido = $this->Fichas_Model->get_pedido($pedido_id);
         $info = json_decode($pedido->data);
-        
         $data['user_id'] = $pedido->user;
         $data['pedido_id'] = $pedido_id;
         $data['payment_status'] = "Completed";
-        
         $this->Fichas_Model->procesar_compra($pedido_id, $pedido->user, $info->paquete_fichas+0);
         $this->Fichas_Model->insertTransaction($data);
-
         applib::flash('success','Su compra ha sido procesada | <a href="'.base_url("cuenta/miscompras").'">Mis Compras</a>', 'search/grid/activa/0');
         exit;
     }
+
+    public function producto_pagado($pedido_id){
+        $this->load->model('Fichas_Model');
+        $pedido = $this->Fichas_Model->get_pedido($pedido_id);
+        $info = json_decode($pedido->data);
+        $data['user_id'] = $pedido->user;
+        $data['pedido_id'] = $pedido_id;
+        $data['payment_status'] = "Completed";
+        $this->Fichas_Model->procesar_compra($pedido_id, $pedido->user, $info->paquete_fichas+0);
+        $this->Fichas_Model->insertTransaction($data);
+        applib::flash('success','Su compra ha sido procesada | <a href="'.base_url("cuenta/miscompras").'">Mis Compras</a>', 'search/grid/activa/0');
+        exit;
+    }
+
+
+
+
+
 
     public function view(){
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
