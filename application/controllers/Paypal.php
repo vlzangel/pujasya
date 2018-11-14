@@ -64,8 +64,6 @@ class Paypal extends CI_Controller {
         $this->session->set_userdata('metodo', 'paypal');
         $this->session->set_userdata('status_pago', 'ok');
 
-        $this->load->model('Fichas_Model');
-
         $data['user_id'] = $pedido->user;
         $data['pedido_id'] = $pedido_id;
         $data['payment_status'] = "Completed";

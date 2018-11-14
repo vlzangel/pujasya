@@ -178,6 +178,7 @@ class Anuncios extends SuperController {
             redirect(base_url());
             exit;
         }
+
         $historial = $this->Anuncios_Model->getHistorial($id_anuncio, $data["anuncio"]["reventa"]);
         if( $historial == false ){
             $data["historial"] = [];

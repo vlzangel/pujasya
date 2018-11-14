@@ -153,9 +153,9 @@
                                                         }
 
                                                         echo '
-                                                            <tr class="col-sm-12 col-md-12">
+                                                            <tr class="col-sm-12 col-md-12 puja_'.$autopuja->status.'">
                                                                 <td class="col-sm-8 col-md-8">
-                                                                    <div class="row pujas puja_'.$autopuja->status.'">
+                                                                    <div class="row pujas">
                                                                         <div class="col-md-4 col-sm-4 col-xs-12 plr-2 ctr">
                                                                             <div class="row">
                                                                                 <div class="col-md-2 splr text-center">
