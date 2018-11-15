@@ -22,7 +22,10 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12 splr "> <?php 
         $i = 0; 
-        foreach ($premium as $p): ?>
+        foreach ($premium as $p): 
+            if( $status != "activa" || time() < strtotime($p['fecha_inicio']) ){
+                $p['status'] = "cerrada";
+            } ?>
             <div class="col-md-4 col-sm-6 col-xs-12 mb-20 plr-5">
                 <div class="deal-single panel born2"> <?php 
                     $imagen = ( $p['imagen'] == NULL ) ? 'no-image.jpg' : $p['imagen'] ?>

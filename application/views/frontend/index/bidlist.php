@@ -16,7 +16,10 @@
 
     <div class="col-md-12 col-sm-12 col-xs-12 splr"><?php 
         $i = 0; 
-        foreach ($premium as $p): ?>
+        foreach ($premium as $p):
+            if( $status != "activa" || time() < strtotime($p['fecha_inicio']) ){
+                $p['status'] = "cerrada";
+            } ?>
             <div class="panel content-card born2 anuncio_item" 
                 data-fichas="<?= $p['cantidad_fichas'] ?>"
                 data-tiempo="<?= $p['tiempo_puja'] ?>"
