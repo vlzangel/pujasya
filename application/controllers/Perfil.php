@@ -5,23 +5,19 @@ class Perfil extends CI_Controller {
 	public function __construct(){
         parent::__construct();
         applib::logued_in_user(FALSE);
+        $this->load->model('Perfil_model');
     }
 
-    public function index()
-    {
+    public function index(){
     	$data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
 
     	$this->load->library('form_validation');
 
-    	if($this->input->post())
-    	{
+    	if($this->input->post()){
             $this->form_validation->set_rules('name', 'Nombre', 'required|trim|min_length[4]|max_length[25]');
             $this->form_validation->set_rules('telefono_fijo', 'Número de teléfono', 'required|trim');
-            $this->form_validation->set_rules('provincia_id', 'Provincia', 'required|numeric');
-            $this->form_validation->set_rules('poblacion_id', 'Localidad', 'required|numeric');
             
-            if($this->form_validation->run())
-            {
+            if($this->form_validation->run()){
                 //Arreglo para guardar
 
                 $data_in = array(
@@ -36,83 +32,55 @@ class Perfil extends CI_Controller {
                 );
 
                 //Chequear nickname
-
                 $seo = $data['user']['seo'];
-
-                if($data['user']['nickname'] == NULL AND $this->input->post('nickname',true) != '')
-                {
+                if($data['user']['nickname'] == NULL AND $this->input->post('nickname',true) != ''){
                     $nickname = $this->input->post('nickname',true);
-
                     $check = applib::get_table_field(applib::$users_table,array('nickname' => $nickname,'status !=' => 2),'id_user');
-
-                    if($check != "" AND $check['id_user'] != $data['user']['id_user'])
-                    {
+                    if($check != "" AND $check['id_user'] != $data['user']['id_user']){
                         applib::flash('danger','El nombre de usuario ya se encuentra registrado!','perfil');
                         exit;
-                    }
-                    else
-                    {
+                    } else {
                         $this->load->helper('text');
                         $data_in['nickname'] = $nickname;
                         $data_in['seo'] = url_title(convert_accented_characters($nickname),'-',TRUE);
                         $seo =  $data_in['seo'];
                     }
-
                 }
 
                 //Chequear email
 
                 $email = $data['user']['email'];
-
-                if($data['user']['email'] == NULL AND $this->input->post('email',true) != '')
-                {
+                if($data['user']['email'] == NULL AND $this->input->post('email',true) != ''){
                     $email = $this->input->post('email',true);
-
                     $check = applib::get_table_field(applib::$users_table,array('email' => $email,'status !=' => 2),'id_user');
-
-                    if($check != "" AND $check['id_user'] != $data['user']['id_user'])
-                    {
+                    if($check != "" AND $check['id_user'] != $data['user']['id_user']){
                         applib::flash('danger','El correo electrónico ya se encuentra registrado!','perfil');
                         exit;
-                    }
-                    else
-                    {
+                    } else {
                         $data_in['email'] = $email;
                     }
                 }
             	
                 //Subir imagen
-
             	$image_name = $data['user']['imagen'];
-
-                if(!empty($_FILES['imagen']['name']))
-                {
+                if(!empty($_FILES['imagen']['name'])){
                     $config['upload_path'] = './public/uploads/avatars/temp';
-                    $config['allowed_types'] = 'jpg|jpeg|';
+                    $config['allowed_types'] = 'jpg|jpeg|png';
                     $config['overwrite'] = FALSE;
                     $config['encrypt_name'] = true;
                     $config['max_size'] = '5128';
                     $config['max_width'] = '6000';
                     $config['max_height'] = '6000';
-
                     $this->load->library('upload', $config);
-
-                    if(!$this->upload->do_upload('imagen')) 
-                    {
+                    if(!$this->upload->do_upload('imagen')){
                         applib::flash('danger',$this->upload->display_errors(),'perfil');
                         exit;
-                    }
-                    else
-                    {
+                    } else {
                         $ima = $this->upload->data();
                         $image_name = $ima["file_name"];
-
                         //REDIMENSIONAR
-                    
                         $this->load->library('image_lib');
-
                         //RESIZE 250 x 200
-
                         $config2['image_library']   = 'gd2';
                         $config2['source_image']    = './public/uploads/avatars/temp/'.$image_name;
                         $config2['new_image']       = './public/uploads/avatars/'; // las nuevas imágenes se guardan
@@ -120,41 +88,29 @@ class Perfil extends CI_Controller {
                         $config2['maintain_ratio']  = TRUE;
                         $config2['width']           = 250;
                         $config2['height']          = 250;
-
                         $this->image_lib->initialize($config2);
-
-                        if (!$this->image_lib->resize())
-                        {
+                        if (!$this->image_lib->resize()){
                             unlink('./public/uploads/avatars/temp/'.$image_name);
-
                             applib::flash('danger',$this->image_lib->display_errors(),'perfil');
                             exit;
                         }
-
                         unlink('./public/uploads/avatars/temp/'.$image_name);
                     }
                 }
 
                 $data_in['imagen'] = $image_name;
-
                 $update = applib::update(array('id_user' => $this->session->userdata('user_id')),applib::$users_table,$data_in);
-
-                if($update)
-                {
+                if($update){
                 	$data_sess = array(
                         'name'          => $this->input->post('name',true),
                         'email'         => $email,
                         'seo'           => $seo,
                         'imagen'        => $image_name
                     );
-
                     $this->session->set_userdata($data_sess);
-
                     applib::flash('success','Su perfil se ha actualizado exitosamente!','perfil');
                     exit;
-                }
-                else
-                {
+                } else {
                 	applib::flash('danger','Ha ocurrido un error durante el proceso','perfil');
                     exit;
                 }
@@ -163,11 +119,8 @@ class Perfil extends CI_Controller {
 
     	///EXTRAER SOLO LOCALIDADES DE CORDOBA
 
-        $data['provincias'] = applib::get_all('*',applib::$provincias_table,array());
-
+        $data['paises'] = $this->Perfil_model->get_paises();
         $data['cantidad_productos'] = applib::count_table_rows(applib::$anuncios_table,array('user_id' => $this->session->userdata('user_id'),'status !=' => 2));
-
-        $data['localidades'] = applib::get_all('*',applib::$localidades_table,array('provincia_id' => $data['user']['provincia_id']));
         
     	$data['title'] = 'Mi perfil';
     	$data['contenido'] = 'perfil/index';

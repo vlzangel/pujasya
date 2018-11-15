@@ -1,32 +1,22 @@
-<!-- –––––––––––––––[ PAGE CONTENT ]––––––––––––––– -->
-    
-        <main id="mainContent" class="main-content">
-            <!-- Page Container -->
-            <div class="page-container ptb-30">
-                <div class="container">
-                    <div class="row">
-                        
-                        <div class="col-md-2 hidden-sm hidden-xs splr pr-5">
-                            <div class="list-group">
-                                  <a href="<?= base_url('perfil')?>" class="list-group-item active activelist">
-                                    Mi Perfil
-                                  </a>
-                                  <a href="<?= base_url('cuenta/favoritos')?>" class="list-group-item">Mis Favoritos</a>
-                                  <a href="<?= base_url('cuenta/mispujas')?>" class="list-group-item">Mis Pujas</a>
-                                  <a href="<?= base_url('cuenta/misautopujas')?>" class="list-group-item">Mis Autopujas</a>
-                                  <a href="<?= base_url('cuenta/miscompras')?>" class="list-group-item">Mis Compras</a>
-                                  <a href="javascript:;" onclick="cancelarcuenta(<?= $user['id']?>)" class="list-group-item">Cancelar Cuenta</a>
-                                </div>
-                        </div>
+ <main id="mainContent" class="main-content">
+    <div class="page-container ptb-30">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 hidden-sm hidden-xs splr pr-5">
+                    <div class="list-group">
+                        <a href="<?= base_url('perfil')?>" class="list-group-item active activelist"> Mi Perfil </a>
+                        <a href="<?= base_url('cuenta/favoritos')?>" class="list-group-item">Mis Favoritos</a>
+                        <a href="<?= base_url('cuenta/mispujas')?>" class="list-group-item">Mis Pujas</a>
+                        <a href="<?= base_url('cuenta/misautopujas')?>" class="list-group-item">Mis Autopujas</a>
+                        <a href="<?= base_url('cuenta/miscompras')?>" class="list-group-item">Mis Compras</a>
+                        <a href="javascript:;" onclick="cancelarcuenta(<?= $user['id']?>)" class="list-group-item">Cancelar Cuenta</a>
+                    </div>
+                </div>
 
-                        <div class="col-md-10 col-sm-12 col-xs-12">
-
+                <div class="col-md-10 col-sm-12 col-xs-12">
                     <div class="row row-rl-10 row-tb-20">
                         <div class="page-content col-xs-12 col-sm-8 col-md-9 pr-10">
-
-                            <!-- Checkout Area -->
                             <section class="section checkout-area panel prl-30 pt-20 pb-40">
-                                
                                 <h2 class="h2 mb-20 h-title">MI PERFIL <?php if($user['premium'] == 1){ ?> | <i class="fa fa-bullseye" style="margin-right: 6px;"></i> (PREMIUM ACTIVADO) <?php } ?></h2>
                                 <h5   style="font-weight: bold;margin-bottom: 11px;">Información Personal</h5>
                                 <?= $this->session->flashdata('msg')?>
@@ -71,9 +61,9 @@
                                                 <label>País</label>
                                                 <select class="form-control" name="provincia_id" id="provincia_id" required>
                                                     <option value="" disabled>País</option>
-                                                    <!-- <?php foreach ($provincias as $l):?>
-                                                      <option value="<?= $l['id']?>" <?= $user['provincia_id'] == $l['id']?'selected':''?>><?= $l['provincia']?></option>
-                                                    <?php endforeach?> -->
+                                                    <?php foreach ($paises as $l): ?>
+                                                      <option value="<?= $l['id']?>" <?= $user['pais'] == $l['id']?'selected':''?>><?= $l['paisnombre']?></option>
+                                                    <?php endforeach?>
                                                 </select>
                                             </div>
                                         </div>
@@ -81,24 +71,14 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Provincia</label>
-                                                <select class="form-control" name="provincia_id" id="provincia_id" required>
-                                                    <option value="" disabled>Provincia</option>
-                                                    <!-- <?php foreach ($provincias as $l):?>
-                                                      <option value="<?= $l['id']?>" <?= $user['provincia_id'] == $l['id']?'selected':''?>><?= $l['provincia']?></option>
-                                                    <?php endforeach?> -->
-                                                </select>
+                                                <input class="form-control" name="provincia_id" id="provincia_id" value="<?= $user['provincia_id'] ?>" required />
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Ciudad</label>
-                                                <select class="form-control" name="poblacion_id" id="poblacion_id" required>
-                                                    <option value="" disabled>Seleccionar Pueblo | Ciudad</option>
-                                                    <?php foreach ($localidades as $l):?>
-                                                     <!--  <option value="<?= $l['id']?>" <?= ($user['poblacion_id'] == NULL AND $l['id'] == 891)?'selected':($user['poblacion_id'] == $l['id'])?'selected':''?>><?= $l['localidad']?></option> -->
-                                                    <?php endforeach?>
-                                                </select>
+                                                <input class="form-control" name="poblacion_id" id="poblacion_id" value="<?= $user['poblacion_id'] ?>" required />
                                             </div>
                                         </div>
                                         <div class="col-md-6">
