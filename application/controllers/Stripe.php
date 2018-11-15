@@ -30,13 +30,24 @@ class Stripe extends CI_Controller {
 
     public function producto_pagado($pedido_id){
         $this->load->model('Fichas_Model');
-        $pedido = $this->Fichas_Model->get_pedido($pedido_id);
+        $this->load->model('Cuenta_model');
+        $this->load->model('Anuncios_Model');
+
+        $pedido = $this->Cuenta_model->get_compra($pedido_id)[0];
         $info = json_decode($pedido->data);
-        $data['user_id'] = $pedido->user;
+
+        $data['user_id'] = $pedido->user_id;
         $data['pedido_id'] = $pedido_id;
         $data['payment_status'] = "Completed";
-        $this->Fichas_Model->procesar_compra($pedido_id, $pedido->user, $info->paquete_fichas+0);
         $this->Fichas_Model->insertTransaction($data);
+
+        $info->metodo_pago = "Stripe";
+        $_data["status"] = "Pagada";
+        $_data["data"] = json_encode($info);
+        $this->Cuenta_model->update_compra($pedido_id, $_data);
+
+        $this->Anuncios_Model->updateStatus($info->producto_id, "cerrada");
+
         applib::flash('success','Su compra ha sido procesada | <a href="'.base_url("cuenta/miscompras").'">Mis Compras</a>', 'search/grid/activa/0');
         exit;
     }

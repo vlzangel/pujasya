@@ -157,7 +157,7 @@
                                                 <select id="anio" class="form-control" data-stripe="exp-year">
                                                     <option value="">AA</option><?php
                                                     $min = date("Y")-2000;
-                                                    $max = $min+30;
+                                                    $max = $min+10;
                                                     for ($i=$min; $i < $max; $i++) {
                                                         echo "<option value='$i'>20$i</option>";
                                                     } ?>
