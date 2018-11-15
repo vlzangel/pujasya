@@ -65,8 +65,6 @@ class AppLib {
 
 
 
-
-
     // FUNCIONES VIEJAS
 
 
@@ -139,8 +137,7 @@ class AppLib {
 
 	//GET ALL ROW
 
-    static function get_all($select,$table,$where, $orderby = NULL,$limit = NULL)
-    {
+    static function get_all($select,$table,$where, $orderby = NULL,$limit = NULL){
 
         self::$db->select($select);
 
@@ -148,13 +145,11 @@ class AppLib {
 
         self::$db->where($where);
 
-        if($orderby != NULL)
-        {
+        if($orderby != NULL) {
             self::$db->order_by($orderby);
         }
 
-        if($limit != NULL)
-        {
+        if($limit != NULL) {
             self::$db->limit($limit);
         }
 

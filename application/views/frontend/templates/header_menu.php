@@ -1,18 +1,10 @@
-<?php 
-
-    $categorias_menu = applib::get_all('*',applib::$cat_table,array('status' => 1), 'orden ASC');
-
-?>
 <style>
-     @media only screen and (max-width: 1200px ){
+  @media only screen and (max-width: 1200px ){
     .ocultar1000 {
-        display:none !important;
-      }
+      display:none !important;
     }
+  }
 </style>
-
-
-
 <div class="modal fade" id="cancelarcuenta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -34,11 +26,8 @@
     </div>
   </div>
 </div>
-
-
- <script>
-  function cancelarcuenta(id)
-  {
+<script>
+  function cancelarcuenta(id) {
     $('#id_cancelar').val(id);
     $('#cancelarcuenta').modal('show');
   }

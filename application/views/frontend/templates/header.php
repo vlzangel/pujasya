@@ -1,6 +1,3 @@
-<?php 
-    $categorias_buscador = applib::get_all('*',applib::$cat_table,array('status' => 1));
-?>
 <!DOCTYPE html>
 <html lang="es" dir="ltr" class="no-js">
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
