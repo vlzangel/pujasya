@@ -1,0 +1,17 @@
+form div {
+    position: relative;
+}
+.error_form{
+    position: absolute;
+    bottom: -24px;
+    width: 300px;
+    left: 0px;
+    padding: 2px 10px;
+    background: #ff5353;
+    color: #FFF;
+    font-size: 11px;
+    z-index: 9999;
+    border-radius: 3px;
+    display: none;
+    text-align: left;
+}
