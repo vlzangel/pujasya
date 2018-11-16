@@ -120,7 +120,7 @@
                                                     <h5 class="usuariop">'.$autopuja->ult_usuario_pujar.'</h5>
                                                 ';
                                             }
-                                            if( $p["se_compra"] == 1 && $p["status"] == "activa" ){
+                                            if( $autopuja->se_compra == 1 && $autopuja->status == "activa" ){
                                                 $pujar .= 'data-compra="'.$autopuja->precio_compra.'"';
                                             }else{
                                                 $pujar .= 'data-compra="No"';

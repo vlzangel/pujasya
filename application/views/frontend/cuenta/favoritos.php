@@ -1,3 +1,8 @@
+<style type="text/css">
+    .content-card .lbl2 {
+        font-size: 20px;
+    }
+</style>
 <main id="mainContent" class="main-content">
     <div class="page-container ptb-20">
         <div class="container">
@@ -20,6 +25,131 @@
                                 <h4 class="panel t-uppercase" style="margin-bottom: 13px; padding: 12px; font-size: 13px; font-weight: bold;">Mirá o Borra Pujas de tu lista de favoritos.</h4>
                                 <?= $this->session->userdata('msg')?>
                                 <?php if(count($anuncios) > 0):
+                                    /*echo "<pre>";
+                                        print_r($anuncios);
+                                    echo "</pre>";*/
+                                    foreach ($anuncios as $key => $autopuja) {
+                                        $autopuja = (object) $autopuja;
+                                        $imagen = ( $autopuja->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$autopuja->id_anuncio.'/'.$autopuja->img_principal;
+                                        
+                                        if( $autopuja->status == "activa" ){
+                                            $pujar = '
+                                                id="pujar_'.$autopuja->id_anuncio.'"
+                                                class="btn btnatt anuncio_item"
+                                                data-fichas="'.$autopuja->cantidad_fichas.'"
+                                                data-tiempo="'.$autopuja->tiempo_puja.'"
+                                                data-id="'.$autopuja->id_anuncio.'"
+                                                data-precio_puja="'.$autopuja->precio_puja.'"
+                                                data-tiempo_actual="'.$autopuja->tiempo_puja.'"
+                                                data-status="'.$autopuja->status.'"';
+                                        }else{
+                                            $pujar = 'class="btn btnatt btn-inact"';
+                                        }
+                                        if( $autopuja->se_compra == 1 && $autopuja->status == "activa" ){
+                                            $pujar .= 'data-compra="'.$autopuja->precio_compra.'"';
+                                        }else{
+                                            $pujar .= 'data-compra="No"';
+                                        }
+
+                                        $comprar = '';
+                                        if( $autopuja->se_compra == 1 && $autopuja->status == "activa" ){
+                                            $btn_comprar = '
+                                                id="comprar_'.$autopuja->id_anuncio.'"
+                                                class="btn btnatt producto" 
+                                                data-id="'.$autopuja->id_anuncio.'"
+                                                data-precio="'.$autopuja->precio_compra.'"
+                                                data-puja="'.$autopuja->precio_puja.'"
+                                                data-envio="'.$autopuja->precio_envio.'"
+                                                data-titulo="'.$autopuja->titulo.'"
+                                                data-img="'.$autopuja->id_anuncio.'/'.$autopuja->img_principal.'"
+                                            ';
+                                            $comprar .= '
+                                                <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
+                                                    <h6 class="lbl1">Comprar Ahora</h6>
+                                                    <h2 class="lbl2">'.number_format($autopuja->precio_compra-$autopuja->precio_puja, 2, '.', ',').'€</h2>
+                                                </div>
+                                                <div class="col-md-5 col-sm-5 col-xs-6 co1-co2">
+                                                    <h5 class="lbl3">El precio disminuye a medida que pujas</h5>
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-12 co3">
+                                                    <button '.$btn_comprar.' >
+                                                      <img class="icoatt icoatt4" src="'.base_url().'public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                      COMPRAR
+                                                    </button>
+                                                </div>
+                                            ';
+                                        }else{
+                                            $comprar .= '
+                                                <div class="col-md-9 col-sm-5 col-xs-6 co1-co2">
+                                                    <h5 class="lbl3">Compra no disponible</h5>
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-12 co3">
+                                                    <button class="btn btnatt btn-inact">
+                                                        <img class="icoatt icoatt4" src="'.base_url().'public/assets/images/icons/shopping-cart.png?v0" alt="">
+                                                        COMPRAR
+                                                    </button>
+                                                </div>
+                                            ';
+                                        }
+
+                                        echo '
+                                            <div class="col-md-12 col-sm-12 col-xs-12 splr item_list puja_toda puja_'.$autopuja->status.'">
+                                                <div class="panel content-card born2" style="padding: 0px 5px;">
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2 ctr">
+                                                            <div class="row">
+                                                                <div class="col-md-2 splr text-center">
+                                                                    <img class="imgmin2" src="'.$imagen.'" alt="">
+                                                                </div>
+                                                                <div class="col-md-1 text-center">
+                                                                    <span id="favoritos_span_">
+                                                                        <a href="javascript:;" onclick="eliminar('.$autopuja->id_anuncio.')"><i class="fa fa-close"></i></a>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="col-md-9 pt-20">
+                                                                    <a class="atitle" href="'.base_url().'anuncio/'.$autopuja->id_anuncio.'" title="'.$autopuja->titulo.'">'.strtoupper(applib::titulo(substr($autopuja->titulo, 0, 16)).( (strlen($autopuja->titulo) > 16) ? '...' : '' )).'</a>
+                                                                    <p class="mb-0">Tiempo de Subasta '.$autopuja->tiempo_puja.'s</p> 
+                                                                    <div class=" text-right cfichas">
+                                                                        <span>
+                                                                            '.$autopuja->cantidad_fichas.' x <i class="fa fa-certificate"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2">
+                                                            <div class="well well2 text-center">
+                                                                <div class="row" style="">
+                                                                    <div class="col-md-5 col-sm-4 col-xs-6 co1-co2">
+                                                                        <h6 class="lbl1">Precio de Puja</h6>
+                                                                        <h2 class="lbl2" id="precio_puja_'.$autopuja->id_anuncio.'">'.$autopuja->precio_puja.'€</h2>
+                                                                    </div>
+                                                                    <div class="col-md-4 col-sm-4 col-xs-6 co1-co2 timerlistm">
+                                                                        <h5 id="timer_'.$autopuja->id_anuncio.'" class="timer">00:00:00</h5>
+                                                                        <h5 class="usuariop" id="ult_user_'.$autopuja->id_anuncio.'">'.$autopuja->ult_puja_user.'</h5>
+                                                                    </div>
+                                                                    <div class="col-md-3 col-sm-3 col-xs-8 co3">
+                                                                        <button '.$pujar.'>
+                                                                          <img class="icoatt" src="'.base_url().'public/assets/images/icons/mazo.png?v0" alt="">
+                                                                          PUJAR
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-4 col-xs-12 plr-2">
+                                                            <div class="well well2 text-center">
+                                                                <div class="row">
+                                                                    '.$comprar.'
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ';
+                                    } /*
+
                                     foreach ($anuncios as $anuncio) { 
                                         $imagen = ( $anuncio["img_principal"] == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$anuncio["id_anuncio"].'/'.$anuncio["img_principal"]; ?>
                                         <div class="col-md-12 col-sm-12 col-xs-12 splr">
@@ -135,7 +265,7 @@
                                                 </div>
                                             </div>
                                         </div> <?php 
-                                    }
+                                    } */
                                 else: ?>
                                     <p style="text-align: left; font-weight: 100; margin-top: 40px; background-color: white; padding: 120px;">NO GUARDASTE NINGÚN FAVORITO - Para guardar en Favoritos, lo puedes hacer con el ícono <i class="fa fa-heart-o" style="font-weight: bold; margin-right: 6px; margin-left: 4px; font-size: 15px;"></i>en el detalle y listado de cada puja.</p><?php 
                                 endif ?>
@@ -175,4 +305,6 @@
         jQuery('#eliminar').modal('show');
     }
 </script>
+
 <script type="text/javascript" src="<?= base_url('public/assets/js/comprar.js?v='.time()) ?>"></script>
+<script type="text/javascript" src="<?= base_url('public/assets/js/pujar.js?v='.time()) ?>"></script>
