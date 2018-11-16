@@ -19,7 +19,7 @@ class Pujar_model extends CI_Model {
         }
 
         function get_pujas_by_user($user_id){
-            $this->db->select('pbu.id, pbu.user_id, pbu.anuncio_id, pbu.status AS mi_status, pbu.ult_puja, pbu.precio_actual, an.*');
+            $this->db->select('pbu.id, pbu.user_id, pbu.anuncio_id, pbu.status AS mi_status, pbu.ult_puja, pbu.ult_usuario_pujar, pbu.precio_actual, an.*');
             $this->db->from('pujas_by_user AS pbu');
             $this->db->join('anuncios AS an', 'an.id_anuncio = pbu.anuncio_id', 'inner');
             $this->db->where('user_id', $user_id);

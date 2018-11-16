@@ -198,7 +198,7 @@ class Pujar extends SuperController {
             "producto_id" => $id_anuncio,
             "operacion" => "Puja Ganada",
             "data" => json_encode($info),
-            "status" => "Por pagar puja"
+            "status" => "Pendiente"
         ];
         $this->Anuncios_Model->saveCompraProducto($data);
 
@@ -240,7 +240,8 @@ class Pujar extends SuperController {
         $this->Anuncios_Model->newPuja($data_2);
         $this->Pujar_model->updatePuja_by_anuncio(
             $id_anuncio, [
-            "precio_actual" => $precio_puja+0.01
+            "precio_actual" => $precio_puja+0.01,
+            "ult_usuario_pujar" => $usuario->nickname,
         ]);
     }
 
