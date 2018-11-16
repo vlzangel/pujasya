@@ -230,7 +230,7 @@
                                             if( $value == 0 ){
                                                 echo '
                                                     <div class="item_list '.$key.'">
-                                                        <p class="panel content-card born2" style="padding: 37px 30px 36px; font-weight: 600;">No tienes Pujas '.$status_str[$key].'</p><?php 
+                                                        <p class="panel content-card born2" style="padding: 37px 30px 36px; font-weight: 600;">No tienes Pujas '.$status_str[$key].'</p>
                                                     </div>
                                                 ';
                                             }

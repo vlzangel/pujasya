@@ -68,11 +68,27 @@
                                 </div>
                                 <div id="list_container" class="col-md-12 col-sm-12 col-xs-12 splr"> <?php
                                     if( count($anuncios) > 0 ){
+
+                                        $status_filtros = [
+                                            "puja_Pendiente" => 0,
+                                            "puja_Pagada" => 0,
+                                            "puja_Expirada" => 0,
+                                        ];
+
+                                        $status_str = [
+                                            "puja_Pendiente" => "Pendientes",
+                                            "puja_Pagada" => "Pagadas",
+                                            "puja_Expirada" => "Expiradas",
+                                        ];
+
                                         foreach ($anuncios as $anuncio) { 
                                             if( $anuncio->status_compra == "Por pagar puja"){
                                                 $info = json_decode($anuncio->data);
                                                 $tipo = $anuncio->operacion; 
-                                                $imagen = ( $anuncio->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$anuncio->id_anuncio.'/'.$anuncio->img_principal; ?>
+                                                $imagen = ( $anuncio->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$anuncio->id_anuncio.'/'.$anuncio->img_principal;
+
+                                                $status_filtros['puja_'.$anuncio->status_compra]++; ?>
+                                                
                                                 <div class="panel content-card born2 puja_toda puja_<?= $anuncio->status_compra ?>" >
                                                     <div class="col-md-12 col-sm-12 col-xs-12 plr-2 ctr">
                                                         <div class="row">
@@ -120,6 +136,17 @@
                                                 </div> <?php
                                             }
                                         } 
+
+                                        foreach ($status_filtros as $key => $value) {
+                                            if( $value == 0 ){
+                                                echo '
+                                                    <div class="panel '.$key.'">
+                                                        <p class="panel content-card born2" style="padding: 37px 30px 36px; font-weight: 600;">No tienes Pujas '.$status_str[$key].'</p>
+                                                    </div>
+                                                ';
+                                            }
+                                        }
+
                                     }else{ ?>
                                         <p style="text-align: left; font-weight: 100; margin-top: 40px; background-color: white; padding: 120px;">
                                             AÚN NO HAS REALIZADO NINGUNA COMPRA
