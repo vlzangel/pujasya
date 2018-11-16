@@ -42,7 +42,6 @@ var REVISAR = true;
 function ganadores() {
     if( REVISAR ){
         var historial = ( jQuery("#historial_list").length == 1 ) ? jQuery("#historial_list").attr("data-id") : 0;
-        
         jQuery.post(
             HOME+"Pujar/revisarPujas",
             {
@@ -59,6 +58,9 @@ function ganadores() {
                     jQuery.each(data[1], function(i, anuncio){
                         actualizar_anuncio(anuncio);
                     });
+                }
+                if( data[3] != String(jQuery("#mis_fichas").html()).trim() ){
+                    jQuery("#mis_fichas").html(data[2]);
                 }
             }, 'json'
         );

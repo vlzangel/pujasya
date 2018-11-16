@@ -59,6 +59,8 @@ class Pujar extends SuperController {
 
     public function revisarPujas(){
         $ahora = time();
+        $user = $this->Usuarios_model->get_user( $this->session->userdata('user_id') );
+
         $anuncios = $this->Search_model->get_revision();
         $ganadas = [];
         $actualizadas = [];
@@ -90,7 +92,7 @@ class Pujar extends SuperController {
                 }
             }
         }
-        echo json_encode([$ganadas, $actualizadas]);
+        echo json_encode([$ganadas, $actualizadas, $user->fichas]);
     }
 
     private function get_historial($id_anuncio, $reventa){
