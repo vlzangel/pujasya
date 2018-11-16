@@ -198,7 +198,7 @@ class Pujar extends SuperController {
             "producto_id" => $id_anuncio,
             "operacion" => "Puja Ganada",
             "data" => json_encode($info),
-            "status" => "Pendiente"
+            "status" => "Por pagar puja"
         ];
         $this->Anuncios_Model->saveCompraProducto($data);
 

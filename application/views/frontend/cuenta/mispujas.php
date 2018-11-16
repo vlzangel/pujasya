@@ -101,8 +101,19 @@
                                                             break;
                                                         } ?>                                       
                                                     </td>
-                                                    <td class="col-sm-2 col-md-2 is-hidden-xs-down">
-                                                        <a href="<?= base_url('anuncio/'.$anuncio->anuncio_id) ?>" class="btn btn-info btn-block btn-sm upload-button" style="background-color: #fb9029;">VER PUJA</a>
+                                                    <td class="col-sm-2 col-md-2 is-hidden-xs-down"><?php
+                                                        switch ( $anuncio->mi_status ) {
+                                                            case 'activa':
+                                                                echo '<a href="'.base_url('anuncio/'.$anuncio->anuncio_id).'" class="btn btn-info btn-block btn-sm upload-button" style="background-color: #fb9029;">VER PUJA</a>';
+                                                            break;
+                                                            case 'ganada':
+                                                                echo '<a href="'.base_url('comprarproducto/'.$anuncio->anuncio_id).'" class="btn btn-info btn-block btn-sm upload-button" style="background-color: #00b408;">PAGAR</a>';
+                                                            break;
+                                                            case 'culminada':
+                                                                // echo '<div class="btn btn-info btn-block btn-sm upload-button" style="background-color: #4f4f4f;cursor: default;">Culminada</div>';
+                                                            break;
+                                                        } ?> 
+                                                        
                                                     </td>
                                                 </tr> <?php 
                                             endforeach ?>
