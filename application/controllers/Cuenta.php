@@ -147,7 +147,7 @@ class Cuenta extends CI_Controller {
         $data['anuncios'] = [];
         $anuncios = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') );
         foreach ($anuncios as $key => $anuncio) {
-            if( $anuncio->status_compra == "Pendiente" && ( time() > strtotime ( '+1 day' , strtotime ( $anuncio->fecha ) ) ) ){
+            if( $anuncio->status_compra == "Pendiente" && ( time() > strtotime ( '+30 day' , strtotime ( $anuncio->fecha ) ) ) ){
                 $this->Cuenta_model->get_mis_compras(  $anuncio->id, [
                     "status" => "Expirada"
                 ] );
@@ -155,6 +155,8 @@ class Cuenta extends CI_Controller {
             }
             $data['anuncios'][] = $anuncio;
         }
+        $data['fichas']= $this->Fichas_Model->get_mis_pedidos( $this->session->userdata('user_id') );
+        $data['user_id']= $this->session->userdata('user_id');
         $data['title'] = 'Mis Compras';
         $data['contenido'] = 'cuenta/miscompras';
         $this->load->view('frontend/templates/plantilla', $data);

@@ -32,6 +32,15 @@
             return ($query) ? $query->result()[0] : false;
         }
 
+        function get_mis_pedidos($user_id){
+            $this->db->select('*');
+            $this->db->from('compras_fichas');
+            $this->db->where('user', $user_id);
+            $this->db->order_by('id','ASC');
+            $query = $this->db->get();
+            return ($query) ? $query->result() : false;
+        }
+
         function save($data){
             $this->db->insert('fichas', $data);
         }

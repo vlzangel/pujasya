@@ -29,6 +29,10 @@
         color: black;
     }
 
+    a.etiq.etiq-espera {
+        display: block;
+    }
+
 </style>
 <!-- <pre>
     <?php print_r($anuncios); ?>
@@ -82,66 +86,104 @@
                                         ];
 
                                         foreach ($anuncios as $anuncio) { 
-                                            if( $anuncio->status_compra == "Por pagar puja"){
-                                                $info = json_decode($anuncio->data);
-                                                $tipo = $anuncio->operacion; 
-                                                $imagen = ( $anuncio->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$anuncio->id_anuncio.'/'.$anuncio->img_principal;
+                                            $info = json_decode($anuncio->data);
+                                            $tipo = $anuncio->operacion; 
+                                            $imagen = ( $anuncio->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$anuncio->id_anuncio.'/'.$anuncio->img_principal;
 
-                                                $status_filtros['puja_'.$anuncio->status_compra]++; ?>
-                                                
-                                                <div class="panel content-card born2 puja_toda puja_<?= $anuncio->status_compra ?>" >
-                                                    <div class="col-md-12 col-sm-12 col-xs-12 plr-2 ctr">
-                                                        <div class="row">
-                                                            <div class="col-md-1 col-sm-1 col-xs-12 splr text-center">
-                                                                <img class="imgmin3" src="<?= $imagen ?>" alt="">
-                                                            </div>
-                                                            <div class="col-md-4 col-sm-4 col-xs-12 ptb-20">
-                                                                <a class="atitle" href="<?= base_url()?>" title=""><?= $anuncio->titulo ?></a> <?php
-                                                                if( $tipo == "Compra" ){ ?>
-                                                                    <p class="" style="margin-bottom: 0;"><strong>Fecha Compra:</strong> <?=  date("d/m/Y H:i:s", strtotime($anuncio->fecha) ) ?> </p>  <?php
-                                                                }else{ ?>
-                                                                    <p class="" style="margin-bottom: 0;"><strong>Cierre de Puja:</strong> <?=  date("d/m/Y H:i:s", strtotime($anuncio->fecha) ) ?> </p>  <?php
-                                                                } ?>
-                                                            </div>
-                                                            <div class="col-md-2 col-sm-2 col-xs-12 ptb-20 text-center">
-                                                                <p class="" style="margin-bottom: 0;"><strong><?= $tipo ?></strong></p> 
-                                                            </div>
-                                                            <div class="col-md-3 col-sm-3 col-xs-6 text-right ptb-20"> <?php
-                                                                if( $tipo == "Compra" ){ ?>
-                                                                    <p class="" style="margin-bottom: 0;"><strong>Precio:</strong> <?= $info->producto_precio ?>€ </p> 
-                                                                    <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p>
-                                                                    <p class="" style="margin-bottom: 0;"><strong>Precio Puja:</strong> - <?= $info->producto_puja ?>€ </p>
-                                                                    <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5>  <?php
-                                                                }else{ ?>
-                                                                    <h5 class="bold1" style="margin-bottom: 0;">Precio Puja: <?= $info->producto_puja ?>€</h5>
-                                                                    <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p> 
-                                                                    <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->producto_puja+$info->producto_envio ?>€</h5> <?php
-                                                                } ?>
-                                                            </div>
-                                                            <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20"><?php
-                                                                switch ( $anuncio->status_compra ) {
-                                                                    case 'Expirada':
-                                                                        echo '<div class="etiq etiq-exp">EXPIRADA</div>';
-                                                                    break;
-                                                                    case 'Pagada':
-                                                                        echo '<div class="etiq etiq-success">PAGADA</div>';
-                                                                    break;
-                                                                    case 'Pendiente':
-                                                                        echo '<a class="etiq etiq-espera" href="'.base_url("comprarproducto/").$anuncio->id_anuncio.'">PAGAR</a>';
-                                                                    break;
-                                                                } ?>
-                                                            </div>
+                                            $status_filtros['puja_'.$anuncio->status_compra]++; ?>
+                                            
+                                            <div class="panel content-card born2 puja_toda puja_<?= $anuncio->status_compra ?>" >
+                                                <div class="col-md-12 col-sm-12 col-xs-12 plr-2 ctr">
+                                                    <div class="row">
+                                                        <div class="col-md-1 col-sm-1 col-xs-12 splr text-center">
+                                                            <img class="imgmin3" src="<?= $imagen ?>" alt="">
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-4 col-xs-12 ptb-20">
+                                                            <a class="atitle" href="<?= base_url()?>" title=""><?= $anuncio->titulo ?></a> <?php
+                                                            if( $tipo == "Compra" ){ ?>
+                                                                <p class="" style="margin-bottom: 0;"><strong>Fecha Compra:</strong> <?=  date("d/m/Y H:i:s", strtotime($anuncio->fecha) ) ?> </p>  <?php
+                                                            }else{ ?>
+                                                                <p class="" style="margin-bottom: 0;"><strong>Cierre de Puja:</strong> <?=  date("d/m/Y H:i:s", strtotime($anuncio->fecha) ) ?> </p>  <?php
+                                                            } ?>
+                                                        </div>
+                                                        <div class="col-md-2 col-sm-2 col-xs-12 ptb-20 text-center">
+                                                            <p class="" style="margin-bottom: 0;"><strong><?= $tipo ?></strong></p> 
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-3 col-xs-6 text-right ptb-20"> <?php
+                                                            if( $tipo == "Compra" ){ ?>
+                                                                <p class="" style="margin-bottom: 0;"><strong>Precio:</strong> <?= $info->producto_precio ?>€ </p> 
+                                                                <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p>
+                                                                <p class="" style="margin-bottom: 0;"><strong>Precio Puja:</strong> - <?= $info->producto_puja ?>€ </p>
+                                                                <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5>  <?php
+                                                            }else{ ?>
+                                                                <h5 class="bold1" style="margin-bottom: 0;">Precio Puja: <?= $info->producto_puja ?>€</h5>
+                                                                <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p> 
+                                                                <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->producto_puja+$info->producto_envio ?>€</h5> <?php
+                                                            } ?>
+                                                        </div>
+                                                        <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20"><?php
+                                                            switch ( $anuncio->status_compra ) {
+                                                                case 'Expirada':
+                                                                    echo '<div class="etiq etiq-exp">EXPIRADA</div>';
+                                                                break;
+                                                                case 'Pagada':
+                                                                    echo '<div class="etiq etiq-success">PAGADA</div>';
+                                                                break;
+                                                                case 'Pendiente':
+                                                                    echo '<a class="etiq etiq-espera" href="'.base_url("comprarproducto/").$anuncio->id_anuncio.'">PAGAR</a>';
+                                                                break;
+                                                            } ?>
                                                         </div>
                                                     </div>
-                                                </div> <?php
-                                            }
+                                                </div>
+                                            </div> <?php
+                                        } 
+
+                                        /*echo "<pre>";
+                                            print_r($fichas);
+                                        echo "</pre>";*/
+
+                                        foreach ($fichas as $anuncio) { 
+                                            $info = json_decode($anuncio->data);
+                                            $tipo = "Compra Fichas"; 
+                                            $imagen = ( $anuncio->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/fichas/'.$anuncio->id_anuncio.'/'.$anuncio->img_principal;
+
+                                            $status_filtros['puja_'.$anuncio->status_compra]++; ?>
+                                            
+                                            <div class="panel content-card born2 puja_toda puja_Pagada" >
+                                                <div class="col-md-12 col-sm-12 col-xs-12 plr-2 ctr">
+                                                    <div class="row">
+                                                        <div class="col-md-1 col-sm-1 col-xs-12 splr text-center">
+                                                            <img class="imgmin3" src="<?= $imagen ?>" alt="">
+                                                        </div>
+                                                        <div class="col-md-4 col-sm-4 col-xs-12 ptb-20">
+                                                            <a class="atitle" href="<?= base_url()?>" title=""><?= $info->paquete_name ?></a>
+                                                            <p class="" style="margin-bottom: 0;"><strong>Fecha Compra:</strong> <?=  date("d/m/Y H:i:s", strtotime($anuncio->fecha) ) ?> </p>
+                                                        </div>
+                                                        <div class="col-md-2 col-sm-2 col-xs-12 ptb-20 text-center">
+                                                            <p class="" style="margin-bottom: 0;"><strong><?= $tipo ?></strong></p> 
+                                                        </div>
+                                                        <div class="col-md-3 col-sm-3 col-xs-6 text-right ptb-20">
+                                                            <p class="" style="margin-bottom: 0;"><strong>Fichas:</strong> <?= $info->paquete_fichas ?> </p> 
+                                                            <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->paquete_precio ?>€</h5>
+                                                        </div>
+                                                        <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20"><?php
+                                                            switch ( $anuncio->status ) {
+                                                                case 'Pagado':
+                                                                    echo '<div class="etiq etiq-success">PAGADA</div>';
+                                                                break;
+                                                            } ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <?php
                                         } 
 
                                         foreach ($status_filtros as $key => $value) {
                                             if( $value == 0 ){
                                                 echo '
                                                     <div class="panel '.$key.'">
-                                                        <p class="panel content-card born2" style="padding: 37px 30px 36px; font-weight: 600;">No tienes Pujas '.$status_str[$key].'</p>
+                                                        <p class="panel content-card born2" style="padding: 37px 30px 36px; font-weight: 600;">No tienes Compras '.$status_str[$key].'</p>
                                                     </div>
                                                 ';
                                             }
