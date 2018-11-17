@@ -121,7 +121,7 @@
                                             </button> <?php 
                                         }else{ ?>
                                             <button 
-                                                class="btn btnatt anuncio_item" 
+                                                class="btn btnatt btn-inact" 
                                                 data-toggle="modal" 
                                                 data-target="#alert-cfichas"
                                             >
@@ -130,7 +130,7 @@
                                             </button> <?php 
                                         }
                                     else: ?>
-                                        <button class="btn btnatt" onclick="window.location='<?= base_url('ingresar')?>'">
+                                        <button class="btn btnatt <?= ( $p['status'] == "activa" ) ? '' : 'btn-inact' ?>" onclick="window.location='<?= base_url('ingresar')?>'">
                                             <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
                                             PUJAR
                                         </button> <?php 
@@ -153,10 +153,6 @@
                                             <button 
                                                 id="comprar_<?=$p['id_anuncio']?>"
                                                 class="btn btnatt producto" 
-                                                <?php /*
-                                                data-toggle="modal" 
-                                                data-target="#info-compra"
-                                                */ ?>
                                                 data-id="<?= $p['id_anuncio']?>"
                                                 data-precio="<?= ($p['precio_compra']) ?>"
                                                 data-puja="<?= $p['precio_puja'] ?>"
@@ -168,7 +164,7 @@
                                                 COMPRAR
                                             </button> <?php 
                                         else: ?>
-                                            <button class="btn btnatt" onclick="window.location='<?= base_url('ingresar')?>'">
+                                            <button class="btn btnatt btn-inact" onclick="window.location='<?= base_url('ingresar')?>'">
                                                 <img class="icoatt icoatt4" src="<?= base_url()?>public/assets/images/icons/shopping-cart.png?v0" alt="">
                                                 COMPRAR
                                             </button> <?php 

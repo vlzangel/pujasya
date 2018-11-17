@@ -34,14 +34,14 @@
                             <div class="col-md-1 text-center">
                                 <span id="favoritos_span_<?= $p['id_anuncio']?>"><?php
                                     if($this->session->userdata('user_id') != ""){
-                                    if( in_array($p['id_anuncio'], $favoritos) ){ ?>
-                                        <a href="<?= base_url("cuenta/favoritos"); ?>" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a> <?php
-                                    }else{ ?>
-                                        <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a> <?php
-                                    }
-                                }else{
-                                    echo '<a href="'.base_url("ingresar").'" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a>';
-                                } ?>
+                                        if( in_array($p['id_anuncio'], $favoritos) ){ ?>
+                                            <a href="<?= base_url("cuenta/favoritos"); ?>" onclick="" style="color: #fb9029" target="_blank"><i class="fa fa-heart"></i></a> <?php
+                                        }else{ ?>
+                                            <a href="javascript:;" onclick="favoritos_listado(<?= $p['id_anuncio']?>)"><i class="fa fa-heart"></i></a> <?php
+                                        }
+                                    }else{
+                                        echo '<a href="'.base_url("ingresar").'" onclick="" target="_blank"><i class="fa fa-heart"></i></a>';
+                                    } ?>
                                 </span>
                             </div>
                             <div class="col-md-8 pt-20">
@@ -77,11 +77,48 @@
                                     <button class="btn btnatt2" >
                                     <img class="icoatt2" src="<?= base_url()?>public/assets/images/icons/a-circle.png?v0" alt=""></button>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-8 co3">
-                                    <button class="btn btnatt">
-                                        <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
-                                        PUJAR
-                                    </button>
+                                <div class="col-md-3 col-sm-3 col-xs-8 co3"> <?php 
+                                    if($this->session->userdata('user_id') != ""):
+                                        if( $user['fichas']+0 > 0 ){ ?>
+                                            <button <?php 
+                                                if( $p['status'] == "activa" ){ ?>
+                                                    id="pujar_<?= $p['id_anuncio'] ?>"
+                                                    class="btn btnatt anuncio_item"
+                                                    data-fichas="<?= $p['cantidad_fichas'] ?>"
+                                                    data-tiempo="<?= $p['tiempo_puja'] ?>"
+                                                    data-id="<?= $p['id_anuncio'] ?>"
+                                                    data-precio_puja="<?= $p['precio_puja'] ?>"
+                                                    data-tiempo_actual="<?= $p['tiempo_puja'] ?>"
+                                                    data-status="<?= $p['status'] ?>" <?php 
+                                                }else{ ?>
+                                                    class="btn btnatt btn-inact" <?php
+                                                }
+                                                if( $p["se_compra"] == 1 && $p["status"] == "activa" ){ ?>
+                                                    data-compra="<?= $p['precio_compra'] ?>"
+                                                <?php }else{ ?>
+                                                    data-compra="No"
+                                                <?php } ?>
+                                            >
+                                                <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
+                                                PUJAR
+                                            </button> <?php 
+                                        }else{ ?>
+                                            <button 
+                                                class="btn btnatt btn-inact" 
+                                                data-toggle="modal" 
+                                                data-target="#alert-cfichas"
+                                            >
+                                                <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
+                                                PUJAR
+                                            </button> <?php 
+                                        }
+                                    else: ?>
+                                        <button class="btn btnatt <?= ( $p['status'] == "activa" ) ? '' : 'btn-inact' ?>" onclick="window.location='<?= base_url('ingresar')?>'">
+                                            <img class="icoatt" src="<?= base_url()?>public/assets/images/icons/mazo.png?v0" alt="">
+                                            PUJAR
+                                        </button> <?php 
+                                    endif ?>
+
                                 </div>
                             </div>
                         </div>
@@ -90,7 +127,7 @@
                     <div class="col-md-4 col-sm-4 col-xs-12 plr-2">
                         <div class="well well2 text-center">
                             <div class="row"> <?php 
-                                if( $p["se_compra"] == 1 ){ ?>
+                                if( $p["se_compra"] == 1 && $p["status"] == "activa"){ ?>
                                     <div class="col-md-4 col-sm-4 col-xs-6 co1-co2" >
                                         <h6 class="lbl1">Comprar Ahora</h6>
                                         <h2 class="lbl2"><?= number_format($p['precio_compra']-$p["precio_puja"], 2, '.', ',') ?>€</h2>
@@ -101,11 +138,8 @@
                                     <div class="col-md-3 col-sm-3 col-xs-12 co3"> <?php 
                                         if( $this->session->userdata('user_id') != "" ): ?>
                                             <button 
+                                                id="comprar_<?=$p['id_anuncio']?>"
                                                 class="btn btnatt producto" 
-                                                <?php /*
-                                                data-toggle="modal" 
-                                                data-target="#info-compra"
-                                                */ ?>
                                                 data-id="<?= $p['id_anuncio']?>"
                                                 data-precio="<?= ($p['precio_compra']) ?>"
                                                 data-puja="<?= $p['precio_puja'] ?>"
