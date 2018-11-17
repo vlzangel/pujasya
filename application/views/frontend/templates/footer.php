@@ -68,6 +68,9 @@
     <div id="backTop" class="back-top is-hidden-sm-down">
         <i class="fa fa-angle-up" aria-hidden="true"></i>
     </div>
+    
+    <script type="text/javascript" src="<?= base_url('public/assets/js/comprar.js?v='.time()) ?>"></script>
+    <script type="text/javascript" src="<?= base_url('public/assets/js/pujar.js?v='.time()) ?>"></script>
 
     <script src="<?= base_url()?>public/assets/js/bootstrap.min.js"></script>
 

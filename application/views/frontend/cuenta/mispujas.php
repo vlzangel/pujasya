@@ -251,9 +251,6 @@
     </div>
 </main>
 
-<script type="text/javascript" src="<?= base_url('public/assets/js/comprar.js?v='.time()) ?>"></script>
-<script type="text/javascript" src="<?= base_url('public/assets/js/pujar.js?v='.time()) ?>"></script>
-
            
 
 
