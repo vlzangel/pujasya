@@ -66,10 +66,10 @@
                                     <h2 class="lbl2"><?= number_format($p['precio_puja'], 2, '.', ',') ?>€</h2>
                                 </div>
                                 <div class="col-md-4 col-sm-4 tempmin col-xs-6 co1-co2">
-                                    <h5 class="timer timerfin">00:00:00</h5>
+                                    <h5 id="timer_<?= $p['id_anuncio']?>"  class="timer timerfin">00:00:00</h5>
                                     <?php
                                         if( $p["ult_puja_user"] != "" ){
-                                            echo '<h5 class="usuariop">'.$p["ult_puja_user"].'</h5>';
+                                            echo '<h5 class="usuariop" id="ult_user_'.$p['id_anuncio'].'">'.$p["ult_puja_user"].'</h5>';
                                         }
                                     ?>  
                                 </div>
