@@ -101,9 +101,9 @@
                                             }
                                             $imagen = ( $info->img == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().$info->img;
 
-                                            $status_filtros['puja_'.$anuncio->status_compra]++; ?>
+                                            $status_filtros['puja_'.$anuncio->status]++; ?>
                                             
-                                            <div class="panel content-card born2 puja_toda puja_<?= $anuncio->status_compra ?>" >
+                                            <div class="panel content-card born2 puja_toda puja_<?= $anuncio->status ?>" >
                                                 <div class="col-md-12 col-sm-12 col-xs-12 plr-2 ctr">
                                                     <div class="row">
                                                         <div class="col-md-1 col-sm-1 col-xs-12 splr text-center">
