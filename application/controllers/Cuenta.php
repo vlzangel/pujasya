@@ -151,17 +151,17 @@ class Cuenta extends CI_Controller {
     public function miscompras(){
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $data['anuncios'] = [];
-        $anuncios = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') );
-        foreach ($anuncios as $key => $anuncio) {
-            if( $anuncio->status_compra == "Pendiente" && ( time() > strtotime ( '+30 day' , strtotime ( $anuncio->fecha ) ) ) ){
-                $this->Cuenta_model->get_mis_compras(  $anuncio->id, [
+        $pedidos = $this->Pedidos_model->all( [ "user_id" => $this->session->userdata('user_id') ] );
+        foreach ($pedidos as $key => $pedido) {
+            if( $pedido->status_compra == "Pendiente" && ( time() > strtotime ( '+30 day' , strtotime ( $pedido->fecha ) ) ) ){
+                $this->Pedidos_model->update(  $pedido->id, [
                     "status" => "Expirada"
                 ] );
-                $anuncio->status_compra = "Expirada";
+                $pedido->status_compra = "Expirada";
             }
-            $data['anuncios'][] = $anuncio;
+            $data['anuncios'][] = $pedido;
         }
-        $data['fichas']= $this->Fichas_Model->get_mis_pedidos( $this->session->userdata('user_id') );
+        $data['fichas']= [];
         $data['user_id']= $this->session->userdata('user_id');
         $data['title'] = 'Mis Compras';
         $data['contenido'] = 'cuenta/miscompras';

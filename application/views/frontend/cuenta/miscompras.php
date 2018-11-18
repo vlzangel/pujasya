@@ -87,8 +87,19 @@
 
                                         foreach ($anuncios as $anuncio) { 
                                             $info = json_decode($anuncio->data);
-                                            $tipo = $anuncio->operacion; 
-                                            $imagen = ( $anuncio->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$anuncio->id_anuncio.'/'.$anuncio->img_principal;
+                                            switch ( $anuncio->operacion."_".$anuncio->tipo_producto ) {
+                                                case 'compra_fichas':
+                                                    $tipo = "Compra Fichas";
+                                                    $info->nombre = $info->nombre." <small style='font-size: 11px;'>[".$info->fichas." fichas]</small>";
+                                                break;
+                                                case 'compra_anuncio':
+                                                    $tipo = "Compra Producto";
+                                                break;
+                                                default:
+                                                    $tipo = "Puja Ganada";
+                                                break;
+                                            }
+                                            $imagen = ( $info->img == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().$info->img;
 
                                             $status_filtros['puja_'.$anuncio->status_compra]++; ?>
                                             
@@ -99,8 +110,8 @@
                                                             <img class="imgmin3" src="<?= $imagen ?>" alt="">
                                                         </div>
                                                         <div class="col-md-4 col-sm-4 col-xs-12 ptb-20">
-                                                            <a class="atitle" href="<?= base_url()?>" title=""><?= $anuncio->titulo ?></a> <?php
-                                                            if( $tipo == "Compra" ){ ?>
+                                                            <a class="atitle" href="<?= base_url()?>" title=""><?= $info->nombre ?></a> <?php
+                                                            if( $tipo != "Puja Ganada" ){ ?>
                                                                 <p class="" style="margin-bottom: 0;"><strong>Fecha Compra:</strong> <?=  date("d/m/Y H:i:s", strtotime($anuncio->fecha) ) ?> </p>  <?php
                                                             }else{ ?>
                                                                 <p class="" style="margin-bottom: 0;"><strong>Cierre de Puja:</strong> <?=  date("d/m/Y H:i:s", strtotime($anuncio->fecha) ) ?> </p>  <?php
@@ -110,15 +121,25 @@
                                                             <p class="" style="margin-bottom: 0;"><strong><?= $tipo ?></strong></p> 
                                                         </div>
                                                         <div class="col-md-3 col-sm-3 col-xs-6 text-right ptb-20"> <?php
-                                                            if( $tipo == "Compra" ){ ?>
-                                                                <p class="" style="margin-bottom: 0;"><strong>Precio:</strong> <?= $info->producto_precio ?>€ </p> 
-                                                                <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p>
-                                                                <p class="" style="margin-bottom: 0;"><strong>Precio Puja:</strong> - <?= $info->producto_puja ?>€ </p>
-                                                                <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5>  <?php
-                                                            }else{ ?>
-                                                                <h5 class="bold1" style="margin-bottom: 0;">Precio Puja: <?= $info->producto_puja ?>€</h5>
-                                                                <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->producto_envio ?>€ </p> 
-                                                                <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->producto_puja+$info->producto_envio ?>€</h5> <?php
+                                                            switch ($tipo) {
+                                                                case 'Compra Fichas': ?>
+                                                                    <p class="" style="margin-bottom: 0;"><strong>Precio:</strong> <?= $info->precio ?>€ </p> <?php
+                                                                    if( $info->cupon != "" ){ ?>
+                                                                        <p class="" style="margin-bottom: 0;"><strong>Cupón:</strong> -<?= $info->cupon[3] ?>€ </p> <?php
+                                                                    } ?>
+                                                                    <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5>  <?php
+                                                                break;
+                                                                case 'Compra Producto': ?>
+                                                                    <p class="" style="margin-bottom: 0;"><strong>Precio:</strong> <?= $info->precio ?>€ </p> 
+                                                                    <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->envio ?>€ </p>
+                                                                    <p class="" style="margin-bottom: 0;"><strong>Precio Puja:</strong> - <?= $info->puja ?>€ </p>
+                                                                    <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5>  <?php
+                                                                break;
+                                                                case 'Puja Ganada': ?>
+                                                                    <h5 class="bold1" style="margin-bottom: 0;">Precio Puja: <?= $info->puja ?>€</h5>
+                                                                    <p class="" style="margin-bottom: 0;"><strong>Envío y Manejo:</strong> <?= $info->envio ?>€ </p> 
+                                                                    <h5 class="bold1" style="margin-bottom: 0;">Total: <?= $info->pago ?>€</h5> <?php
+                                                                break;
                                                             } ?>
                                                         </div>
                                                         <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20"><?php
