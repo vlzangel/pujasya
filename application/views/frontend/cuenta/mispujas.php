@@ -85,11 +85,11 @@
                                             "puja_ganada" => "Ganadas",
                                             "puja_culminada" => "Culminadas",
                                         ];
-/*
+
                                         echo "<pre>";
                                             print_r($anuncios);
                                         echo "</pre>";
-*/
+
                                         foreach ($anuncios as $key => $autopuja) {
                                             $imagen = ( $autopuja->img_principal == "" ) ? base_url().'public/uploads/anuncios/thumb/no-image.jpg' : base_url().'files/productos/'.$autopuja->id_anuncio.'/'.$autopuja->img_principal;
                                             
@@ -237,7 +237,7 @@
                                         }
 
                                     else: ?>
-                                        <div class="item_list '.$key.'">
+                                        <div class="">
                                             <p class="panel content-card born2" style="padding: 37px 30px 36px; font-weight: 600;">No has hecho ninguna Puja</p>
                                         </div> <?php
                                     endif ?>
