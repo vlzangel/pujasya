@@ -16,7 +16,7 @@ class Pujar extends SuperController {
         
         $mipuja = $this->Pujar_model->get_pujas_by_user_anuncio($user_id, $this->input->post('id_anuncio'));
         $data_puja = [];
-        if( $mipuja == false ){
+        if( $mipuja === false ){
             $data_puja["anuncio_id"] = $this->input->post('id_anuncio');
             $data_puja["user_id"] = $usuario->id_user;
             $data_puja["status"] = "activa";
