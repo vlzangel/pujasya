@@ -151,7 +151,7 @@ class Cuenta extends CI_Controller {
     public function miscompras(){
         $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
         $data['anuncios'] = [];
-        $pedidos = $this->Pedidos_model->all( [ "user_id" => $this->session->userdata('user_id') ] );
+        $pedidos = $this->Pedidos_model->all( [ "user_id" => $this->session->userdata('user_id'), "status !=" => "precompra" ] );
         foreach ($pedidos as $key => $pedido) {
             if( $pedido->status_compra == "Pendiente" && ( time() > strtotime ( '+30 day' , strtotime ( $pedido->fecha ) ) ) ){
                 $this->Pedidos_model->update(  $pedido->id, [
@@ -161,7 +161,6 @@ class Cuenta extends CI_Controller {
             }
             $data['anuncios'][] = $pedido;
         }
-        $data['fichas']= [];
         $data['user_id']= $this->session->userdata('user_id');
         $data['title'] = 'Mis Compras';
         $data['contenido'] = 'cuenta/miscompras';
