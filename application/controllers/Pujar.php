@@ -20,10 +20,12 @@ class Pujar extends SuperController {
             $data_puja["anuncio_id"] = $this->input->post('id_anuncio');
             $data_puja["user_id"] = $usuario->id_user;
             $data_puja["status"] = "activa";
+            $data_puja["ult_usuario_pujar"] = $usuario->nickname;
             $data_puja["ult_puja"] = $this->input->post('precio_puja');
             $this->Pujar_model->savePuja($data_puja);
         }else{
             $data_puja["ult_puja"] = $this->input->post('precio_puja');
+            $data_puja["ult_usuario_pujar"] = $usuario->nickname;
             $this->Pujar_model->updatePuja($mipuja[0]->id, $data_puja);
         }
 
@@ -52,8 +54,9 @@ class Pujar extends SuperController {
         ]);
 
         $this->Pujar_model->updatePuja_by_anuncio(
-             $this->input->post('id_anuncio'), [
-            "precio_actual" => $this->input->post('precio_puja')
+            $this->input->post('id_anuncio'), [
+            "precio_actual" => $this->input->post('precio_puja'),
+            "ult_usuario_pujar" => $usuario->nickname
         ]);
     }
 
