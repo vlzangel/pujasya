@@ -22,6 +22,7 @@ class Pujar extends SuperController {
             $data_puja["status"] = "activa";
             $data_puja["ult_usuario_pujar"] = $usuario->nickname;
             $data_puja["ult_puja"] = $this->input->post('precio_puja');
+            $data_puja["precio_actual"] = $this->input->post('precio_puja');
             $this->Pujar_model->savePuja($data_puja);
         }else{
             $data_puja["ult_puja"] = $this->input->post('precio_puja');
