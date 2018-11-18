@@ -11,6 +11,8 @@ class Cuenta extends CI_Controller {
         $this->load->model('Cuenta_model');
         $this->load->model('Search_model');
         $this->load->model('Pujar_model');
+
+        $this->load->model('Pedidos_model');
     }
 
     function init_pedido(){
@@ -59,23 +61,27 @@ class Cuenta extends CI_Controller {
     }
 
     function procesarCompraProducto(){
-        $producto_id = $this->input->post('producto_id');
-        $info["producto_precio"] = $this->input->post('producto_precio');
-        $info["producto_puja"] = $this->input->post('producto_puja');
-        $info["producto_envio"] = $this->input->post('producto_envio');
-        $info["pago"] = $this->input->post('pago');
-        $info["metodo_pago"] = $this->input->post('paquete_metodo_pago');
+        extract($this->input->post());
+
+        $info["precio"] = $producto_precio;
+        $info["puja"]   = $producto_puja;
+        $info["envio"]  = $producto_envio;
+        $info["pago"]   = $pago;
         $data = [
             "user_id" => $this->input->post('user_id'),
-            "producto_id" => $producto_id,
+            "producto_id" => $this->input->post('producto_id'),
+            "tipo_producto" => "anuncio",
             "operacion" => $this->input->post('operacion'),
             "data" => json_encode($info),
-            "status" => "Pendiente"
+            "status" => $this->input->post('status')
         ];
-        $this->Anuncios_model->saveCompraProducto($data);
-        // $this->Anuncios_model->updateStatus($producto_id, "comprada");
-        $compra = $this->Cuenta_model->get_mis_compras( $this->session->userdata('user_id') )[0];
+        $compra = $this->create_pedido($data);
         echo json_encode(["pedido_id" => $compra->id]);
+    }
+
+    function create_pedido($data){
+        $this->Pedidos_model->create($data);
+        return $this->Pedidos_model->all( [ "user_id" => $this->session->userdata('user_id') ] )[0];
     }
 
     public function apply_coupon($cupon_name, $total){

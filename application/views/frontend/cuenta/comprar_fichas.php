@@ -338,40 +338,49 @@
 
     function procesar_compra(){
         if( CARRITO["paquete_metodo_pago"] == "Paypal" ){
-            location.href = HOME+"paypal/"+SECCION+"/"+CARRITO["pedido_id"];
+            location.href = HOME+"paypal/buy/"+CARRITO["pedido_id"];
         }else{
            jQuery('#payment-form').submit();
         }
     }
 
     function initPedido(){
-        jQuery.post(
-            HOME+"cuenta/init_pedido",
-            {
-                "pedido_id" : CARRITO["pedido_id"],
-                "user_id" : CARRITO["user"],
-                "cupon" : CARRITO["cupon"],
-                "paquete_id" : CARRITO["paquete_id"]
-            },
-            function(data){
-                CARRITO["pedido_id"] = data.pedido_id;
+        if( CARRITO["pedido_id"] == "" ){
+            jQuery.post(
+                HOME+"Pedido/create", {
+                    "user_id" : USER_ID,
+                    "producto_id" : CARRITO["paquete_id"],
+                    "cupon" : CARRITO["cupon"],
+                    "operacion" : "compra",
+                    "status" : "precompra",
+                    "tipo_producto" : "fichas"
+                },
+                function(data){
+                    CARRITO["pedido_id"] = data.pedido_id;
+                    nextPrev(1);
+                }, 'json'
+            );
+        }else{
+            update_metodo(function(){
                 nextPrev(1);
-            }, 'json'
-        );
+            });
+        }
     }
 
-    function update_metodo(){
+    function update_metodo(CB){
+        console.log("Entro I");
         jQuery.post(
-            HOME+"cuenta/init_pedido",
+            HOME+"Pedido/update",
             {
                 "pedido_id" : CARRITO["pedido_id"],
                 "user_id" : CARRITO["user"],
                 "cupon" : CARRITO["cupon"],
-                "paquete_id" : CARRITO["paquete_id"],
-                "paquete_metodo_pago" : CARRITO["paquete_metodo_pago"],
+                "producto_id" : CARRITO["paquete_id"],
+                "metodo_pago" : CARRITO["paquete_metodo_pago"],
             },
             function(data){
-
+                console.log("Entro II");
+                CB();
             }, 'json'
         );
     }

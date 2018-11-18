@@ -61,7 +61,7 @@ $route['preguntas_frecuentes'] = 'index/preguntas_frecuentes';
 $route['contacta'] = 'index/contacta';
 $route['comprarfichas'] = 'cuenta/comprarfichas';
 $route['comprarfichas/(:any)/(:any)'] = 'cuenta/comprarfichas/$1/$2';
-$route['comprarproducto/(:any)'] = 'cuenta/comprarproducto/$1';
+$route['comprarproducto/(:any)'] = 'pedido/comprar/$1';
 
 //Route para perfil empresa
 

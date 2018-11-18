@@ -50,6 +50,7 @@
       var HOME = "<?= base_url()?>";
       <?php if($this->session->userdata('user_id') != ""):?>
         var USER_NICKNAME = "<?= $user['nickname'] ?>";
+        var USER_ID = "<?= $this->session->userdata('user_id') ?>";
       <?php endif ?>
     </script>
 </head>

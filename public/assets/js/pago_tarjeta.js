@@ -10,9 +10,7 @@ jQuery(document).ready(function() {
             if( CARRITO["paquete_metodo_pago"] == "Paypal" ){
                 nextPrev(1);
             }else{
-                console.log("Entro 1");
                 if( validar() ){
-                    console.log("Entro 2");
                     var form = jQuery('#payment-form');
                     Stripe.createToken(form, function(status, response) {
                         var form = jQuery('#payment-form');
@@ -56,7 +54,7 @@ jQuery(document).ready(function() {
                 },
                 function(data){
                     if( data.status == "succeeded" ){
-                        location.href = HOME+"Stripe/"+PROCESO_STRIPE+"/"+CARRITO["pedido_id"];
+                        location.href = HOME+"Stripe/success/"+CARRITO["pedido_id"];
                     }else{
                         jQuery("#alerta_visa").html( MSG_STRYPE[data.error.error.code] );
                         jQuery("#alerta_visa").css( "display", "block" );
@@ -69,6 +67,15 @@ jQuery(document).ready(function() {
         }
     });
 });
+
+function confirmar_pago(){
+    if( CARRITO["paquete_metodo_pago"] != "" ){
+        jQuery("#error").addClass("hidden");
+        nextPrev(1);
+    }else{
+        jQuery("#error").removeClass("hidden");
+    }
+}
 
 function sh_error(id, status){
     if( status ){
@@ -166,7 +173,6 @@ function validar(){
     jQuery('#payment-form input').each(function(i, v){
         r = _validar(jQuery(v).attr("id"));
         errores += r;
-        console.log( r+": "+jQuery(v).attr("id") );
     });
     
     jQuery('#payment-form select').each(function(i, v){
@@ -261,15 +267,15 @@ function selectmetodo(idmetodo){
     }
     document.getElementById("met"+idmetodo).className += " active-credit";
     if (idmetodo=='2') {
-        CARRITO["paquete_metodo_pago"] = "Visa";
-        jQuery(".metodo_pago").html("Visa");
+        CARRITO["paquete_metodo_pago"] = "Tarjeta";
+        jQuery(".metodo_pago").html("Tarjeta");
         document.getElementById("formcard").className += " mostrar";
     }else{
         CARRITO["paquete_metodo_pago"] = "Paypal";
         jQuery(".metodo_pago").html("Paypal");
         document.getElementById("formcard").className =document.getElementById("formcard").className.replace( /(?:^|\s)mostrar(?!\S)/g , '' )
     }
-    update_metodo();
+    update_metodo(function(){ });
 }
 
 function selectmetodo_2(idmetodo){
@@ -280,8 +286,8 @@ function selectmetodo_2(idmetodo){
     }
     document.getElementById("met"+idmetodo).className += " active-credit";
     if (idmetodo=='2') {
-        CARRITO["paquete_metodo_pago"] = "Visa";
-        jQuery(".metodo_pago").html("Visa");
+        CARRITO["paquete_metodo_pago"] = "Tarjeta";
+        jQuery(".metodo_pago").html("Tarjeta");
         document.getElementById("formcard").className += " mostrar";
     }else{
         CARRITO["paquete_metodo_pago"] = "Paypal";

@@ -5,14 +5,37 @@ class Stripe extends CI_Controller {
     public function __construct(){
         parent::__construct();
         $this->load->library('Stripe_lib');
-    }
-
-    public function probar(){
-        $this->stripe_lib->probar();
+        $this->load->model('Pedidos_Model');
+        $this->load->model('Fichas_Model');
+        $this->load->model('Anuncios_model');
     }
 
     public function pagar(){
         $this->stripe_lib->pagar( $this->input->post() );
+    }
+
+    function success( $pedido_id ){
+        $pedido = $this->Pedidos_Model->get($pedido_id)[0];
+        $info = json_decode($pedido->data);
+        if( $pedido->status == "precompra" ){
+            switch ( $pedido->tipo_producto ) {
+                case 'fichas':
+                    $this->Fichas_Model->asignarFichas($pedido->user_id, $info->fichas+0);
+                break;
+                case 'anuncio':
+                    $this->Anuncios_model->updateStatus($pedido->producto_id, "comprada");
+                break;
+            }   
+            $this->Pedidos_Model->update($pedido_id, ["status" => "Pagada"]);
+
+            $data['user_id'] = $pedido->user_id;
+            $data['pedido_id'] = $pedido_id;
+            $data['payment_status'] = "Completed"; 
+            $this->Pedidos_Model->insertTransaction($data);
+
+            applib::flash('success','Su compra ha sido procesada | <a href="'.base_url("cuenta/miscompras").'">Mis Compras</a>', 'search/grid/activa/0');
+            exit;
+        }
     }
 
     public function fichas_pagadas($pedido_id){
@@ -50,24 +73,6 @@ class Stripe extends CI_Controller {
 
         applib::flash('success','Su compra ha sido procesada | <a href="'.base_url("cuenta/miscompras").'">Mis Compras</a>', 'search/grid/activa/0');
         exit;
-    }
-
-
-
-
-
-
-    public function view(){
-        $data['user'] = applib::get_table_field( applib::$users_table, array('id_user' => $this->session->userdata('user_id')), '*' );
-        $data['meta'] = array(
-            array(
-                'name' => 'description', 
-                'content' => 'Planes Empresas PREMIUM, Cordoba Vende, Autos y Otros, Hogar y Muebles, Deportes y Fitness, Consolas y Videojuegos, Motos y Otros, Inmuebles, Camionetas, Clasificados Gratis, Villa General Belgrano, Interior Cordoba'
-            )
-        );
-        $data['title'] = 'Comprar Fichas';
-        $data['contenido'] = 'cuenta/view';
-        $this->load->view('frontend/templates/plantilla', $data);
     }
 
 }
