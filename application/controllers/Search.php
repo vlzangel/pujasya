@@ -19,6 +19,7 @@ class Search extends CI_Controller {
     }
 
     private function getProduts($status = null, $orderBy = null){
+        $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
 
         $favoritos = $this->Favoritos_model->get_mis_favoritos( $this->session->userdata('user_id') );
         $data["favoritos"] = [];
@@ -32,10 +33,10 @@ class Search extends CI_Controller {
         ];
         $data['status'] = $status;
         $data['orderBy'] = $orderBy;
-        $data['premium'] = $this->Search_model->get_productos($conditions, $orderByStr);
+        $data['premium'] = $this->Search_model->get_productos($conditions, $orderByStr, $this->session->userdata('user_id'));
         //Extraer nuevos usuarios
         $data['users'] = applib::get_all('*',applib::$users_table,array('status' => 1,'name !=' => null,'nickname !=' => null,'seo !=' => null,'mostrar_perfil' => 1),'id_user DESC','18,0');
-        $data['user'] = applib::get_table_field(applib::$users_table,array('id_user' => $this->session->userdata('user_id')),'*');
+        
         $data['meta'] = array(
             array(
                 'name' => 'description', 
