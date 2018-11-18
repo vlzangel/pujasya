@@ -143,7 +143,7 @@
                                                             } ?>
                                                         </div>
                                                         <div class="col-md-2 col-sm-2 col-xs-6 text-right ptb-20"><?php
-                                                            switch ( $anuncio->status_compra ) {
+                                                            switch ( $anuncio->status ) {
                                                                 case 'Expirada':
                                                                     echo '<div class="etiq etiq-exp">EXPIRADA</div>';
                                                                 break;
