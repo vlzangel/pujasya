@@ -14,4 +14,11 @@ class Perfil_model extends CI_Model {
         return ($query) ? $query->result_array() : false;
     }
 
+    function cancelar_cuenta($user_id){
+        $this->db->where('id_user', $user_id);
+        $this->db->update('vv_users', [
+            "status" => 2
+        ]);
+    }
+
 }

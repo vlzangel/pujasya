@@ -24,6 +24,7 @@ class Perfil extends CI_Controller {
                     'name'          => $this->input->post('name',true),
                     'telefono_fijo' => $this->input->post('telefono_fijo',true),
                     'telefono_movil'=> $this->input->post('telefono_movil',true),
+                    'pais'  => $this->input->post('pais',true),
                     'provincia_id'  => $this->input->post('provincia_id',true),
                     'poblacion_id'  => $this->input->post('poblacion_id',true),
                     'direccion'     => $this->input->post('direccion',true),

@@ -11,6 +11,7 @@ class Cuenta extends CI_Controller {
         $this->load->model('Cuenta_model');
         $this->load->model('Search_model');
         $this->load->model('Pujar_model');
+        $this->load->model('Perfil_model');
 
         $this->load->model('Pedidos_model');
     }
@@ -178,20 +179,12 @@ class Cuenta extends CI_Controller {
     }
 
     public function borrar_anuncio_favoritos($anuncio_id){
-        if( $anuncio_id != "" ){
-            $check = applib::check_favorito($anuncio_id);
-            if($check == true){
-                applib::delete(applib::$favoritos_table,array('anuncio_id' => $anuncio_id,'user_id' => $this->session->userdata('user_id')));
-                applib::flash('success','Se ha borrado el anuncio exitosamente!', 'cuenta/favoritos/');
-                exit;
-            } else {
-                applib::flash('danger','Ha ocurrido un error en el proceso - '.$anuncio_id, 'cuenta/favoritos/');
-                exit;
-            }
-        }else{
-            redirect(base_url('cuenta'));
-            exit;
-        }
+
+        $this->Perfil_model->cancelar_cuenta( $this->session->userdata('user_id') );
+        $this->session->sess_destroy();
+        
+        applib::flash('success', 'Su cuenta ha sido cancelada exitosamente', 'search/grid/activa/0');
+        exit;
     }
 
     public function misautopujas(){

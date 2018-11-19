@@ -59,7 +59,7 @@
                                         <div class="col-md-6">
                                            <div class="form-group">
                                                 <label>País</label>
-                                                <select class="form-control" name="provincia_id" id="provincia_id" required>
+                                                <select class="form-control" name="pais" id="pais" required>
                                                     <option value="" disabled>País</option>
                                                     <?php foreach ($paises as $l): ?>
                                                       <option value="<?= $l['id']?>" <?= $user['pais'] == $l['id']?'selected':''?>><?= $l['paisnombre']?></option>
