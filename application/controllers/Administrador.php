@@ -48,6 +48,12 @@ class Administrador extends SuperController {
         $this->load->view('backend/templates/plantilla', $data);
     }
 
+    public function usuarios(){
+        $data['title'] = 'Entrar';
+        $data['contenido'] = 'usuarios/list';
+        $this->load->view('backend/templates/plantilla', $data);
+    }
+
     public function salir(){
         $this->removeCache();
         // $this->Administrador_model->outSession();

@@ -48,7 +48,7 @@ class Search_model extends CI_Model {
                     break;
 
                     case 'cerrada':
-                        $this->db->where( "status = 'cerrada' OR status = 'comprada'" );
+                        $this->db->where( "status = 'cerrada' OR status = 'comprada' OR status = 'ganada' " );
                     break;
 
                     case 'proximas':

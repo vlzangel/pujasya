@@ -16,6 +16,7 @@ class Usuarios extends CI_Controller {
                 $users->id_user,
                 $users->name,
                 $users->email,
+                $users->nickname,
                 '
                     <a href="javascript: editar('.$users->id_user.');" title="Editar" style="margin-right: 10px;">
                         <i class="fa fa-pencil text-danger" style="background: #01c0c8; padding: 12px; margin-top: -10px;color: white !important; border-radius: 5px;"></i>
