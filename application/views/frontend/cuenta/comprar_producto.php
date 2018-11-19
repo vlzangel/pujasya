@@ -1,7 +1,4 @@
-<pre><?php
-/*    echo "Hola";
-    print_r($data);*/
-
+<?php
     $desglose = '';
     if( $pedido->operacion == "compra" ) {
         $desglose .= '
@@ -35,8 +32,7 @@
             </div>
         ';
     }
-
-?></pre>
+?>
 <link rel="stylesheet" type="text/css" href="<?= base_url("public/assets/css/pago_tarjeta.css") ?>">
 <div class="container">
     <div class="col-md-12 mt-30 creditos">
