@@ -1,6 +1,5 @@
 <div class="row" style="display: flex;align-items: center;">
     <div class="col-md-8">
-        <?= $this->session->flashdata('msg') ?>
         <span class="list-control-view"> <?php 
             if(isset($anuncios_usuario)): ?>
                 Anuncios de <?= $premium[0]['usuario'] ?> 
@@ -35,5 +34,10 @@
             <option value="<?= base_url() ?>search/grid/<?= $status_show; ?>/2" <?= $orderBy == 2 ?'selected':''?> > Precio: Menor a Mayor</option>
             <option value="<?= base_url() ?>search/grid/<?= $status_show; ?>/3" <?= $orderBy == 3 ?'selected':''?> > Precio: Mayor a Menor</option>
         </select>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12" style="padding-top: 10px;">
+        <?= $this->session->flashdata('msg')?>
     </div>
 </div>

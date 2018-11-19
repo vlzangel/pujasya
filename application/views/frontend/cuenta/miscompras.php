@@ -151,7 +151,7 @@
                                                                     echo '<div class="etiq etiq-success">PAGADA</div>';
                                                                 break;
                                                                 case 'Pendiente':
-                                                                    echo '<a class="etiq etiq-espera" style="background-color: #fb9029 !important;" href="'.base_url("comprarproducto/").$anuncio->id_anuncio.'">PAGAR</a>';
+                                                                    echo '<a class="etiq etiq-espera" style="background-color: #fb9029 !important;" href="'.base_url("comprarproducto/").$anuncio->id.'">PAGAR</a>';
                                                                 break;
                                                             } ?>
                                                         </div>

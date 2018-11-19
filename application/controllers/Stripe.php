@@ -5,7 +5,7 @@ class Stripe extends CI_Controller {
     public function __construct(){
         parent::__construct();
         $this->load->library('Stripe_lib');
-        $this->load->model('Pedidos_Model');
+        $this->load->model('Pedidos_model');
         $this->load->model('Fichas_Model');
         $this->load->model('Anuncios_model');
     }
@@ -15,27 +15,34 @@ class Stripe extends CI_Controller {
     }
 
     function success( $pedido_id ){
-        $pedido = $this->Pedidos_Model->get($pedido_id)[0];
+        $pedido = $this->Pedidos_model->get($pedido_id)[0];
         $info = json_decode($pedido->data);
-        if( $pedido->status == "precompra" ){
-            switch ( $pedido->tipo_producto ) {
-                case 'fichas':
-                    $this->Fichas_Model->asignarFichas($pedido->user_id, $info->fichas+0);
-                break;
-                case 'anuncio':
-                    $this->Anuncios_model->updateStatus($pedido->producto_id, "comprada");
-                break;
-            }   
-            $this->Pedidos_Model->update($pedido_id, ["status" => "Pagada"]);
+
+        if( $pedido->status == "precompra" || $pedido->status == "Pendiente"){
+
+            if( $pedido->status == "precompra" ){
+                switch ( $pedido->tipo_producto ) {
+                    case 'fichas':
+                        $this->Fichas_Model->asignarFichas($pedido->user_id, $info->fichas+0);
+                    break;
+                    case 'anuncio':
+                        $this->Anuncios_model->updateStatus($pedido->producto_id, "comprada");
+                    break;
+                }   
+            }else{
+                $this->Anuncios_model->updateStatus($pedido->producto_id, "ganada");
+            }
+
+            $this->Pedidos_model->update($pedido_id, ["status" => "Pagada"]);
 
             $data['user_id'] = $pedido->user_id;
             $data['pedido_id'] = $pedido_id;
             $data['payment_status'] = "Completed"; 
-            $this->Pedidos_Model->insertTransaction($data);
-
-            applib::flash('success','Su compra ha sido procesada | <a href="'.base_url("cuenta/miscompras").'">Mis Compras</a>', 'search/grid/activa/0');
-            exit;
+            $this->Pedidos_model->insertTransaction($data);
         }
+
+        applib::flash('success','Su compra ha sido procesada | <a href="'.base_url("cuenta/miscompras").'">Mis Compras</a>', 'search/grid/activa/0');
+        exit();
     }
 
     public function fichas_pagadas($pedido_id){

@@ -1,7 +1,41 @@
 <pre><?php
-/*    print_r($pedido);
-    print_r($pedido_data);
-    print_r($p);*/
+/*    echo "Hola";
+    print_r($data);*/
+
+    $desglose = '';
+    if( $pedido->operacion == "compra" ) {
+        $desglose .= '
+            <div class="row fila">
+                <div class="col-md-9 col-sm-9 col-xs-9  text-left">
+                    <p class="p1 bold1">'.$pedido_data->nombre.'</p>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-3 text-right">
+                    <p class="p1">'.number_format($pedido_data->precio, 2, '.', ',').'€</p>
+                </div>
+            </div>
+
+            <div class="row fila">
+                <div class="col-md-9 col-sm-9 col-xs-9  text-left">
+                    <p class="p1 bold1">Precio Puja:</p>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-3 text-right">
+                    <p class="p1"> - '.number_format($pedido_data->puja, 2, '.', ',').'€</p>
+                </div>
+            </div>
+        ';
+    }else{
+        $desglose .= '
+            <div class="row fila">
+                <div class="col-md-9 col-sm-9 col-xs-9  text-left">
+                    <p class="p1 bold1">'.$pedido_data->nombre.'</p>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-3 text-right">
+                    <p class="p1">'.number_format($pedido_data->puja, 2, '.', ',').'€</p>
+                </div>
+            </div>
+        ';
+    }
+
 ?></pre>
 <link rel="stylesheet" type="text/css" href="<?= base_url("public/assets/css/pago_tarjeta.css") ?>">
 <div class="container">
@@ -44,23 +78,7 @@
                             </div>
                         </div>
 
-                        <div class="row fila">
-                            <div class="col-md-9 col-sm-9 col-xs-9  text-left">
-                                <p class="p1 bold1">'.$pedido_data->nombre.'</p>
-                            </div>
-                            <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                                <p class="p1">'.number_format($pedido_data->precio, 2, '.', ',').'€</p>
-                            </div>
-                        </div>
-
-                        <div class="row fila">
-                            <div class="col-md-9 col-sm-9 col-xs-9  text-left">
-                                <p class="p1 bold1">Precio Puja:</p>
-                            </div>
-                            <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                                <p class="p1"> - '.number_format($pedido_data->puja, 2, '.', ',').'€</p>
-                            </div>
-                        </div>
+                        '.$desglose.'
 
                         <div class="row fila">
                             <div class="col-md-9 col-sm-9 col-xs-9  text-left">
@@ -202,23 +220,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row fila">
-                                    <div class="col-md-9 col-sm-9 col-xs-9  text-left">
-                                        <p class="p1 bold1">'.$pedido_data->nombre.'</p>
-                                    </div>
-                                    <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                                        <p class="p1">'.number_format($pedido_data->precio, 2, '.', ',').'€</p>
-                                    </div>
-                                </div>
-
-                                <div class="row fila">
-                                    <div class="col-md-9 col-sm-9 col-xs-9 text-left">
-                                        <p class="p1 bold1">Precio Puja:</p>
-                                    </div>
-                                    <div class="col-md-3 col-sm-3 col-xs-3 text-right">
-                                        <p class="p1"> - '.number_format($pedido_data->puja, 2, '.', ',').'€</p>
-                                    </div>
-                                </div>
+                                '.$desglose.'
 
                                 <div class="row fila">
                                     <div class="col-md-9 col-sm-9 col-xs-9  text-left">

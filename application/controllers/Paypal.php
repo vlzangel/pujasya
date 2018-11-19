@@ -5,7 +5,7 @@ class Paypal extends CI_Controller {
     public function __construct(){
         parent::__construct();
         $this->load->library('Paypal_lib');
-        $this->load->model('Pedidos_Model');
+        $this->load->model('Pedidos_model');
         $this->load->model('Fichas_Model');
         $this->load->model('Anuncios_model');
     }
@@ -16,7 +16,7 @@ class Paypal extends CI_Controller {
             exit;
         }*/
 
-        $pedido = $this->Pedidos_Model->get($pedido_id)[0];
+        $pedido = $this->Pedidos_model->get($pedido_id)[0];
         $info = json_decode($pedido->data);
 
         if( $info->cupon != ""){
@@ -52,7 +52,7 @@ class Paypal extends CI_Controller {
     }
 
     function cancel($pedido_id){
-        $this->Pedidos_Model->delete($pedido_id);
+        $this->Pedidos_model->delete($pedido_id);
         applib::flash('danger','Su compra no ha sido procesada, Verifica los datos de tu método de pago e inténtalo de nuevo', 'search/grid/activa/0');
     }
 
@@ -62,18 +62,25 @@ class Paypal extends CI_Controller {
 
 
     private function procesar($pedido_id, $paypalInfo = NULL ){
-        $pedido = $this->Pedidos_Model->get($pedido_id)[0];
+        $pedido = $this->Pedidos_model->get($pedido_id)[0];
         $info = json_decode($pedido->data);
-        if( $pedido->status == "precompra" ){
-            switch ( $pedido->tipo_producto ) {
-                case 'fichas':
-                    $this->Fichas_Model->asignarFichas($pedido->user_id, $info->fichas+0);
-                break;
-                case 'anuncio':
-                    $this->Anuncios_model->updateStatus($pedido->producto_id, "comprada");
-                break;
-            }   
-            $this->Pedidos_Model->update($pedido_id, ["status" => "Pagada"]);
+
+        if( $pedido->status == "precompra" || $pedido->status == "Pendiente"){
+
+            if( $pedido->status == "precompra" ){
+                switch ( $pedido->tipo_producto ) {
+                    case 'fichas':
+                        $this->Fichas_Model->asignarFichas($pedido->user_id, $info->fichas+0);
+                    break;
+                    case 'anuncio':
+                        $this->Anuncios_model->updateStatus($pedido->producto_id, "comprada");
+                    break;
+                }   
+            }else{
+                $this->Anuncios_model->updateStatus($pedido->producto_id, "ganada");
+            }
+            
+            $this->Pedidos_model->update($pedido_id, ["status" => "Pagada"]);
 
             if( $paypalInfo == NULL ){
                 $data['user_id'] = $pedido->user_id;
@@ -88,11 +95,11 @@ class Paypal extends CI_Controller {
                 $data['payer_email'] = $paypalInfo["payer_email"];
                 $data['payment_status'] = $paypalInfo["payment_status"];
             }
-            $transaccion = $this->Pedidos_Model->getTransaction( $pedido_id );
+            $transaccion = $this->Pedidos_model->getTransaction( $pedido_id );
             if( $transaccion == false ){
-                $this->Pedidos_Model->insertTransaction($data);    
+                $this->Pedidos_model->insertTransaction($data);    
             }else{
-                $this->Pedidos_Model->updateTransaction($data); 
+                $this->Pedidos_model->updateTransaction($data); 
             }
 
         }
