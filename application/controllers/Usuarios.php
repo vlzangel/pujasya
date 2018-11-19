@@ -28,4 +28,25 @@ class Usuarios extends CI_Controller {
         echo json_encode($data);
     }
 
+    public function new(){
+        $data["robots"] = $this->Usuarios_model->get_list();
+        $this->load->view('backend/templates/modal', [
+            "titulo" => "Nuevo Usuario",
+            "accion" => "Crear",
+            "data" => $data,
+            "plantilla" => "usuarios/show"
+        ]);
+    }
+
+    public function edit($id){
+        $data["info"] = $this->Usuarios_model->get_user($id);
+
+        $this->load->view('backend/templates/modal', [
+            "titulo" => "Editar Usuario",
+            "accion" => "Actualizar",
+            "data" => $data,
+            "plantilla" => "usuarios/show"
+        ]);
+    }
+
 }
